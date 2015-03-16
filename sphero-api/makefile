@@ -1,0 +1,95 @@
+# Commande de délétion
+RM=rm
+# Flags de délétion
+RMFLAGS=-f
+
+# Bibliothèques supplémentaires
+LIB=
+
+# Répertoires de bibliothèques
+LIBDIR?=
+
+# Commande écho
+ECHO=@echo
+
+# Nom de l'exécutable
+LIBNAME=libsphero.so
+
+# Dossiers d'include pero
+INCDIR=inc
+
+# Dossier d'include externes
+EXTINCDIR?=
+
+# Dossier sources
+SRCDIR=src
+
+# Dossier objets
+OBJDIR=obj
+
+# Dossier où sont mises les dépendances
+DEPDIR=.dep
+df=$(DEPDIR)/$(*F)
+
+DECL=$(wildcard $(INCDIR)/*.h)
+SRC=$(notdir $(wildcard $(SRCDIR)/*.cpp))
+OBJ=$(SRC:.cpp=.o)
+
+CLEAR=clean
+
+MAKEDEPEND = g++ $(addprefix -I, $(EXTINCDIR)) -I$(INCDIR) -o $(df).d -MM $< #Pour calculer les dépendances
+
+#Compilateur
+CC=g++ 
+#Options du compilateur
+CCFLAGS+=-Wall -Wextra -Woverloaded-virtual -I$(INCDIR) $(addprefix -I, $(EXTINCDIR)) -c   
+
+EL=g++ #Éditeur de liens
+ELFLAGS= -shared $(addprefix -L, $(LIBDIR)) 
+
+
+DSHARP?=FALSE
+
+MAP?=FALSE
+
+PROF?=FALSE
+
+ifneq ($(DSHARP),FALSE)
+    CCFLAGS+= -DSHARP #Options du compilateur
+endif
+
+ifneq ($(MAP),FALSE)
+    CCFLAGS+= -DMAP 
+endif
+
+ifneq ($(PROF),FALSE)
+    CCFLAGS+= -pg
+    ELFLAGS+= -pg
+endif
+
+
+.PHONY: $(CLEAR)
+.PHONY: ALL
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp 
+	@$(MAKEDEPEND); \
+		cp $(df).d $(df).P;\
+		sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	            -e '/^$$/ d' -e 's/$$/ :/' < $(df).d >> $(df).P;\
+        	sed -i '1s/^/$(OBJDIR)\//' $(df).P;
+		@rm -f $(df).d
+	@$(ECHO) "Compilation de $<"
+	$(CC) $(CCFLAGS) -o $@ $<
+
+
+ALL: $(LIBNAME)
+	
+$(LIBNAME): $(addprefix $(OBJDIR)/, $(OBJ)) 
+	$(ECHO) "Fabrication de la bibliothèque"
+	$(EL) -o $(LIBNAME) $(addprefix $(OBJDIR)/, $(OBJ)) $(ELFLAGS) $(addprefix -l, $(LIB)) 
+
+#Fichiers de dépendance
+-include $(SRC:%.cpp=$(DEPDIR)/%.P)
+
+$(CLEAR):
+	$(RM) $(RMFLAGS) $(OBJDIR)/*.o $(DEPDIR)/*.P $(LIBNAME) 
