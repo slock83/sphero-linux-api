@@ -8,6 +8,8 @@
 #if ! defined ( CLIENTCOMMANDPACKET_H )
 #define CLIENTCOMMANDPACKET_H
 
+#include <stdint.h>
+
 //--------------------------------------------------- Interfaces utilisées
 //------------------------------------------------------------------ Types 
 typedef uint8_t field;
@@ -49,42 +51,28 @@ const field INIT_SOP2 = 0xFC;
 //
 //------------------------------------------------------------------------ 
 
-class ClientCommandPacket :
+class ClientCommandPacket
 {
-//----------------------------------------------------------------- PUBLIC
 
 public:
-//----------------------------------------------------- Méthodes publiques
 
-//------------------------------------------------- Surcharge d'opérateurs
-
-//-------------------------------------------- Constructeurs - destructeur
 	ClientCommandPacket(
 			field did,
 			field cid,
 			field seq,
 			field dlen,
-			field* data
+			field* data,
 			bool acknowledge = false,
-			bool rstTO = false,
+			bool rstTO = false
 		);
-			
-
-
-//------------------------------------------------------------------ PRIVE 
 
 protected:
-//----------------------------------------------------- Méthodes protégées
-
 
 private:
-//------------------------------------------------------- Méthodes privées
 
 protected:
-//----------------------------------------------------- Attributs protégés
 
 private:
-//------------------------------------------------------- Attributs privés
 	/**
 	 * Start of Packet 1
 	 */
@@ -101,7 +89,7 @@ private:
 	field _did;
 
 	/**
-	 * Commande id
+	 * Command id
 	 */
 	field _cid;
 
@@ -124,12 +112,6 @@ private:
 	 * Checksum
 	 */
 	field _chk;
-	
-//---------------------------------------------------------- Classes amies
-
-//-------------------------------------------------------- Classes privées
-
-//----------------------------------------------------------- Types privés
 
 };
 
