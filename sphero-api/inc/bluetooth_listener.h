@@ -9,6 +9,7 @@
 #define BLUETOOTH_LISTENER_H
 
 //--------------------------------------------------- Interfaces utilisées
+#include <stdint.h>
 
 //------------------------------------------------------------- Constantes 
 

@@ -37,12 +37,12 @@ OBJ=$(SRC:.cpp=.o)
 
 CLEAR=clean
 
-MAKEDEPEND = g++ $(addprefix -I, $(EXTINCDIR)) -I$(INCDIR) -o $(df).d -MM $< #Pour calculer les dépendances
+MAKEDEPEND = g++ $(addprefix -I, $(EXTINCDIR)) -I$(INCDIR) -o $(df).d -std=c++11 -MM $< #Pour calculer les dépendances
 
 #Compilateur
 CC=g++ 
 #Options du compilateur
-CCFLAGS+=-Wall -Wextra -Woverloaded-virtual -I$(INCDIR) $(addprefix -I, $(EXTINCDIR)) -c   
+CCFLAGS+=-fpermissive -fPIC -Wall -Wextra -Woverloaded-virtual -std=c++11 -I$(INCDIR) $(addprefix -I, $(EXTINCDIR)) -c
 
 EL=g++ #Éditeur de liens
 ELFLAGS= -shared $(addprefix -L, $(LIBDIR)) 

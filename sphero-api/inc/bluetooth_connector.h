@@ -2,7 +2,6 @@
                            bluetooth_connector  -  description
                              -------------------
     début                : lun. 16 mars 2015
-    copyright            : (C) 2015 par B3224 - L. Forget - V.Nouvellet
 *************************************************************************/
 
 //---------- Interface de la classe <bluetooth_connector> (fichier bluetooth_connector.h) ------
@@ -10,7 +9,7 @@
 #define BLUETOOTHCONNECTOR_H
 
 //--------------------------------------------------- Interfaces utilisées
-
+#include "bluetooth_listener.h"
 //------------------------------------------------------------- Constantes 
 
 //------------------------------------------------------------------ Types 
@@ -26,13 +25,14 @@ public:
 
 	/*
 	 * Établie la connexion
+	 * address <-> BT Address : 'XX:XX:XX:XX:XX:XX'
 	 */
-	virtual int connect(void) = 0;
+	virtual int connection(const char* address) = 0;
 
 	/*
 	 * Permet l'envoi d'un flux de données au destinataire
 	 */
-	virtual int send_data(size_t data_length, uint8_t const ** data) = 0;
+	virtual int send_data(size_t data_length, uint8_t const * data) = 0;
 
 	/*
 	 * Ferme la connexion
@@ -42,7 +42,7 @@ public:
 	/**
 	 * Met à jour le listener
 	 */
-	void set_listener(BluetoothListener* bluetooth_listener)
+	void set_listener(bluetooth_listener* bluetooth_listener)
 	{
 		_bluetooth_listener = bluetooth_listener;
 	}
@@ -56,10 +56,7 @@ public:
 	//N'a pas de sens
     bluetooth_connector (const bluetooth_connector & unbluetooth_connector) = delete;
 
-	/**
-	 * BT Address : 'XX:XX:XX:XX:XX:XX'
-	 */
-	bluetooth_connector (char* address):
+	bluetooth_connector ():
 		_bluetooth_listener(NULL)
 	{}
 	
