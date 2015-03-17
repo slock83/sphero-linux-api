@@ -17,13 +17,13 @@ ClientCommandPacket::ClientCommandPacket(
 		field* data,
 		bool acknowledge,
 		bool rstTO
-): 	_did(did),
+):_sop1(INIT_SOP1),
+_sop2(INIT_SOP2),
+_did(did),
 _cid(cid),
 _seq(seq),
 _dlen(dlen),
-_data(data),
-_sop1(INIT_SOP1),
-_sop2(INIT_SOP2)
+_data(data)
 {
 	if(acknowledge)
 	{
@@ -41,7 +41,7 @@ _sop2(INIT_SOP2)
 	_chk += dlen;
 
 	//dlen - 1 car dlen compte aussi la taille de la checksum
-	for(size_t i = 0 ; i < dlen-1 ; _chk += data[i++] )
+	for(size_t i = 0 ; i+1 < _dlen ; _chk += data[i++] )
 		//Bloc vide
 	{
 	}
