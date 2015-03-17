@@ -6,15 +6,21 @@
 
 //Réalisation de la classe <ClientCommandPacket> (fichier ClientCommandPacket.cpp)
 
-#include "../inc/ClientCommandPacket.h"
-#include <cstdlib>
+#include "ClientCommandPacket.h"
+
+#include <stddef.h>
+#include <sstream>
+#include <iostream>
+#include "utils/byte-utils.hpp"
+
+using namespace std;
 
 ClientCommandPacket::ClientCommandPacket(
-		field did,
-		field cid,
-		field seq,
-		field dlen,
-		field* data,
+		byte did = 0x01,
+		byte cid,
+		byte seq,
+		byte dlen,
+		byte* data,
 		bool acknowledge,
 		bool rstTO
 ): 	_did(did),
@@ -48,4 +54,11 @@ _sop2(INIT_SOP2)
 
 	//Inversion de la somme obtenue
 	_chk ^= 0xFF;
+}
+
+string ClientCommandPacket::toString()
+{
+	std::stringstream ss;
+	ss << "\x" << toHex(INIT_SOP1);
+	return ss.str();
 }

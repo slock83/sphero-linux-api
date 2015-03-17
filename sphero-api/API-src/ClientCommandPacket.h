@@ -9,17 +9,18 @@
 #define CLIENTCOMMANDPACKET_H
 
 #include <stdint.h>
+#include <string>
 
 //--------------------------------------------------- Interfaces utilisées
 //------------------------------------------------------------------ Types 
-typedef uint8_t field;
+typedef uint8_t byte;
 
 //------------------------------------------------------------------ Constantes
-const field ANS_FLAG = 0x01;
-const field RST_FLAG = 0x02;
-const field INIT_SOP1 = 0xFF;
+const byte ANS_FLAG = 0x01;
+const byte RST_FLAG = 0x02;
+const byte INIT_SOP1 = 0xFF;
 //SOP2 is initialized with RST and ANS set to false
-const field INIT_SOP2 = 0xFC;
+const byte INIT_SOP2 = 0xFC;
 
 //------------------------------------------------------------------------ 
 /*
@@ -57,14 +58,16 @@ class ClientCommandPacket
 public:
 
 	ClientCommandPacket(
-			field did,
-			field cid,
-			field seq,
-			field dlen,
-			field* data,
+			byte did,
+			byte cid,
+			byte seq,
+			byte dlen,
+			byte* data,
 			bool acknowledge = false,
 			bool rstTO = false
 		);
+
+	std::string toString();
 
 protected:
 
@@ -76,42 +79,42 @@ private:
 	/**
 	 * Start of Packet 1
 	 */
-	field _sop1 ;
+	byte _sop1 ;
 
 	/**
 	 * Start of packet 2
 	 */
-	field _sop2; 
+	byte _sop2;
 
 	/**
 	 * Virtual device id
 	 */
-	field _did;
+	byte _did;
 
 	/**
 	 * Command id
 	 */
-	field _cid;
+	byte _cid;
 
 	/**
 	 * Sequence identifier (client field)
 	 */
-	field _seq;
+	byte _seq;
 
 	/**
 	 * Data length
 	 */
-	field _dlen;
+	byte _dlen;
 
 	/**
 	 * Optional data to accompany the command
 	 */
-	field* _data;
+	byte* _data;
 
 	/**
 	 * Checksum
 	 */
-	field _chk;
+	byte _chk;
 
 };
 
