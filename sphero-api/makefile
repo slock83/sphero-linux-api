@@ -16,13 +16,13 @@ ECHO=@echo
 LIBNAME=libsphero.so
 
 # Dossiers d'include pero
-INCDIR=inc
+INCDIR=API-src
 
 # Dossier d'include externes
 EXTINCDIR?=
 
 # Dossier sources
-SRCDIR=src
+SRCDIR=API-src
 
 # Dossier objets
 OBJDIR=obj
@@ -31,8 +31,7 @@ OBJDIR=obj
 DEPDIR=.dep
 df=$(DEPDIR)/$(*F)
 
-DECL=$(wildcard $(INCDIR)/*.h)
-SRC=$(notdir $(wildcard $(SRCDIR)/*.cpp))
+SRC=$(shell find $(SRCDIR) -type f -name *.cpp | sed -e "s/$(SRCDIR)\///")
 OBJ=$(SRC:.cpp=.o)
 
 CLEAR=clean
@@ -79,6 +78,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
         	sed -i '1s/^/$(OBJDIR)\//' $(df).P;
 		@rm -f $(df).d
 	@$(ECHO) "Compilation de $<"
+	@mkdir -p $(dir $@)
 	$(CC) $(CCFLAGS) -o $@ $<
 
 

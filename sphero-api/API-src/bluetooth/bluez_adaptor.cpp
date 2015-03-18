@@ -64,7 +64,7 @@ int bluez_adaptor::connection(const char* address)
 bluez_adaptor::bluez_adaptor ():_bt_socket(0),_connecte(false)
 {
 #ifdef MAP
-    cout << "Appel au constructeur de <bluez_adaptor" << endl;
+    cout << "Appel au constructeur de <bluez_adaptor>" << endl;
 #endif
 } //----- Fin de bluez_adaptor
 
@@ -74,7 +74,7 @@ bluez_adaptor::~bluez_adaptor ( )
 //
 {
 #ifdef MAP
-    cout << "Appel au destructeur de <bluez_adaptor" << endl;
+    cout << "Appel au destructeur de <bluez_adaptor>" << endl;
 #endif
 } //----- Fin de ~bluez_adaptor
 
@@ -92,10 +92,7 @@ int bluez_adaptor::listen()
 	//Pour chaque 
 	while((count_read = read(_bt_socket, &last_read, sizeof(char))) == sizeof(char))
 	{
-
+		
 	}
-	bytes_read = read(client, buf, sizeof(buf));
-	if( bytes_read > 0 ) {
-		print("received [%s]\n", buf);
-	}
+	return 0;
 }
