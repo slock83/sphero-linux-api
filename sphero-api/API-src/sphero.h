@@ -13,7 +13,7 @@
 #include <cstdlib.h>
 #ifdef BLUEZ
 	//Nécessaire plus bas
-	#include "bluez_adaptor.h"
+	#include "bluetooth/bluez_adaptor.h"
 #endif
 //------------------------------------------------------------- Constantes 
 
