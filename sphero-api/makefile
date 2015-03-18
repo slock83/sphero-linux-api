@@ -4,7 +4,7 @@ RM=rm
 RMFLAGS=-f
 
 # Bibliothèques supplémentaires
-LIB=
+LIB=bluetooth
 
 # Répertoires de bibliothèques
 LIBDIR?=
@@ -40,12 +40,12 @@ CLEAR=clean
 MAKEDEPEND = g++ $(addprefix -I, $(EXTINCDIR)) -I$(INCDIR) -o $(df).d -std=c++11 -MM $< #Pour calculer les dépendances
 
 #Compilateur
-CC=g++ 
+CC=gcc 
 #Options du compilateur
-CCFLAGS+=-fpermissive -fPIC -Wall -Wextra -Woverloaded-virtual -std=c++11 -I$(INCDIR) $(addprefix -I, $(EXTINCDIR)) -c
+CCFLAGS+=-Wall -fPIC -fpermissive -Wextra -Woverloaded-virtual -std=c++11 -I$(INCDIR) $(addprefix -I, $(EXTINCDIR)) $(addprefix -l, $(LIB)) -c
 
 EL=g++ #Éditeur de liens
-ELFLAGS= -shared $(addprefix -L, $(LIBDIR)) 
+ELFLAGS= -shared $(addprefix -L, $(LIBDIR))
 
 
 DSHARP?=FALSE

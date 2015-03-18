@@ -2,7 +2,6 @@
                            bluez_adaptor  -  description
                              -------------------
     début                : mar. 17 mars 2015
-    copyright            : (C) 2015 par B3224 - L. Forget - V.Nouvellet
 *************************************************************************/
 
 //---------- Interface de la classe <bluez_adaptor> (fichier bluez_adaptor.h) ------
@@ -11,6 +10,11 @@
 
 //--------------------------------------------------- Interfaces utilisées
 #include "bluetooth_connector.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/rfcomm.h>
 //------------------------------------------------------------- Constantes 
 
 //------------------------------------------------------------------ Types 
@@ -28,7 +32,7 @@ public:
 	/**
 	 * Établie la connexion
 	 */
-	virtual int connect();
+	virtual int connection( const char* address);
 
 	/**
 	 * Permet l'envoi d'un flux de données au destinataire
@@ -48,7 +52,7 @@ public:
 //-------------------------------------------- Constructeurs - destructeur
     bluez_adaptor ( const bluez_adaptor & unbluez_adaptor ) = delete;
 
-    bluez_adaptor (const char* address );
+    bluez_adaptor ();
 
     virtual ~bluez_adaptor ( );
 
@@ -59,12 +63,15 @@ protected:
 
 private:
 //------------------------------------------------------- Méthodes privées
+	int listen();
 
 protected:
 //----------------------------------------------------- Attributs protégés
 
 private:
 //------------------------------------------------------- Attributs privés
+	int _bt_socket;	
+	bool _connecte;
 
 //---------------------------------------------------------- Classes amies
 

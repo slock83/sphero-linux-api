@@ -14,6 +14,8 @@
 using namespace std;
 //------------------------------------------------------ Include personnel
 #include "bluez_adaptor.h"
+#include <pthread.h>
+#include <vector>
 
 //------------------------------------------------------------- Constantes
 
@@ -49,6 +51,7 @@ int bluez_adaptor::connection(const char* address)
 		perror("First attempt to connect");
 	}
 	
+	_connecte = true;
 	return 0;
 }
 
@@ -81,4 +84,18 @@ bluez_adaptor::~bluez_adaptor ( )
 //----------------------------------------------------- Méthodes protégées
 
 //------------------------------------------------------- Méthodes privées
+int bluez_adaptor::listen()
+{
+	vector<char> data();
+	char last_read;
+	ssize_t count_read;
+	//Pour chaque 
+	while((count_read = read(_bt_socket, &last_read, sizeof(char))) == sizeof(char))
+	{
 
+	}
+	bytes_read = read(client, buf, sizeof(buf));
+	if( bytes_read > 0 ) {
+		print("received [%s]\n", buf);
+	}
+}
