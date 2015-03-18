@@ -27,3 +27,9 @@ The API is (for now) built only over the bluez bluetooth stack, making it compat
   $ cd sphero-linux-api/sphero-api
   $ make
   ```
+
+####4. Cleaning the sources folder : 
+
+  ```sh
+  $ make clean
+  ```
