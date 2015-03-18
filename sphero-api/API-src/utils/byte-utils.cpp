@@ -5,12 +5,14 @@
 #include <string>
 #include <iomanip>
 
+using namespace std;
+
 template< typename T >
-std::string int_to_hex( T i )
+string int_to_hex( T i )
 {
-  std::stringstream stream;
-  stream << "\x"
+  stringstream stream;
+  /*stream << "\x"
          << std::setfill ('0') << std::setw(sizeof(T)*2)
-         << std::hex << i;
+         << std::hex << i;*/
   return stream.str();
 }

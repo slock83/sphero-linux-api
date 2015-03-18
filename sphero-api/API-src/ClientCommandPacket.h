@@ -67,7 +67,6 @@ public:
 			bool rstTO = false
 		);
 
-	std::string toString();
 
 protected:
 

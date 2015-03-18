@@ -8,8 +8,11 @@
 #ifndef INC_UTILS_HPP_
 #define INC_UTILS_HPP_
 
+#include <string>
+using namespace std;
+
 template< typename T >
-std::string toHex( T i );
+string toHex( T i );
 
 
 

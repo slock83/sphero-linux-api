@@ -16,7 +16,7 @@
 using namespace std;
 
 ClientCommandPacket::ClientCommandPacket(
-		byte did = 0x01,
+		byte did,
 		byte cid,
 		byte seq,
 		byte dlen,
@@ -54,11 +54,4 @@ _data(data)
 
 	//Inversion de la somme obtenue
 	_chk ^= 0xFF;
-}
-
-string ClientCommandPacket::toString()
-{
-	std::stringstream ss;
-	ss << "\x" << toHex(INIT_SOP1);
-	return ss.str();
 }

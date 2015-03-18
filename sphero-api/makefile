@@ -28,7 +28,7 @@ SRCDIR=API-src
 OBJDIR=obj
 
 # Dossier où sont mises les dépendances
-DEPDIR=.dep
+DEPDIR=API-src
 df=$(DEPDIR)/$(*F)
 
 SRC=$(shell find $(SRCDIR) -type f -name *.cpp | sed -e "s/$(SRCDIR)\///")
