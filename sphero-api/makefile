@@ -1,7 +1,7 @@
 # Commande de délétion
 RM=rm
 # Flags de délétion
-RMFLAGS=-f
+RMFLAGS=-rf
 
 # Bibliothèques supplémentaires
 LIB=bluetooth
@@ -92,4 +92,4 @@ $(LIBNAME): $(addprefix $(OBJDIR)/, $(OBJ))
 -include $(SRC:%.cpp=$(DEPDIR)/%.P)
 
 $(CLEAR):
-	$(RM) $(RMFLAGS) $(OBJDIR)/*.o $(DEPDIR)/*.P $(LIBNAME) 
+	$(RM) $(RMFLAGS) $(OBJDIR)/* $(DEPDIR)/*.P $(LIBNAME) 
