@@ -6,24 +6,24 @@ The API is (for now) built only over the bluez bluetooth stack, making it compat
 ### How To build :
 1. Dependencies : 
 
-> dependencies are : bluez, libbluetooth, and libbluetooth-dev (and of course, classic compilation tools : g++, make, gcc, clib, git, ...)
+  > dependencies are : bluez, libbluetooth, and libbluetooth-dev (and of course, classic compilation tools : g++, make, gcc, clib, git, ...)
 
-```sh
-$ sudo apt-get install bluez libbluetooth libbluetooth-dev git
-```
+  ```sh
+  $ sudo apt-get install bluez libbluetooth libbluetooth-dev git
+  ```
 
 2. Retrieving the source code : 
 
- either download the .zip from this page and extract it
- or clone the github repository :
+  * either download the .zip from this page and extract it
+  * or clone the github repository :
  
-```sh
-$ git clone https://github.com/slock83/sphero-linux-api.git
-```
+  ```sh
+  $ git clone https://github.com/slock83/sphero-linux-api.git
+  ```
 
 3. Building the sources : 
 
-```sh
-$ cd sphero-linux-api/sphero-api
-$ make
-```
+  ```sh
+  $ cd sphero-linux-api/sphero-api
+  $ make
+  ```
