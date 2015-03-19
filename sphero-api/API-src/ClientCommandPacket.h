@@ -66,7 +66,7 @@ public:
 			bool acknowledge = false,
 			bool rstTO = false
 		);
-
+	uint8_t* toByteArray();
 
 protected:
 

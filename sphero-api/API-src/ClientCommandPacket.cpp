@@ -55,3 +55,20 @@ _data(data)
 	//Inversion de la somme obtenue
 	_chk ^= 0xFF;
 }
+
+uint8_t* ClientCommandPacket::toByteArray()
+{
+	uint8_t array[6+_dlen];
+	array[0] = _sop1;
+	array[1] = _sop2;
+	array[3] = _did;
+	array[4] = _cid;
+	array[5] = _seq;
+	array[6] = _dlen;
+	for(int i = 0 ; i+1 < _dlen ; ++i)
+	{
+		array[7+i] = _data[i];
+	}
+	array[6+_dlen] = _chk;
+	return array;
+}
