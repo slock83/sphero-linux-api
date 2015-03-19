@@ -51,7 +51,7 @@ int bluez_adaptor::connection(const char* address)
 		perror("First attempt to connect");
 	}
 	
-	_connecte = true;
+	_connected = true;
 	return 0;
 }
 
@@ -61,7 +61,7 @@ int bluez_adaptor::connection(const char* address)
 //-------------------------------------------- Constructeurs - destructeur
 
 
-bluez_adaptor::bluez_adaptor ():_bt_socket(0),_connecte(false)
+bluez_adaptor::bluez_adaptor ():_bt_socket(0),_connected(false)
 {
 #ifdef MAP
     cout << "Appel au constructeur de <bluez_adaptor>" << endl;

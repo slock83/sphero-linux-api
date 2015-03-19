@@ -10,7 +10,7 @@
 
 //--------------------------------------------------- Interfaces utilisées
 #include "bluetooth_connector.h"
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <bluetooth/bluetooth.h>
@@ -71,7 +71,7 @@ protected:
 private:
 //------------------------------------------------------- Attributs privés
 	int _bt_socket;	
-	bool _connecte;
+	bool _connected;
 
 //---------------------------------------------------------- Classes amies
 
