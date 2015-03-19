@@ -8,13 +8,15 @@
 #if ! defined ( BLUEZ_ADAPTOR_H )
 #define BLUEZ_ADAPTOR_H
 
-//--------------------------------------------------- Interfaces utilisées
-#include "bluetooth_connector.h"
+//-------------------------------------------------------------- Includes
+
 #include <cstdio>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
+
+#include "bluetooth_connector.h"
 //------------------------------------------------------------- Constantes 
 
 //------------------------------------------------------------------ Types 

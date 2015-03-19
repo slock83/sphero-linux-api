@@ -10,12 +10,13 @@
 
 //-------------------------------------------------------- Include système
 #include <iostream>
+#include <pthread.h>
+#include <vector>
 
 using namespace std;
 //------------------------------------------------------ Include personnel
 #include "bluez_adaptor.h"
-#include <pthread.h>
-#include <vector>
+
 
 //------------------------------------------------------------- Constantes
 

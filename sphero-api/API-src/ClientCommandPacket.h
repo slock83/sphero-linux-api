@@ -8,7 +8,7 @@
 #if ! defined ( CLIENTCOMMANDPACKET_H )
 #define CLIENTCOMMANDPACKET_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 
 //--------------------------------------------------- Interfaces utilisées

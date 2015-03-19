@@ -8,7 +8,7 @@
 
 #include "ClientCommandPacket.h"
 
-#include <stddef.h>
+#include <cstddef>
 #include <sstream>
 #include <iostream>
 #include "utils/byte-utils.hpp"
