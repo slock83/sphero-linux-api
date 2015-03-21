@@ -54,7 +54,7 @@ MAP?=FALSE
 PROF?=FALSE
 
 ifneq ($(DSHARP),FALSE)
-    CCFLAGS+= -DSHARP #Options du compilateur
+    CCFLAGS+= -DSHARP 
 endif
 
 ifneq ($(MAP),FALSE)
