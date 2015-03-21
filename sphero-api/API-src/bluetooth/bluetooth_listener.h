@@ -8,8 +8,8 @@
 #if ! defined ( BLUETOOTH_LISTENER_H )
 #define BLUETOOTH_LISTENER_H
 
-//--------------------------------------------------- Interfaces utilisées
-#include <stdint.h>
+//-------------------------------------------------------- Include système
+#include <cstdint>
 
 //------------------------------------------------------------- Constantes 
 

@@ -8,7 +8,7 @@
 #if ! defined ( CLIENTCOMMANDPACKET_H )
 #define CLIENTCOMMANDPACKET_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 
 //--------------------------------------------------- Interfaces utilisées
@@ -66,8 +66,7 @@ public:
 			bool acknowledge = false,
 			bool rstTO = false
 		);
-
-	std::string toString();
+	uint8_t* toByteArray();
 
 protected:
 

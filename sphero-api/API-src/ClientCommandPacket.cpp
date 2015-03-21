@@ -8,7 +8,7 @@
 
 #include "ClientCommandPacket.h"
 
-#include <stddef.h>
+#include <cstddef>
 #include <sstream>
 #include <iostream>
 #include "utils/byte-utils.hpp"
@@ -16,7 +16,7 @@
 using namespace std;
 
 ClientCommandPacket::ClientCommandPacket(
-		byte did = 0x01,
+		byte did,
 		byte cid,
 		byte seq,
 		byte dlen,
@@ -56,9 +56,19 @@ _data(data)
 	_chk ^= 0xFF;
 }
 
-string ClientCommandPacket::toString()
+uint8_t* ClientCommandPacket::toByteArray()
 {
-	std::stringstream ss;
-	ss << "\x" << toHex(INIT_SOP1);
-	return ss.str();
+	uint8_t array[6+_dlen];
+	array[0] = _sop1;
+	array[1] = _sop2;
+	array[3] = _did;
+	array[4] = _cid;
+	array[5] = _seq;
+	array[6] = _dlen;
+	for(int i = 0 ; i+1 < _dlen ; ++i)
+	{
+		array[7+i] = _data[i];
+	}
+	array[6+_dlen] = _chk;
+	return array;
 }

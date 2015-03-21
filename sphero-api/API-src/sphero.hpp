@@ -2,7 +2,7 @@
     sphero  -  description
                              -------------------
     début                : lun. 16 mars 2015
-*************************************************************************/
+ *************************************************************************/
 
 //---------- Interface de la classe <sphero> (fichier sphero.h) ------
 #if ! defined ( SPHERO_H )
@@ -10,56 +10,60 @@
 
 //--------------------------------------------------- Interfaces utilisées
 #include <string.h>
-#include <cstdlib.h>
+#include <cstdlib>
 #ifdef BLUEZ
-	//Nécessaire plus bas
-	#include "bluetooth/bluez_adaptor.h"
+//Nécessaire plus bas
+#include "bluetooth/bluez_adaptor.h"
 #endif
 //------------------------------------------------------------- Constantes 
 
 //------------------------------------------------------------------ Types 
 typedef int16_t spherocoord_t;
-class sphero_listener;
+
+class sphero_listener
+{
+public:
+};
 
 //------------------------------------------------------------------------ 
 //T est un connecteur bluetooth
 template<typename T>
 class sphero 
 {
-//----------------------------------------------------------------- PUBLIC
+	//----------------------------------------------------------------- PUBLIC
 
 public:
-//----------------------------------------------------- Méthodes publiques
+	//----------------------------------------------------- Méthodes publiques
 
 
-//------------------------------------------------- Surcharge d'opérateurs
+	//------------------------------------------------- Surcharge d'opérateurs
 	//N'a pas de sens
-    sphero & operator = ( const sphero & unsphero ) = delete;
+	sphero & operator = ( const sphero & unsphero ) = delete;
 
-//-------------------------------------------- Constructeurs - destructeur
+	//-------------------------------------------- Constructeurs - destructeur
 	//N'a pas de sens
-    sphero ( const sphero & unsphero ) = delete;
-	
+	sphero ( const sphero & unsphero ) = delete;
+
 	/*
 	 * BT address (format : "XX:XX:XX:XX:XX:XX")
 	 */
-    sphero(char*  btaddr);
+	sphero(char*  btaddr);
 
-    virtual ~sphero ( );
+	virtual ~sphero ( );
 
-//------------------------------------------------------------------ PRIVE 
-
-protected:
-//----------------------------------------------------- Méthodes protégées
-
-private:
-//------------------------------------------------------- Méthodes privées
+	//------------------------------------------------------------------ PRIVE
 
 protected:
-//----------------------------------------------------- Attributs protégés
+	//----------------------------------------------------- Méthodes protégées
 
 private:
-//------------------------------------------------------- Attributs privés
+	//------------------------------------------------------- Méthodes privées
+
+protected:
+	//----------------------------------------------------- Attributs protégés
+
+private:
+	//------------------------------------------------------- Attributs privés
 	T* _btManager;
 
 	/*
@@ -80,22 +84,22 @@ private:
 	//To be continued
 
 
-//---------------------------------------------------------- Classes amies
+	//---------------------------------------------------------- Classes amies
 
-//-------------------------------------------------------- Classes privées
+	//-------------------------------------------------------- Classes privées
 	class sphero_listener : public bluetooth_listener
 	{
 		virtual void manage_data(size_t data_length, uint8_t* data);	
 	};
 
-//----------------------------------------------------------- Types privés
+	//----------------------------------------------------------- Types privés
 };
 
 #include "sphero.tpp"
 
 //----------------------------------------- Types dépendants de <sphero>
 #ifdef BLUEZ
-	typedef sphero<bluez_adaptor> sphero;
+typedef sphero<bluez_adaptor> sphero;
 #endif
 #endif // SPHERO_H
 

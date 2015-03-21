@@ -1,7 +1,7 @@
 # Commande de délétion
 RM=rm
 # Flags de délétion
-RMFLAGS=-f
+RMFLAGS=-rf
 
 # Bibliothèques supplémentaires
 LIB=bluetooth
@@ -28,7 +28,7 @@ SRCDIR=API-src
 OBJDIR=obj
 
 # Dossier où sont mises les dépendances
-DEPDIR=.dep
+DEPDIR=API-src
 df=$(DEPDIR)/$(*F)
 
 SRC=$(shell find $(SRCDIR) -type f -name *.cpp | sed -e "s/$(SRCDIR)\///")
@@ -92,4 +92,4 @@ $(LIBNAME): $(addprefix $(OBJDIR)/, $(OBJ))
 -include $(SRC:%.cpp=$(DEPDIR)/%.P)
 
 $(CLEAR):
-	$(RM) $(RMFLAGS) $(OBJDIR)/*.o $(DEPDIR)/*.P $(LIBNAME) 
+	$(RM) $(RMFLAGS) $(OBJDIR)/* $(DEPDIR)/*.P $(LIBNAME) 
