@@ -41,10 +41,10 @@ MAKEDEPEND = g++ $(addprefix -I, $(EXTINCDIR)) -I$(INCDIR) -o $(df).d -std=c++11
 #Compilateur
 CC=gcc 
 #Options du compilateur
-CCFLAGS+=-Wall -fPIC -fpermissive -Wextra -Woverloaded-virtual -std=c++11 -I$(INCDIR) $(addprefix -I, $(EXTINCDIR)) $(addprefix -l, $(LIB)) -c
+CCFLAGS+=-Wall -fPIC -fpermissive -Wextra -Woverloaded-virtual -std=c++11 -I$(INCDIR) $(addprefix -I, $(EXTINCDIR)) $(addprefix -l, $(LIB)) -c -pthread
 
 EL=g++ #Éditeur de liens
-ELFLAGS= -shared $(addprefix -L, $(LIBDIR))
+ELFLAGS= -shared $(addprefix -L, $(LIBDIR)) -pthread
 
 
 DSHARP?=FALSE
