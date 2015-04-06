@@ -51,10 +51,66 @@ public:
 
 	virtual ~sphero ( );
 
+	void setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist = false);
+	//Changes the color with the given hex values, persist will set as user color
+
+	void setBackLedOutput(uint8_t power);
+
+	void setHeading(uint16_t heading);
+	//Change the heading with and angle in ° (range from 0 to 359)
+
+	void setStabilization(bool on = true);
+	//Enable or disable stabilization
+
+	void setRotationRate(uint8_t angspeed);
+	//Change the rotation speed, as angspeed*0.784 degrees/sec
+	//Warning = high value may become really uncontrollable
+
+	void setSelfLevel(uint8_t options = 0, uint8_t angle_limit = 3, uint8_t timeout = 15, uint8_t trueTime = 30);
+
+	void setDataStreaming(uint16_t N, uint16_t M, uint32_t MASK, uint8_t pcnt, uint32_t MASK2 = 0);
+
+	void enableCollisionDetection(uint8_t Xt, uint8_t Xspd, uint8_t Yt, uint8_t Yspd, uint8_t Dead);
+
+	void disableCollisionDetection();
+
+	void configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t yaw);
+
+	//getLocator : will have to discuss this...
+	//getRGDLed : same
+
+	void setAccelerometerRange(uint8_t range);
+
+	void roll(uint8_t speed, uint16_t heading, uint8_t state);
+
+	//setRawMotorValue : not needed ?
+
+	void setMotionTimeout(uint16_t time);
+
+	void setPermOptFlags(uint32_t flags);
+
+	//getPermOptFlags : we'll see
+
+	void setTmpOptFlags(uint32_t flags);
+
+	//getTmpOptFlags : we'll see
+
+	void setDeviceMode(uint8_t value = 0);
+	//01h will set to user hack mode
+
+	//getDeviceMode
+
+	void runMacro(uint8_t id);
+
+	//void saveMacro(Macro macro);
+
+
+
 	//------------------------------------------------------------------ PRIVE
 
 protected:
 	//----------------------------------------------------- Méthodes protégées
+	void sendPack(ClientCommandPacket pack);
 
 private:
 	//------------------------------------------------------- Méthodes privées
