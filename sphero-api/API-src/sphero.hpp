@@ -51,7 +51,8 @@ public:
 	sphero ( const sphero & unsphero ) = delete;
 
 	/*
-	 * BT address (format : "XX:XX:XX:XX:XX:XX")
+	 * BT addres
+	 * s (format : "XX:XX:XX:XX:XX:XX")
 	 */
 	sphero(const char*  btaddr);
 
