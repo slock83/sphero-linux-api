@@ -72,3 +72,8 @@ uint8_t* ClientCommandPacket::toByteArray()
 	array[6+_dlen] = _chk;
 	return array;
 }
+
+size_t ClientCommandPacket::getSize()
+{
+	return _dlen+6;
+}

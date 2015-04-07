@@ -68,6 +68,8 @@ public:
 		);
 	uint8_t* toByteArray();
 
+	size_t getSize();
+
 protected:
 
 private:

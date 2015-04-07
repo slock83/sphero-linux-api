@@ -59,8 +59,8 @@ void sphero<T>::setColor(uint8_t red, uint8_t green,
 		data_payload[3] = 0;
 	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x20, 0x00, 0x05,
 			data_payload, waitConfirm, resetTimer);
-	sendPack(packet);
-	delete packet;#include "sphero.hpp"
+	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	delete packet;
 }
 
 template<typename T>
@@ -70,7 +70,7 @@ void sphero<T>::setBackLedOutput(uint8_t power)
 {
 	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x21, 0x00, 0x02,
 			power, waitConfirm, resetTimer);
-	sendPack(packet);
+	_btManager.send_data(packet.getSize(),packet.toByteArray());
 	delete packet;
 }
 
@@ -81,7 +81,7 @@ void sphero<T>::setHeading(uint16_t heading)
 {
 	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x01, 0x00, 0x03,
 			*heading, waitConfirm, resetTimer); //dirty, but should work. we'll have to try
-	sendPack(packet);
+	_btManager.send_data(packet.getSize(),packet.toByteArray());
 	delete packet;
 }
 
@@ -94,7 +94,7 @@ void sphero<T>::setStabilization(bool on)
 	on ? state=1 : state=0;
 	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x02, 0x00, 0x02,
 			*state, waitConfirm, resetTimer); //dirty, but should work. we'll have to try
-	sendPack(packet);
+	_btManager.send_data(packet.getSize(),packet.toByteArray());
 	delete packet;
 }
 
@@ -106,7 +106,7 @@ void sphero<T>::setRotationRate(uint8_t angspeed)
 {
 	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x03, 0x00, 0x02,
 			*angspeed, waitConfirm, resetTimer); //dirty, but should work. we'll have to try
-	sendPack(packet);
+	_btManager.send_data(packet.getSize(),packet.toByteArray());
 	delete packet;
 }
 
@@ -136,7 +136,7 @@ True Time 	0 Use the default value
 	data_payload[3] = trueTime;
 	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x09, 0x00, 0x05,
 			data_payload, waitConfirm, resetTimer);
-	sendPack(packet);
+	_btManager.send_data(packet.getSize(),packet.toByteArray());
 	delete packet;
 }
 
@@ -160,7 +160,7 @@ Dead 	An 8-bit post-collision dead time to prevent retriggering; specified in 10
 	data_payload[5] = Dead;
 	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x12, 0x00, 0x07,
 			data_payload, waitConfirm, resetTimer);
-	sendPack(packet);
+	_btManager.send_data(packet.getSize(),packet.toByteArray());
 	delete packet;
 }
 
@@ -177,7 +177,7 @@ void sphero<T>::disableCollisionDetection()
 	data_payload[5] = 0;
 	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x12, 0x00, 0x07,
 			data_payload, waitConfirm, resetTimer);
-	sendPack(packet);
+	_btManager.send_data(packet.getSize(),packet.toByteArray());
 	delete packet;
 }
 
