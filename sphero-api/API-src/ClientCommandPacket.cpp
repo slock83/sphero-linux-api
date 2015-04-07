@@ -54,6 +54,9 @@ _data(data)
 
 	//Inversion de la somme obtenue
 	_chk ^= 0xFF;
+#ifdef MAP
+	std::cout << "Checksum :" << (unsigned int) _chk << std::endl;
+#endif
 	array = new uint8_t[6 + _dlen];
 }
 
@@ -66,15 +69,22 @@ uint8_t* ClientCommandPacket::toByteArray()
 {
 	array[0] = _sop1;
 	array[1] = _sop2;
-	array[3] = _did;
-	array[4] = _cid;
-	array[5] = _seq;
-	array[6] = _dlen;
-	for(int i = 0 ; i+1 < _dlen ; ++i)
+	array[2] = _did;
+	array[3] = _cid;
+	array[4] = _seq;
+	array[5] = _dlen;
+	for(int i = 0 ; i < _dlen-1 ; ++i)
 	{
-		array[7+i] = _data[i];
+		array[6+i] = _data[i];
 	}
-	array[6+_dlen] = _chk;
+	array[6+_dlen-1] = _chk;
+#ifdef MAP
+	for(size_t i = 0 ; i < _dlen + 6 ; ++i)
+	{
+		std::cout <<
+			"array[" << i << "] = " << (unsigned int) array[i] << std::endl;
+	}
+#endif
 	return array;
 }
 

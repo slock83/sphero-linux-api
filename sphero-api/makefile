@@ -12,7 +12,7 @@ LIBDIR?=
 # Commande écho
 ECHO=@echo
 
-# Nom de l'exécutable
+# Nom de la bibliothèque
 LIBNAME=libsphero.so
 
 # Dossiers d'include pero
@@ -41,10 +41,10 @@ MAKEDEPEND = g++ $(addprefix -I, $(EXTINCDIR)) -I$(INCDIR) -o $(df).d -std=c++11
 #Compilateur
 CC=gcc 
 #Options du compilateur
-CCFLAGS+=-Wall -fPIC -fpermissive -Wextra -Woverloaded-virtual -std=c++11 -I$(INCDIR) $(addprefix -I, $(EXTINCDIR)) $(addprefix -l, $(LIB)) -c -pthread
+CCFLAGS+=-Wall -fPIC -fpermissive -Wextra -Woverloaded-virtual -std=c++11 -I$(INCDIR) $(addprefix -I, $(EXTINCDIR)) $(addprefix -l, $(LIB)) -c -pthread -g
 
 EL=g++ #Éditeur de liens
-ELFLAGS= -shared $(addprefix -L, $(LIBDIR)) -pthread
+ELFLAGS= -shared 
 
 
 DSHARP?=FALSE

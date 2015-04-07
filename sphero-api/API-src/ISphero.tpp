@@ -28,7 +28,7 @@
 template<typename T>
 ISphero<T>::ISphero(char const* const btaddr) {
 	_btManager = new T();
-	_btManager.connection(btaddr);
+	_btManager->connection(btaddr);
 }
 
 template<typename T>
@@ -51,7 +51,7 @@ void ISphero<T>::setColor(uint8_t red, uint8_t green,
 		data_payload[3] = 1;
 	else
 		data_payload[3] = 0;
-	ClientCommandPacket packet = new ClientCommandPacket(
+	ClientCommandPacket* packet = new ClientCommandPacket(
 			0x02, 
 			0x20, 
 			0x00, 
@@ -60,7 +60,7 @@ void ISphero<T>::setColor(uint8_t red, uint8_t green,
 			waitConfirm, 
 			resetTimer
 		);
-	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
 }
 
@@ -69,7 +69,7 @@ void ISphero<T>::setBackLedOutput(uint8_t power)
 //change the light intensity of the back led
 //02h 	21h 	<any> 	02h 	<value>
 {
-	ClientCommandPacket packet = new ClientCommandPacket(
+	ClientCommandPacket* packet = new ClientCommandPacket(
 			0x02, 
 			0x21, 
 			0x00, 
@@ -78,7 +78,7 @@ void ISphero<T>::setBackLedOutput(uint8_t power)
 			waitConfirm, 
 			resetTimer
 		);
-	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	_btManager->send_data(packet->getSize(),packet->toByteArray());
 
 	delete packet;
 }
@@ -88,7 +88,7 @@ void ISphero<T>::setHeading(uint16_t heading)
 //Change the heading with and angle in ° (range from 0 to 359)
 //02h 	01h 	<any> 	03h 	16-bit val
 {
-	ClientCommandPacket packet = new ClientCommandPacket(
+	ClientCommandPacket* packet = new ClientCommandPacket(
 			0x02, 
 			0x01, 
 			0x00, 
@@ -96,9 +96,8 @@ void ISphero<T>::setHeading(uint16_t heading)
 			(uint8_t*) &heading, 
 			waitConfirm, 
 			resetTimer
-		); //dirty, but should work. we'll have to try
-	//Next time, feel free to test it yourself :-)
-	_btManager.send_data(packet.getSize(),packet.toByteArray());
+		); 
+	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
 }
 
@@ -109,7 +108,7 @@ void ISphero<T>::setStabilization(bool on)
 {
 	uint8_t state;
 	state = on ? 1 : 0;
-	ClientCommandPacket packet = new ClientCommandPacket(
+	ClientCommandPacket* packet = new ClientCommandPacket(
 			0x02, 
 			0x02, 
 			0x00, 
@@ -118,7 +117,7 @@ void ISphero<T>::setStabilization(bool on)
 			waitConfirm, 
 			resetTimer
 		); 
-	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
 }
 
@@ -128,7 +127,7 @@ void ISphero<T>::setRotationRate(uint8_t angspeed)
 //Warning = high value may become really uncontrollable
 //02h 	03h 	<any> 	02h 	<value>
 {
-	ClientCommandPacket packet = new ClientCommandPacket(
+	ClientCommandPacket* packet = new ClientCommandPacket(
 			0x02, 
 			0x03, 
 			0x00, 
@@ -137,7 +136,7 @@ void ISphero<T>::setRotationRate(uint8_t angspeed)
 			waitConfirm, 
 			resetTimer
 		); 
-	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
 }
 
@@ -172,7 +171,7 @@ True Time 	0 Use the default value
 	data_payload[1] = angle_limit;
 	data_payload[2] = timeout;
 	data_payload[3] = trueTime;
-	ClientCommandPacket packet = new ClientCommandPacket(
+	ClientCommandPacket* packet = new ClientCommandPacket(
 			0x02, 
 			0x09, 
 			0x00, 
@@ -181,7 +180,7 @@ True Time 	0 Use the default value
 			waitConfirm, 
 			resetTimer
 		);
-	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
 }
 
@@ -208,7 +207,7 @@ Dead 	An 8-bit post-collision dead time to prevent retriggering; specified in
 	data_payload[3] = Yt;
 	data_payload[4] = Yspd;
 	data_payload[5] = Dead;
-	ClientCommandPacket packet = new ClientCommandPacket(
+	ClientCommandPacket* packet = new ClientCommandPacket(
 			0x02, 
 			0x12, 
 			0x00, 
@@ -217,7 +216,7 @@ Dead 	An 8-bit post-collision dead time to prevent retriggering; specified in
 			waitConfirm, 
 			resetTimer
 		);
-	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
 }
 
@@ -232,9 +231,9 @@ void ISphero<T>::disableCollisionDetection()
 	data_payload[3] = 0;
 	data_payload[4] = 0;
 	data_payload[5] = 0;
-	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x12, 0x00, 0x07,
+	ClientCommandPacket* packet = new ClientCommandPacket(0x02, 0x12, 0x00, 0x07,
 			data_payload, waitConfirm, resetTimer);
-	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
 }
 
@@ -259,9 +258,9 @@ void ISphero<T>::configureLocator(uint8_t flags, uint16_t X,
 	data_payload[4] = YB;
 	data_payload[5] = yawA;
 	data_payload[6] = yawB;
-	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x13, 0x00, 0x08,
+	ClientCommandPacket* packet = new ClientCommandPacket(0x02, 0x13, 0x00, 0x08,
 			data_payload, waitConfirm, resetTimer);
-	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
 }
 
@@ -273,7 +272,7 @@ void ISphero<T>::setAccelerometerRange(uint8_t range)
 //02h 	14h 	<any> 	02h 	<8 bit val>
 //change sphero's accelerometer range, warning : may cause strange behaviors
 {
-	ClientCommandPacket packet = new ClientCommandPacket(
+	ClientCommandPacket* packet = new ClientCommandPacket(
 			0x02, 
 			0x14, 
 			0x00, 
@@ -282,7 +281,7 @@ void ISphero<T>::setAccelerometerRange(uint8_t range)
 			waitConfirm, 
 			resetTimer
 		); 
-	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
 }
 
@@ -303,9 +302,9 @@ void ISphero<T>::roll(uint8_t speed, uint16_t heading,
 	data_payload[1] = msb;
 	data_payload[2] = lsb;
 	data_payload[3] = state;
-	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x09, 0x00, 0x05,
+	ClientCommandPacket* packet = new ClientCommandPacket(0x02, 0x09, 0x00, 0x05,
 			data_payload, waitConfirm, resetTimer);
-	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
 }
 

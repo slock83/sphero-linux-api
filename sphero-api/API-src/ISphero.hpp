@@ -44,19 +44,19 @@ public:
 
 	//------------------------------------------------- Surcharge d'opérateurs
 	//N'a pas de sens
-	sphero & operator = ( const ISphero & unsphero ) = delete;
+	ISphero & operator = ( const ISphero & unISphero ) = delete;
 
 	//-------------------------------------------- Constructeurs - destructeur
 	//N'a pas de sens
-	sphero ( const ISphero & unsphero ) = delete;
+	ISphero ( const ISphero & unISphero ) = delete;
 
 	/*
 	 * BT addres
 	 * s (format : "XX:XX:XX:XX:XX:XX")
 	 */
-	sphero(char const * const btaddr);
+	ISphero(char const * const btaddr);
 
-	virtual ~sphero ( );
+	virtual ~ISphero ( );
 
 	void setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist = false);
 	//Changes the color with the given hex values, persist will set as user color

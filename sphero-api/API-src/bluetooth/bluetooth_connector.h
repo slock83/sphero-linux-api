@@ -60,7 +60,10 @@ public:
 		_bluetooth_listener(NULL)
 	{}
 	
-    virtual ~bluetooth_connector ( );
+    virtual ~bluetooth_connector ( )
+	{
+
+	}
 
 //------------------------------------------------------------------ PRIVE 
 

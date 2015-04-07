@@ -66,13 +66,22 @@ ssize_t bluez_adaptor::send_data(size_t data_length, uint8_t const * data)
 	}
 	return retour;
 }
+
+int bluez_adaptor::disconnect(void)
+{
+	_connected = false;	
+	return close(_bt_socket);
+}
 //------------------------------------------------- Surcharge d'opérateurs
 
 
 //-------------------------------------------- Constructeurs - destructeur
 
 
-bluez_adaptor::bluez_adaptor ():_bt_socket(0),_connected(false)
+bluez_adaptor::bluez_adaptor ():
+	bluetooth_connector(),
+	_bt_socket(0),
+	_connected(false)
 {
 #ifdef MAP
     cout << "Appel au constructeur de <bluez_adaptor>" << endl;
@@ -87,6 +96,10 @@ bluez_adaptor::~bluez_adaptor ( )
 #ifdef MAP
     cout << "Appel au destructeur de <bluez_adaptor>" << endl;
 #endif
+	if(_connected)
+	{
+		disconnect();
+	}
 } //----- Fin de ~bluez_adaptor
 
 
