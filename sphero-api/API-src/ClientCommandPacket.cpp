@@ -57,7 +57,7 @@ _data(data)
 	array = new uint8_t[6 + _dlen];
 }
 
-virtual ClientCommandPacket::~ClientCommandPacket()
+ClientCommandPacket::~ClientCommandPacket()
 {
 	delete array;
 }
