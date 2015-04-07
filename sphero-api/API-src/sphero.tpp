@@ -38,7 +38,7 @@ sphero<T>::sphero(char* btaddr) //leaving bluez here since it is a specific impl
 }
 
 template<typename T>
-virtual sphero<T>::~sphero()
+sphero<T>::~sphero()
 {
 	//TODO : implement destructor
 }
