@@ -12,7 +12,6 @@
 
 #include <stddef.h>
 #include <cstdint>
-#include "sphero.tpp"
 
 #include "bluetooth/bluetooth_listener.h"
 #include "ClientCommandPacket.hpp"
@@ -52,9 +51,10 @@ public:
 	sphero ( const sphero & unsphero ) = delete;
 
 	/*
-	 * BT address (format : "XX:XX:XX:XX:XX:XX")
+	 * BT addres
+	 * s (format : "XX:XX:XX:XX:XX:XX")
 	 */
-	sphero(const char*  btaddr);
+	sphero(char const * const btaddr);
 
 	virtual ~sphero ( );
 
@@ -73,7 +73,12 @@ public:
 	//Change the rotation speed, as angspeed*0.784 degrees/sec
 	//Warning = high value may become really uncontrollable
 
-	void setSelfLevel(uint8_t options = 0, uint8_t angle_limit = 3, uint8_t timeout = 15, uint8_t trueTime = 30);
+	void setSelfLevel(
+			uint8_t options = 0, 
+			uint8_t angle_limit = 3, 
+			uint8_t timeout = 15, 
+			uint8_t trueTime = 30
+		);
 
 	//void setDataStreaming(uint16_t N, uint16_t M, uint32_t MASK, uint8_t pcnt, uint32_t MASK2 = 0);
 
