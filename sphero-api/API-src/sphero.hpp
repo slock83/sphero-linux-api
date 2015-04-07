@@ -168,7 +168,7 @@ private:
 
 //----------------------------------------- Types dépendants de <sphero>
 #ifdef BLUEZ
-typedef sphero<bluez_adaptor> sphero;
+//typedef sphero<bluez_adaptor> sphero;
 #endif
 #endif // SPHERO_H
 
