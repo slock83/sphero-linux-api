@@ -13,8 +13,8 @@
 #include <stddef.h>
 #include <cstdint>
 
-#include "ClientCommandPacket.h"
 #include "bluetooth/bluetooth_listener.h"
+#include "ClientCommandPacket.hpp"
 
 class ClientCommandPacket;
 
@@ -116,7 +116,7 @@ public:
 	//------------------------------------------------------------------ PRIVE
 
 protected:
-	//----------------------------------------------------- Méthodes protégées
+	//---------- ------------------------------------------- Méthodes protégées
 	void sendPack(ClientCommandPacket pack);
 
 private:

@@ -15,7 +15,7 @@
 
 #include <cstdint>
 
-#include "ClientCommandPacket.h"
+#include "ClientCommandPacket.hpp"
 
 ///////////////////////////////////////////////////////////////////  PRIVE
 //------------------------------------------------------------- Constantes
@@ -26,7 +26,7 @@
 
 //------------------------------------------------------ Fonctions privées
 
-void sendPack(ClientCommandPacket pack)
+void sphero<bluez_adaptor>::sendPack(ClientCommandPacket pack)
 {
 	//TODO : implement this
 }
@@ -36,19 +36,19 @@ void sendPack(ClientCommandPacket pack)
 	/*
 	 * BT address (format : "XX:XX:XX:XX:XX:XX")
 	 */
-	sphero(char*  btaddr)
+	sphero<bluez_adaptor>::sphero(char*  btaddr)
 	{
 		resetTimer = true;
 		waitConfirm = false;
 		//TODO : implement constructor
 	}
 
-	virtual ~sphero ( )
+	virtual sphero<bluez_adaptor>::~sphero ( )
 	{
 		//TODO : implement destructor
 	}
 
-	void setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist = false)
+	void sphero<bluetooth_connector>::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist = false)
 	//Changes the color with the given hex values, persist will set as user color
 	//02h 	20h 	<any> 	05h 	<value> 	<value> 	<value> 	<bool>
 	{
