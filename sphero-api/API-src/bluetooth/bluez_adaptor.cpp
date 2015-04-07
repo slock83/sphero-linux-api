@@ -56,6 +56,16 @@ int bluez_adaptor::connection(const char* address)
 	return 0;
 }
 
+ssize_t send_data(size_t data_length, uint8_t const * data)
+{
+	ssize_t retour;
+	if((retour = send(_bt_socket, (char const *) data, MSG_NOSIGNAL)) == -1)
+	{
+		perror("Connexion perdue");
+		disconnect();
+	}
+	return retour;
+}
 //------------------------------------------------- Surcharge d'opérateurs
 
 
@@ -85,15 +95,3 @@ bluez_adaptor::~bluez_adaptor ( )
 //----------------------------------------------------- Méthodes protégées
 
 //------------------------------------------------------- Méthodes privées
-int bluez_adaptor::listen()
-{
-	vector<char> data();
-	char last_read;
-	ssize_t count_read;
-	//Pour chaque 
-	while((count_read = read(_bt_socket, &last_read, sizeof(char))) == sizeof(char))
-	{
-		
-	}
-	return 0;
-}
