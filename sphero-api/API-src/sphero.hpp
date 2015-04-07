@@ -17,7 +17,6 @@
 #include "bluetooth/bluetooth_listener.h"
 
 class ClientCommandPacket;
-
 #ifdef BLUEZ
 //Nécessaire plus bas
 #include "bluetooth/bluez_adaptor.h"
@@ -54,7 +53,7 @@ public:
 	/*
 	 * BT address (format : "XX:XX:XX:XX:XX:XX")
 	 */
-	sphero(char*  btaddr);
+	sphero(const char*  btaddr);
 
 	virtual ~sphero ( );
 
