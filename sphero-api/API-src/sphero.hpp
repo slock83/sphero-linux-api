@@ -87,9 +87,9 @@ public:
 	//getLocator : will have to discuss this...
 	//getRGDLed : same
 
-	void setAccelerometerRange(uint8_t range);
+	void setAccelerometerRange(uint8_t range = 0x02);
 
-	void roll(uint8_t speed, uint16_t heading, uint8_t state);
+	void roll(uint8_t speed, uint16_t heading, uint8_t state = 0);
 
 	//setRawMotorValue : not needed ?
 

@@ -183,17 +183,64 @@ void sphero<T>::disableCollisionDetection()
 
 template<typename T>
 void sphero<T>::configureLocator(uint8_t flags, uint16_t X,
-		uint16_t Y, uint16_t yaw);
+		uint16_t Y, uint16_t yaw)
+//02h 	13h 	<any> 	02h 	<8 bit val> 	<16 bit signed val> 	<16 bit signed val> 	<16 bit signed val>
+//Configure sphero's internal location calculation unit offsets
+{
+
+	uint8_t YA = (uint8_t)((Y & 0xFF00) >> 8);
+	uint8_t YB = (uint8_t)(Y & 0x00FF);
+	uint8_t yawA = (uint8_t)((yaw & 0xFF00) >> 8);
+	uint8_t yawB = (uint8_t)(yaw & 0x00FF);
+	uint8_t data_payload[7];
+	data_payload[0] = flags;
+	data_payload[1] = XA;
+	data_payload[2] = XB;
+	data_payload[3] = YA;
+	data_payload[4] = YB;
+	data_payload[5] = yawA;
+	data_payload[6] = yawB;
+	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x13, 0x00, 0x08,
+			data_payload, waitConfirm, resetTimer);
+	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	delete packet;
+}
 
 //getLocator : will have to discuss this...
 //getRGDLed : same
 
 template<typename T>
-void sphero<T>::setAccelerometerRange(uint8_t range);
+void sphero<T>::setAccelerometerRange(uint8_t range)
+//02h 	14h 	<any> 	02h 	<8 bit val>
+//change sphero's accelerometer range, warning : may cause strange behaviors
+{
+	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x14, 0x00, 0x02,
+			*tange, waitConfirm, resetTimer); //dirty, but should work. we'll have to try
+	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	delete packet;
+}
 
 template<typename T>
 void sphero<T>::roll(uint8_t speed, uint16_t heading,
-		uint8_t state);
+		uint8_t state)
+//02h 	30h 	<any> 	05h 	<val> 	<msb> 	<lsb> 	<val>
+//roll the sphero with given direction and speed
+/**state value is also provided. In the CES firmware, 
+ * this was used to gate the control system to either obey the roll vector or ignore it and apply optimal braking to zero speed. 
+ * Please refer to Appendix C for detailed information.**/
+{
+	uint8_t msb = (uint8_t)((X & 0xFF00) >> 8);
+	uint8_t lsb = (uint8_t)(X & 0x00FF);
+	uint8_t data_payload[4];
+	data_payload[0] = speed;
+	data_payload[1] = msb;
+	data_payload[2] = lsb;
+	data_payload[3] = state;
+	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x09, 0x00, 0x05,
+			data_payload, waitConfirm, resetTimer);
+	_btManager.send_data(packet.getSize(),packet.toByteArray());
+	delete packet;
+}
 
 //setRawMotorValue : not needed ?
 
