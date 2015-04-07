@@ -1,12 +1,12 @@
 /************************************************************************
-    sphero  -  description
+    ISphero  -  description
                              -------------------
     début                : lun. 16 mars 2015
  *************************************************************************/
 
-//---------- Interface de la classe <sphero> (fichier sphero.h) ------
-#if ! defined ( SPHERO_H )
-#define SPHERO_H
+//---------- Interface de la classe <ISphero> (fichier ISphero.h) ------
+#if ! defined ( ISPHERO_H )
+#define ISPHERO_H
 
 //--------------------------------------------------- Interfaces utilisées
 
@@ -34,7 +34,7 @@ public:
 //------------------------------------------------------------------------ 
 //T est un connecteur bluetooth
 template<typename T>
-class sphero 
+class ISphero 
 {
 	//----------------------------------------------------------------- PUBLIC
 
@@ -44,11 +44,11 @@ public:
 
 	//------------------------------------------------- Surcharge d'opérateurs
 	//N'a pas de sens
-	sphero & operator = ( const sphero & unsphero ) = delete;
+	sphero & operator = ( const ISphero & unsphero ) = delete;
 
 	//-------------------------------------------- Constructeurs - destructeur
 	//N'a pas de sens
-	sphero ( const sphero & unsphero ) = delete;
+	sphero ( const ISphero & unsphero ) = delete;
 
 	/*
 	 * BT addres
@@ -168,11 +168,12 @@ private:
 	//----------------------------------------------------------- Types privés
 };
 
-#include "sphero.tpp"
+#include "ISphero.tpp"
 
 //----------------------------------------- Types dépendants de <sphero>
 #ifdef BLUEZ
-typedef sphero<bluez_adaptor> sphero;
+typedef ISphero<bluez_adaptor> Sphero;
 #endif
-#endif // SPHERO_H
+
+#endif // ISPHERO_H
 
