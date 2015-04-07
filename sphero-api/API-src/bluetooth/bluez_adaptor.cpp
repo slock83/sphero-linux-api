@@ -56,7 +56,7 @@ int bluez_adaptor::connection(const char* address)
 	return 0;
 }
 
-ssize_t send_data(size_t data_length, uint8_t const * data)
+ssize_t bluez_adaptor::send_data(size_t data_length, uint8_t const * data)
 {
 	ssize_t retour;
 	if((retour = send(_bt_socket, (char const *) data, MSG_NOSIGNAL)) == -1)
