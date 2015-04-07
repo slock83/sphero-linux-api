@@ -59,7 +59,7 @@ int bluez_adaptor::connection(const char* address)
 ssize_t bluez_adaptor::send_data(size_t data_length, uint8_t const * data)
 {
 	ssize_t retour;
-	if((retour = send(_bt_socket, (char const *) data, MSG_NOSIGNAL)) == -1)
+	if((retour = send(_bt_socket, (char const *) data, data_length, MSG_NOSIGNAL)) == -1)
 	{
 		perror("Connexion perdue");
 		disconnect();
