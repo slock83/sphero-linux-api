@@ -111,6 +111,8 @@ public:
 
 	//void saveMacro(Macro macro);
 
+	void sleep(uint16_t time, uint8_t macro = 0,uint16_t orbbasic = 0);
+
 
 
 	//------------------------------------------------------------------ PRIVE
