@@ -273,9 +273,15 @@ void sphero<T>::setAccelerometerRange(uint8_t range)
 //02h 	14h 	<any> 	02h 	<8 bit val>
 //change sphero's accelerometer range, warning : may cause strange behaviors
 {
-	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x14, 0x00, 0x02,
-		&range, waitConfirm, resetTimer); //dirty, but should work. we'll have 
-	to try
+	ClientCommandPacket packet = new ClientCommandPacket(
+			0x02, 
+			0x14, 
+			0x00, 
+			0x02,
+			&range, 
+			waitConfirm, 
+			resetTimer
+		); 
 	_btManager.send_data(packet.getSize(),packet.toByteArray());
 	delete packet;
 }
@@ -303,6 +309,7 @@ void sphero<T>::roll(uint8_t speed, uint16_t heading,
 	delete packet;
 }
 
+/*
 //setRawMotorValue : not needed ?
 
 template<typename T>
@@ -332,3 +339,4 @@ void sphero<T>::sleep(uint16_t time, uint8_t macro = 0,
 		uint16_t orbbasic = 0);
 
 //void saveMacro(Macro macro);
+*/
