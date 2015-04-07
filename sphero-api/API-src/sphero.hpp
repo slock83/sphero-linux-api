@@ -9,8 +9,15 @@
 #define SPHERO_H
 
 //--------------------------------------------------- Interfaces utilisées
-#include <string.h>
-#include <cstdlib>
+
+#include <stddef.h>
+#include <cstdint>
+
+#include "ClientCommandPacket.h"
+#include "bluetooth/bluetooth_listener.h"
+
+class ClientCommandPacket;
+
 #ifdef BLUEZ
 //Nécessaire plus bas
 #include "bluetooth/bluez_adaptor.h"
@@ -136,6 +143,9 @@ private:
 	 * Z accelerometer
 	 */
 	spherocoord_t accelerometer_z;
+
+	bool resetTimer = true;
+	bool waitConfirm = false;
 
 	//To be continued
 
