@@ -69,13 +69,13 @@ public:
 	void setStabilization(bool on = true);
 	//Enable or disable stabilization
 
-	void setRotationRate(uint8_t angspeed);
+	void setRotationRate(uint8_t angspeed = 0xc8);
 	//Change the rotation speed, as angspeed*0.784 degrees/sec
 	//Warning = high value may become really uncontrollable
 
 	void setSelfLevel(uint8_t options = 0, uint8_t angle_limit = 3, uint8_t timeout = 15, uint8_t trueTime = 30);
 
-	void setDataStreaming(uint16_t N, uint16_t M, uint32_t MASK, uint8_t pcnt, uint32_t MASK2 = 0);
+	//void setDataStreaming(uint16_t N, uint16_t M, uint32_t MASK, uint8_t pcnt, uint32_t MASK2 = 0);
 
 	void enableCollisionDetection(uint8_t Xt, uint8_t Xspd, uint8_t Yt, uint8_t Yspd, uint8_t Dead);
 

@@ -72,21 +72,70 @@ void sphero<bluetooth_connector>::setBackLedOutput(uint8_t power)
 	delete packet;
 }
 
-void sphero<bluetooth_connector>::setHeading(uint16_t heading);
+void sphero<bluetooth_connector>::setHeading(uint16_t heading)
 //Change the heading with and angle in ° (range from 0 to 359)
+//02h 	01h 	<any> 	03h 	16-bit val
+{
+	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x01, 0x00, 0x03,
+			*heading, waitConfirm, resetTimer); //dirty, but should work. we'll have to try
+	sendPack(packet);
+	delete packet;
+}
 
-void sphero<bluetooth_connector>::setStabilization(bool on = true);
+void sphero<bluetooth_connector>::setStabilization(bool on)
 //Enable or disable stabilization
+//02h 	02h 	<any> 	02h 	<bool>
+{
+	uint8_t state;
+	on ? state=1 : state=0;
+	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x02, 0x00, 0x02,
+			*state, waitConfirm, resetTimer); //dirty, but should work. we'll have to try
+	sendPack(packet);
+	delete packet;
+}
 
-void sphero<bluetooth_connector>::setRotationRate(uint8_t angspeed);
+void sphero<bluetooth_connector>::setRotationRate(uint8_t angspeed)
 //Change the rotation speed, as angspeed*0.784 degrees/sec
 //Warning = high value may become really uncontrollable
+//02h 	03h 	<any> 	02h 	<value>
+{
+	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x03, 0x00, 0x02,
+			*angspeed, waitConfirm, resetTimer); //dirty, but should work. we'll have to try
+	sendPack(packet);
+	delete packet;
+}
 
 void sphero<bluetooth_connector>::setSelfLevel(uint8_t options = 0,
-		uint8_t angle_limit = 3, uint8_t timeout = 15, uint8_t trueTime = 30);
+		uint8_t angle_limit = 3, uint8_t timeout = 15, uint8_t trueTime = 30)
+/**02h 	09h 	<any> 	05h 	<byte> 	<byte> 	<byte> 	<byte>
 
-void sphero<bluetooth_connector>::setDataStreaming(uint16_t N, uint16_t M,
-		uint32_t MASK, uint8_t pcnt, uint32_t MASK2 = 0);
+This command controls the self level routine. The self level routine attempts to achieve a horizontal orientation where pitch and roll angles are less than the provided Angle Limit. After both angle limits are satisfied, option bits control sleep, final angle (heading), and control system on/off. An asynchronous message is returned when the self level routine completes (only when started by API call). The required parameters are:
+Name 	Value 	Description
+Start/Stop Bit 0 0 aborts the routine if in progress. 1 starts the routine.
+Final Angle Bit 1 0 just stops. 1 rotates to heading equal to beginning heading.
+Sleep Bit 2 0 stays awake after leveling. 1 goes to sleep after leveling.
+Control System 	Bit 3 0 leaves control system off. 1 leaves control system on (after leveling).
+
+Angle Limit 	0 Use the default value
+				1 to 90 Set the max angle for completion (in degrees)
+Timeout 	0 Use the default value
+			1 to 255 Set maximum seconds to run the routine
+True Time 	0 Use the default value
+			1 to 255 Set the required “test for levelness” time to 10*True Time (in milliseconds) **/
+{
+	uint8_t data_payload[4];
+	data_payload[0] = options;
+	data_payload[1] = angle_limit;
+	data_payload[2] = timeout;
+	data_payload[3] = trueTime;
+	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x09, 0x00, 0x05,
+			data_payload, waitConfirm, resetTimer);
+	sendPack(packet);
+	delete packet;
+}
+
+
+//void sphero<bluetooth_connector>::setDataStreaming(uint16_t N, uint16_t M,uint32_t MASK, uint8_t pcnt, uint32_t MASK2 = 0); not used yet
 
 void sphero<bluetooth_connector>::enableCollisionDetection(uint8_t Xt,
 		uint8_t Xspd, uint8_t Yt, uint8_t Yspd, uint8_t Dead);
