@@ -12,7 +12,6 @@
 
 #include <stddef.h>
 #include <cstdint>
-#include "sphero.tpp"
 
 #include "bluetooth/bluetooth_listener.h"
 #include "ClientCommandPacket.hpp"
