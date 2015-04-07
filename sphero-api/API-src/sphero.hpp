@@ -12,9 +12,10 @@
 
 #include <stddef.h>
 #include <cstdint>
+#include "sphero.tpp"
 
-#include "ClientCommandPacket.h"
 #include "bluetooth/bluetooth_listener.h"
+#include "ClientCommandPacket.hpp"
 
 class ClientCommandPacket;
 #ifdef BLUEZ
@@ -68,13 +69,13 @@ public:
 	void setStabilization(bool on = true);
 	//Enable or disable stabilization
 
-	void setRotationRate(uint8_t angspeed);
+	void setRotationRate(uint8_t angspeed = 0xc8);
 	//Change the rotation speed, as angspeed*0.784 degrees/sec
 	//Warning = high value may become really uncontrollable
 
 	void setSelfLevel(uint8_t options = 0, uint8_t angle_limit = 3, uint8_t timeout = 15, uint8_t trueTime = 30);
 
-	void setDataStreaming(uint16_t N, uint16_t M, uint32_t MASK, uint8_t pcnt, uint32_t MASK2 = 0);
+	//void setDataStreaming(uint16_t N, uint16_t M, uint32_t MASK, uint8_t pcnt, uint32_t MASK2 = 0);
 
 	void enableCollisionDetection(uint8_t Xt, uint8_t Xspd, uint8_t Yt, uint8_t Yspd, uint8_t Dead);
 
@@ -85,9 +86,9 @@ public:
 	//getLocator : will have to discuss this...
 	//getRGDLed : same
 
-	void setAccelerometerRange(uint8_t range);
+	void setAccelerometerRange(uint8_t range = 0x02);
 
-	void roll(uint8_t speed, uint16_t heading, uint8_t state);
+	void roll(uint8_t speed, uint16_t heading, uint8_t state = 0);
 
 	//setRawMotorValue : not needed ?
 
@@ -110,12 +111,14 @@ public:
 
 	//void saveMacro(Macro macro);
 
+	void sleep(uint16_t time, uint8_t macro = 0,uint16_t orbbasic = 0);
+
 
 
 	//------------------------------------------------------------------ PRIVE
 
 protected:
-	//----------------------------------------------------- Méthodes protégées
+	//---------- ------------------------------------------- Méthodes protégées
 	void sendPack(ClientCommandPacket pack);
 
 private:

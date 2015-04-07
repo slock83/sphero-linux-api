@@ -32,7 +32,7 @@ public:
 	/*
 	 * Permet l'envoi d'un flux de données au destinataire
 	 */
-	virtual int send_data(size_t data_length, uint8_t const * data) = 0;
+	virtual ssize_t send_data(size_t data_length, uint8_t const * data) = 0;
 
 	/*
 	 * Ferme la connexion

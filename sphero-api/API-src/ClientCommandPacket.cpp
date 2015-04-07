@@ -6,7 +6,7 @@
 
 //Réalisation de la classe <ClientCommandPacket> (fichier ClientCommandPacket.cpp)
 
-#include "ClientCommandPacket.h"
+#include "ClientCommandPacket.hpp"
 
 #include <cstddef>
 #include <sstream>
@@ -71,4 +71,9 @@ uint8_t* ClientCommandPacket::toByteArray()
 	}
 	array[6+_dlen] = _chk;
 	return array;
+}
+
+size_t ClientCommandPacket::getSize()
+{
+	return _dlen+6;
 }
