@@ -20,8 +20,8 @@
 //---------------------------------------------------- Variables statiques
 
 //------------------------------------------------------ Fonctions privées
-
-void sphero<bluez_adaptor>::sendPack(ClientCommandPacket pack)//leaving bluez here since it is a specific implementation
+template<typename T>
+void sphero<T>::sendPack(ClientCommandPacket pack)//leaving bluez here since it is a specific implementation
 {
 	//TODO : implement this
 }
@@ -31,7 +31,8 @@ void sphero<bluez_adaptor>::sendPack(ClientCommandPacket pack)//leaving bluez he
 /*
  * BT address (format : "XX:XX:XX:XX:XX:XX")
  */
-sphero<bluez_adaptor>::sphero(char* btaddr) //leaving bluez here since it is a specific implementation
+template<typename T>
+sphero<T>::sphero(char* btaddr) //leaving bluez here since it is a specific implementation
 {
 	//TODO : implement constructor
 }
