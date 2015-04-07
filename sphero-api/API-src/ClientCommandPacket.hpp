@@ -66,6 +66,8 @@ public:
 			bool acknowledge = false,
 			bool rstTO = false
 		);
+
+	virtual ~ClientCommandPacket();
 	uint8_t* toByteArray();
 
 	size_t getSize();
@@ -116,6 +118,8 @@ private:
 	 * Checksum
 	 */
 	byte _chk;
+
+	uint8_t *array;
 
 };
 
