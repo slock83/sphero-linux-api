@@ -6,7 +6,7 @@
 
 //Réalisation de la classe <ClientCommandPacket> (fichier ClientCommandPacket.cpp)
 
-#include "ClientCommandPacket.h"
+#include "ClientCommandPacket.hpp"
 
 #include <cstddef>
 #include <sstream>
