@@ -119,7 +119,7 @@ public:
 
 protected:
 	//---------- ------------------------------------------- Méthodes protégées
-	void sendPack(ClientCommandPacket pack);
+
 
 private:
 	//------------------------------------------------------- Méthodes privées

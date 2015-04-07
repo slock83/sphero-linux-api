@@ -20,11 +20,6 @@
 //---------------------------------------------------- Variables statiques
 
 //------------------------------------------------------ Fonctions privées
-template<typename T>
-void sphero<T>::sendPack(ClientCommandPacket pack)//leaving bluez here since it is a specific implementation
-{
-	//TODO : implement this
-}
 //////////////////////////////////////////////////////////////////  PUBLIC
 //---------------------------------------------------- Fonctions publiques
 
@@ -34,7 +29,8 @@ void sphero<T>::sendPack(ClientCommandPacket pack)//leaving bluez here since it 
 template<typename T>
 sphero<T>::sphero(char* btaddr) //leaving bluez here since it is a specific implementation
 {
-	//TODO : implement constructor
+	_btAdaptor = *T;
+	_btAdaptor.connection(btaddr);
 }
 
 template<typename T>
@@ -187,7 +183,8 @@ void sphero<T>::configureLocator(uint8_t flags, uint16_t X,
 //02h 	13h 	<any> 	02h 	<8 bit val> 	<16 bit signed val> 	<16 bit signed val> 	<16 bit signed val>
 //Configure sphero's internal location calculation unit offsets
 {
-
+	uint8_t XA = (uint8_t)((X & 0xFF00) >> 8);
+	uint8_t XB = (uint8_t)(X & 0x00FF);
 	uint8_t YA = (uint8_t)((Y & 0xFF00) >> 8);
 	uint8_t YB = (uint8_t)(Y & 0x00FF);
 	uint8_t yawA = (uint8_t)((yaw & 0xFF00) >> 8);
@@ -215,7 +212,7 @@ void sphero<T>::setAccelerometerRange(uint8_t range)
 //change sphero's accelerometer range, warning : may cause strange behaviors
 {
 	ClientCommandPacket packet = new ClientCommandPacket(0x02, 0x14, 0x00, 0x02,
-			*tange, waitConfirm, resetTimer); //dirty, but should work. we'll have to try
+		&range, waitConfirm, resetTimer); //dirty, but should work. we'll have to try
 	_btManager.send_data(packet.getSize(),packet.toByteArray());
 	delete packet;
 }
@@ -229,8 +226,8 @@ void sphero<T>::roll(uint8_t speed, uint16_t heading,
  * this was used to gate the control system to either obey the roll vector or ignore it and apply optimal braking to zero speed. 
  * Please refer to Appendix C for detailed information.**/
 {
-	uint8_t msb = (uint8_t)((X & 0xFF00) >> 8);
-	uint8_t lsb = (uint8_t)(X & 0x00FF);
+	uint8_t msb = (uint8_t)((heading & 0xFF00) >> 8);
+	uint8_t lsb = (uint8_t)(heading & 0x00FF);
 	uint8_t data_payload[4];
 	data_payload[0] = speed;
 	data_payload[1] = msb;
