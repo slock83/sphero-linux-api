@@ -54,12 +54,12 @@ _data(data)
 
 	//Inversion de la somme obtenue
 	_chk ^= 0xFF;
-	array = uint8_t[6+_dlen];
+	array = new uint8_t[6 + _dlen];
 }
 
 virtual ClientCommandPacket::~ClientCommandPacket()
 {
-	//delete array;
+	delete array;
 }
 
 uint8_t* ClientCommandPacket::toByteArray()
