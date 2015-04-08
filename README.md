@@ -42,13 +42,8 @@ The API is (for now) built only over the bluez bluetooth stack, making it compat
 ##### Commands
 
 Command | Effect | Usage
------ | ----- | -----
 help | Shows the application help
------ | ----- | -----
 connect | Connects to a sphero via bluetoth | connect <xx:xx:xx:xx:xx>
------ | ----- | -----
 changeColor | changes the led color | changeColor <red> <green> <blue> <colorPersists>
------ | ----- | -----
 roll | Makes the sphero roll at the specified speed and angle | roll <speed> <angle>
------ | ----- | -----
 exit | Closes the application | exit
