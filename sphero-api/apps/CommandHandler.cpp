@@ -52,11 +52,11 @@ static void handleDirect(stringstream& css)
 		return;
 	}
 	
-	uint8_t speed;
-	uint16_t angle;
-	cin >> speed >> angle;
-	s->setHeading(angle);
-	s->setRotationRate(speed);
+	unsigned int speed;
+	unsigned int angle;
+	css >> speed >> angle;
+
+	s->roll((uint8_t) speed % 256, (uint16_t) angle % 0x10000, 1);
 	
 }
 
@@ -68,8 +68,6 @@ static void handleCc(stringstream& css)
 		return;
 	}
 	
-	css.ignore(256, ' ');
-
 	unsigned int r, g, b;
 	bool persist;
 	

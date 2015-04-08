@@ -88,15 +88,21 @@ void ISphero<T>::setHeading(uint16_t heading)
 //Change the heading with and angle in ° (range from 0 to 359)
 //02h 	01h 	<any> 	03h 	16-bit val
 {
+	uint8_t data[2];
+	uint8_t* ptr = (uint8_t*) &heading;
+	data[0] = ptr[1];
+	data[1] = ptr[0];
+
 	ClientCommandPacket* packet = new ClientCommandPacket(
 			0x02, 
 			0x01, 
 			0x00, 
 			0x03,
-			(uint8_t*) &heading, 
+			data, 
 			waitConfirm, 
 			resetTimer
 		); 
+
 	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
 }
@@ -302,8 +308,15 @@ void ISphero<T>::roll(uint8_t speed, uint16_t heading,
 	data_payload[1] = msb;
 	data_payload[2] = lsb;
 	data_payload[3] = state;
-	ClientCommandPacket* packet = new ClientCommandPacket(0x02, 0x09, 0x00, 0x05,
-			data_payload, waitConfirm, resetTimer);
+	ClientCommandPacket* packet = new ClientCommandPacket(
+			0x02, 
+			0x30, 
+			0x00, 
+			0x05,
+			data_payload, 
+			waitConfirm, 
+			resetTimer
+		);
 	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
 }

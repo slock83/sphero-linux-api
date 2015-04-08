@@ -37,3 +37,4 @@ depend:
 
 obj/appli.o: CommandHandler.h
 obj/CommandHandler.o: CommandHandler.h
+obj/CommandHandler.o: ../libsphero.so
