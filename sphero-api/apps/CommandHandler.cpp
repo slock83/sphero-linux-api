@@ -101,7 +101,7 @@ int handleCommand(const string& command)
 	{
 		handleCc(css);
 	}
-	else if(cmd == "direct")
+	else if(cmd == "roll")
 	{
 		handleDirect(css);
 	}

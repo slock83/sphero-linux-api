@@ -27,9 +27,28 @@ The API is (for now) built only over the bluez bluetooth stack, making it compat
   $ cd sphero-linux-api/sphero-api
   $ make
   ```
+  
+### Testing application
 
-####4. Cleaning the sources folder : 
+####1. Building the testing application : 
 
   ```sh
-  $ make clean
+  $ cd apps
+  $ make
   ```
+
+####2. Using the application
+
+##### Commands
+
+Command | Effect | Usage
+----- | ----- | -----
+help | Shows the application help
+----- | ----- | -----
+connect | Connects to a sphero via bluetoth | connect <xx:xx:xx:xx:xx>
+----- | ----- | -----
+changeColor | changes the led color | changeColor <red> <green> <blue> <colorPersists>
+----- | ----- | -----
+roll | Makes the sphero roll at the specified speed and angle | roll <speed> <angle>
+----- | ----- | -----
+exit | Closes the application | exit
