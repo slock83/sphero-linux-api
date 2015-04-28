@@ -3,7 +3,7 @@ EXT=cpp
 
 EXEC=Appli
 
-CFLAGS=-std=c++11 -O2 -lsphero -L.. -DBLUEZ -g -DMAP
+CFLAGS=-std=c++11 -O2 -lsphero -L.. -DBLUEZ
 LDFLAGS=-lsphero -L.. -Wl,-rpath=.. -g
 INC=-I../API-src
 
