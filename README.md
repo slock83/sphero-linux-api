@@ -39,6 +39,14 @@ The API is (for now) built only over the bluez bluetooth stack, making it compat
 
 ####2. Using the application
 
+##### Running
+	
+	still in the apps folder, do
+	
+  ```sh
+  $ ./Appli
+  ```
+
 ##### Commands
 
 | Command | Effect | Usage |
