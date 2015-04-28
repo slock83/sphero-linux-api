@@ -38,6 +38,12 @@ ISphero<T>::~ISphero()
 }
 
 template<typename T>
+void ISphero<T>::sendPacket(ClientCommandPacket packet)
+{
+	_btManager->send_data(packet.getSize(), packet.toByteArray());
+}
+
+template<typename T>
 void ISphero<T>::ping()
 {
 	ClientCommandPacket packet = ClientCommandPacket(
