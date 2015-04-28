@@ -21,7 +21,9 @@ static void showHelp()
 	cout << "connect xx:xx:xx:xx:xx -- Connects the the Sphero at the given address" << endl;
 	cout << "changecolor <red> <green> <blue> <persist> -- Changes the Sphero color" << endl;
 	cout << "changecolor <red> <green> <blue> <persist> -- Changes the Sphero color" << endl;
-	cout << "direct <speed> <angle> -- Changes the Sphero color" << endl;
+	cout << "roll <speed> <angle> -- moves the sphero" << endl;
+	cout << "ping -- does what it says" << endl;
+	cout << "sleep <duration> -- puts the sphero to sleep for the given duration" << endl;
 }
 
 static void ping()
