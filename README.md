@@ -44,11 +44,9 @@ The API is (for now) built only over the bluez bluetooth stack, making it compat
 | Command | Effect | Usage |
 | ----- | ----- | ----- |
 help | Shows the application help |
-| ----- | ----- | ----- |
 connect | Connects to a sphero via bluetoth | connect <xx:xx:xx:xx:xx> |
-| ----- | ----- | ----- |
 changeColor | changes the led color | changeColor <red> <green> <blue> <colorPersists> |
-| ----- | ----- | ----- |
 roll | Makes the sphero roll at the specified speed and angle | roll <speed> <angle> |
-| ----- | ----- | ----- |
+ping | Sends a ping to the sphero to witch it should answer ASAP | ping |
+sleep | Puts the sphero to sleep for the given amount of time, it will then wake up and we will try to connect back to him | slep <duration> |
 exit | Closes the application | exit |
