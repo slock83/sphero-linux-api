@@ -24,6 +24,11 @@ static void showHelp()
 	cout << "direct <speed> <angle> -- Changes the Sphero color" << endl;
 }
 
+static void ping()
+{
+	s->ping();
+}
+
 
 static void handleConnect(stringstream& css)
 {
@@ -104,6 +109,10 @@ int handleCommand(const string& command)
 	else if(cmd == "roll")
 	{
 		handleDirect(css);
+	}
+	else if(cmd == "ping")
+	{
+		ping();
 	}
 	else if(cmd == "exit")
 		return 0;

@@ -38,6 +38,21 @@ ISphero<T>::~ISphero()
 }
 
 template<typename T>
+void ISphero<T>::ping()
+{
+	ClientCommandPacket packet = ClientCommandPacket(
+		0x00,
+		0x01,
+		0x00,
+		0x01,
+		NULL,
+		true,
+		true
+	);
+	_btManager->send_data(packet.getSize(), packet.toByteArray());
+}
+
+template<typename T>
 void ISphero<T>::setColor(uint8_t red, uint8_t green,
 		uint8_t blue, bool persist)
 //Changes the color with the given hex values, persist will set as user color

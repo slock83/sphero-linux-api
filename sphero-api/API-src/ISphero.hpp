@@ -58,6 +58,8 @@ public:
 
 	virtual ~ISphero ( );
 
+	void ping();
+
 	void setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist = false);
 	//Changes the color with the given hex values, persist will set as user color
 
@@ -118,8 +120,7 @@ public:
 
 	void sleep(uint16_t time, uint8_t macro = 0,uint16_t orbbasic = 0);
 
-
-
+	void lireStream();
 	//------------------------------------------------------------------ PRIVE
 
 protected:

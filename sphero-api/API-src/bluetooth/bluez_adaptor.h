@@ -12,6 +12,7 @@
 
 #include <cstdio>
 #include <unistd.h>
+#include <pthread.h>
 #include <sys/socket.h>
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
@@ -65,6 +66,7 @@ protected:
 
 private:
 //------------------------------------------------------- Méthodes privées
+	static void* monitorStream(void* arg);
 	int listen();
 
 protected:
@@ -74,6 +76,7 @@ private:
 //------------------------------------------------------- Attributs privés
 	int _bt_socket;	
 	bool _connected;
+	pthread_t _listening_thread;
 
 //---------------------------------------------------------- Classes amies
 

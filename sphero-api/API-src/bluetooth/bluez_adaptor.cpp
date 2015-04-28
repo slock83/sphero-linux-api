@@ -10,8 +10,8 @@
 
 //-------------------------------------------------------- Include système
 #include <iostream>
-#include <pthread.h>
-#include <vector>
+#include <sys/select.h>
+#include <fcntl.h>
 
 using namespace std;
 //------------------------------------------------------ Include personnel
@@ -46,11 +46,14 @@ int bluez_adaptor::connection(const char* address)
 
 	//Création du socket de communication
 	_bt_socket = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);	
+	fcntl(_bt_socket, F_SETFL, O_NONBLOCK);
 
 	if(connect(_bt_socket, (sockaddr*) &dest_addr, sizeof(dest_addr)) < 0)
 	{
 		perror("First attempt to connect");
 	}
+
+	pthread_create(&_listening_thread, NULL, monitorStream, &_bt_socket);
 	
 	_connected = true;
 	return 0;
@@ -70,8 +73,10 @@ ssize_t bluez_adaptor::send_data(size_t data_length, uint8_t const * data)
 int bluez_adaptor::disconnect(void)
 {
 	_connected = false;	
+	pthread_cancel(_listening_thread);
 	return close(_bt_socket);
 }
+
 //------------------------------------------------- Surcharge d'opérateurs
 
 
@@ -108,3 +113,30 @@ bluez_adaptor::~bluez_adaptor ( )
 //----------------------------------------------------- Méthodes protégées
 
 //------------------------------------------------------- Méthodes privées
+void* bluez_adaptor::monitorStream(void* arg)
+{
+	fd_set ensemble;
+	int _bt_sock = *((int*) arg);
+	uint8_t buf;
+	for(;;)	
+	{
+		FD_ZERO(&ensemble);
+		FD_SET(_bt_sock , &ensemble);
+		while(
+				select(_bt_sock + 1, 
+					&ensemble,
+					NULL, 
+					NULL, 
+					NULL
+				) == -1 && errno == EINTR ){}
+		//On ne fait pas de FD_ISSET car un seul fichier monitoré
+		
+		while(read(_bt_sock, &buf, sizeof(uint8_t)) != -1)
+		{
+			fprintf(stderr, "%02X ", buf); 
+		}
+		fprintf(stderr, "\n");
+	}
+
+}
+

@@ -4,7 +4,7 @@ RM=rm
 RMFLAGS=-rf
 
 # Bibliothèques supplémentaires
-LIB=bluetooth
+LIB=bluetooth pthread rt
 
 # Répertoires de bibliothèques
 LIBDIR?=
@@ -44,7 +44,7 @@ CC=gcc
 CCFLAGS+=-Wall -fPIC -fpermissive -Wextra -Woverloaded-virtual -std=c++11 -I$(INCDIR) $(addprefix -I, $(EXTINCDIR)) $(addprefix -l, $(LIB)) -c -pthread -g
 
 EL=g++ #Éditeur de liens
-ELFLAGS= -shared 
+ELFLAGS= -shared
 
 
 DSHARP?=FALSE
