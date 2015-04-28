@@ -120,7 +120,7 @@ public:
 
 	void sleep(uint16_t time, uint8_t macro = 0,uint16_t orbbasic = 0);
 
-	void lireStream();
+	void setInactivityTimeout(uint16_t timeout);
 	//------------------------------------------------------------------ PRIVE
 
 protected:

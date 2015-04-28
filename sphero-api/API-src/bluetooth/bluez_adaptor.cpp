@@ -116,8 +116,11 @@ bluez_adaptor::~bluez_adaptor ( )
 void* bluez_adaptor::monitorStream(void* arg)
 {
 	fd_set ensemble;
+	ssize_t retour;
 	int _bt_sock = *((int*) arg);
 	uint8_t buf;
+	ssize_t oldretour;
+	bool continuer;
 	for(;;)	
 	{
 		FD_ZERO(&ensemble);
@@ -130,13 +133,36 @@ void* bluez_adaptor::monitorStream(void* arg)
 					NULL
 				) == -1 && errno == EINTR ){}
 		//On ne fait pas de FD_ISSET car un seul fichier monitoré
-		
-		while(read(_bt_sock, &buf, sizeof(uint8_t)) != -1)
-		{
-			fprintf(stderr, "%02X ", buf); 
-		}
-		fprintf(stderr, "\n");
-	}
+				
+		do{
+			oldretour = retour;
+			retour = recv(_bt_sock, &buf, sizeof(uint8_t), 0);
+			continuer = true;
 
+			if(retour > 0)
+			{
+				fprintf(stderr, "%02X ", buf); 
+			}
+
+			//Client disconnected
+			else if(retour == -1 && oldretour == -1)
+			{
+				fprintf(stderr, "Déconnexion !!!!!!\n");
+				pthread_exit(NULL);	
+			}
+
+			//Fin de lecture sur le flux
+			else if(retour == -1 && errno == EAGAIN)
+			{
+				fprintf(stderr, "\n");
+				continuer = false;
+			}
+			
+			else
+			{
+				perror("On ne devrait pas être ici");
+			}
+		}while(continuer);
+	}
 }
 

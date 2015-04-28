@@ -8,8 +8,8 @@
 //---------- Réalisation de la tâche <sphero> (fichier ISphero.tpp) ---
 /////////////////////////////////////////////////////////////////  INCLUDE
 //-------------------------------------------------------- Include système
+#include <endian.h>
 //------------------------------------------------------ Include personnel
-#include <cstdint>
 
 ///////////////////////////////////////////////////////////////////  PRIVE
 //------------------------------------------------------------- Constantes
@@ -334,6 +334,27 @@ void ISphero<T>::roll(uint8_t speed, uint16_t heading,
 		);
 	_btManager->send_data(packet->getSize(),packet->toByteArray());
 	delete packet;
+}
+
+template<typename T>
+void ISphero<T>::setInactivityTimeout(uint16_t timeout)
+{
+	if(timeout < 60)
+	{
+		timeout = 60;
+	}
+	timeout = htobe16(timeout);
+	uint8_t* data = (uint8_t*) &timeout;
+	ClientCommandPacket packet(
+			0x00,
+			0x25,
+			0x00,
+			0x03,
+			data,
+			waitConfirm,
+			resetTimer
+		);
+	_btManager->send_data(packet.getSize(), packet.toByteArray());
 }
 
 /*

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <regex>
 #include <string>
+#include <cstdint>
 #include <sstream>
 
 #include "CommandHandler.h"
@@ -20,7 +21,8 @@ static void showHelp()
 	cout << "help -- Shows this" << endl;
 	cout << "connect xx:xx:xx:xx:xx -- Connects the the Sphero at the given address" << endl;
 	cout << "changecolor <red> <green> <blue> <persist> -- Changes the Sphero color" << endl;
-	cout << "changecolor <red> <green> <blue> <persist> -- Changes the Sphero color" << endl;
+	cout << "ping -- ping the sphero " << endl;
+	cout << "setIT <TO> -- set inactivity timeout for the sphero" << endl;
 	cout << "direct <speed> <angle> -- Changes the Sphero color" << endl;
 }
 
@@ -62,6 +64,21 @@ static void handleDirect(stringstream& css)
 	css >> speed >> angle;
 
 	s->roll((uint8_t) speed % 256, (uint16_t) angle % 0x10000, 1);
+	
+}
+
+static void handleIT(stringstream& css)
+{
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+	
+	uint16_t inactivityTO;
+	css >> inactivityTO;
+
+	s->setInactivityTimeout(inactivityTO);
 	
 }
 
@@ -113,6 +130,10 @@ int handleCommand(const string& command)
 	else if(cmd == "ping")
 	{
 		ping();
+	}
+	else if(cmd == "setit")
+	{
+		handleIT(css);
 	}
 	else if(cmd == "exit")
 		return 0;
