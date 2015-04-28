@@ -26,6 +26,11 @@ static void showHelp()
 
 static void ping()
 {
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
 	s->ping();
 }
 
@@ -47,6 +52,21 @@ static void handleConnect(stringstream& css)
 		delete s;
 	*/
 	s = new Sphero(address.c_str());
+}
+
+static void handleSleep(stringstream& css)
+{
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+	unsigned int time;
+	css >> time;
+	s->sleep((uint16_t) time);
+	s->disconnect();
+	sleep(time+3);
+	s->reconnect();
 }
 
 static void handleDirect(stringstream& css)
@@ -113,6 +133,10 @@ int handleCommand(const string& command)
 	else if(cmd == "ping")
 	{
 		ping();
+	}
+	else if(cmd == "sleep")
+	{
+		handleSleep(css);
 	}
 	else if(cmd == "exit")
 		return 0;
