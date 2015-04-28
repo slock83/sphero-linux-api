@@ -31,7 +31,16 @@ using namespace std;
 //----------------------------------------------------- Méthodes publiques
 int bluez_adaptor::connection(const char* address)
 {
+	if(_connected)
+	{
+		perror("déjà connecté, réinitialisation ...");
+		disconnect();
+		sleep(5);
+	}
+
+
 	bdaddr_t bt_address;
+
 
 	//Conversion de l'adresse 
 	if(!str2ba(address, &bt_address))
@@ -52,7 +61,6 @@ int bluez_adaptor::connection(const char* address)
 	{
 		perror("First attempt to connect");
 	}
-
 	pthread_create(&_listening_thread, NULL, monitorStream, &_bt_socket);
 	
 	_connected = true;
