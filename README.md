@@ -41,7 +41,7 @@ The API is (for now) built only over the bluez bluetooth stack, making it compat
 
 ##### Running
 	
-	still in the apps folder, do
+still in the apps folder, do
 	
   ```sh
   $ ./Appli
