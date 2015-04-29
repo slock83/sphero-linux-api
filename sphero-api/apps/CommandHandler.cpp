@@ -6,7 +6,8 @@
 #include <sstream>
 
 #include "CommandHandler.h"
-#include "ISphero.hpp"
+#include "Sphero.hpp"
+#include "bluetooth/bluez_adaptor.h"
 
 using namespace std;
 
@@ -54,7 +55,7 @@ static void handleConnect(stringstream& css)
 	if(s != NULL)
 		delete s;
 	*/
-	s = new Sphero(address.c_str());
+	s = new Sphero(address.c_str(), new bluez_adaptor());
 }
 
 static void handleSleep(stringstream& css)

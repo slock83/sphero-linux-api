@@ -41,9 +41,8 @@ int bluez_adaptor::connection(const char* address)
 
 	bdaddr_t bt_address;
 
-
 	//Conversion de l'adresse 
-	if(!str2ba(address, &bt_address))
+	if(str2ba(address, &bt_address))
 	{
 		perror("BT address conversion");
 	}

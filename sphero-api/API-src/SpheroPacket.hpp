@@ -1,8 +1,7 @@
 /*************************************************************************
-                           SpheroPacket  -  description
+    SpheroPacket  -  description
                              -------------------
     début                : mar. 28 avril 2015
-    copyright            : (C) 2015 par B3253 - L. Forget - F. Meyer
 *************************************************************************/
 
 //---------- Interface de la classe <SpheroPacket> (fichier SpheroPacket.hpp) ------
@@ -14,20 +13,24 @@
 //------------------------------------------------------------- Constantes 
 
 //------------------------------------------------------------------ Types 
+template<typename T>
+class ISphero<T>;
 
 //------------------------------------------------------------------------ 
 // Rôle de la classe <SpheroPacket>
 //
-//
+// Définir les comportements des paquets reçus par sphero
 //------------------------------------------------------------------------ 
 
-class SpheroPacket
+class SpheroPacket<Sphero>
 {
 //----------------------------------------------------------------- PUBLIC
 
 public:
 //----------------------------------------------------- Méthodes publiques
-
+	
+	template<typename T>
+	notify(T& sphero);
 
 //------------------------------------------------- Surcharge d'opérateurs
     SpheroPacket & operator = ( const SpheroPacket & unSpheroPacket ) = delete;
@@ -36,22 +39,12 @@ public:
 //-------------------------------------------- Constructeurs - destructeur
     SpheroPacket ( const SpheroPacket & unSpheroPacket ) = delete;
 
-    SpheroPacket();
-    // Mode d'emploi :
-    //
-    // Contrat :
-    //
-
     virtual ~SpheroPacket();
-    // Mode d'emploi :
-    //
-    // Contrat :
-    //
-
 //------------------------------------------------------------------ PRIVE 
 
 protected:
 //----------------------------------------------------- Méthodes protégées
+    SpheroPacket();
 
 private:
 //------------------------------------------------------- Méthodes privées

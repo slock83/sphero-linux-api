@@ -1,40 +1,33 @@
 /************************************************************************
-    ISphero  -  description
+    Sphero  -  description
                              -------------------
     début                : lun. 16 mars 2015
  *************************************************************************/
 
-//---------- Interface de la classe <ISphero> (fichier ISphero.h) ------
-#if ! defined ( ISPHERO_H )
-#define ISPHERO_H
+//---------- Interface de la classe <Sphero> (fichier Sphero.h) ------
+#if ! defined ( SPHERO_H )
+#define SPHERO_H
 
 //--------------------------------------------------- Interfaces utilisées
 
 #include <stddef.h>
 #include <cstdint>
 
-#include "bluetooth/bluetooth_listener.h"
+#include "bluetooth/bluetooth_connector.h"
 #include "ClientCommandPacket.hpp"
 
 class ClientCommandPacket;
-#ifdef BLUEZ
-//Nécessaire plus bas
-#include "bluetooth/bluez_adaptor.h"
-#endif
+
 //------------------------------------------------------------- Constantes 
 
 //------------------------------------------------------------------ Types 
 typedef int16_t spherocoord_t;
 
-class sphero_listener
-{
-public:
-};
+class sphero_listener;
 
 //------------------------------------------------------------------------ 
 //T est un connecteur bluetooth
-template<typename T>
-class ISphero 
+class Sphero 
 {
 	//----------------------------------------------------------------- PUBLIC
 
@@ -44,19 +37,19 @@ public:
 
 	//------------------------------------------------- Surcharge d'opérateurs
 	//N'a pas de sens
-	ISphero & operator = ( const ISphero & unISphero ) = delete;
+	Sphero & operator = ( const Sphero & unSphero ) = delete;
 
 	//-------------------------------------------- Constructeurs - destructeur
 	//N'a pas de sens
-	ISphero ( const ISphero & unISphero ) = delete;
+	Sphero ( const Sphero & unSphero ) = delete;
 
 	/*
 	 * BT addres
 	 * s (format : "XX:XX:XX:XX:XX:XX")
 	 */
-	ISphero(char const * const btaddr);
+	Sphero(char const * const btaddr);
 
-	virtual ~ISphero ( );
+	virtual ~Sphero ( );
 
 	void reconnect();
 
@@ -146,6 +139,9 @@ protected:
 
 private:
 	//------------------------------------------------------- Attributs privés
+	
+	bluetooth_
+
 	T* _btManager;
 
 	/*
@@ -181,12 +177,9 @@ private:
 	//----------------------------------------------------------- Types privés
 };
 
-#include "ISphero.tpp"
+#include "Sphero.tpp"
 
 //----------------------------------------- Types dépendants de <sphero>
-#ifdef BLUEZ
-typedef ISphero<bluez_adaptor> Sphero;
-#endif
 
-#endif // ISPHERO_H
+#endif // SPHERO_H
 

@@ -9,7 +9,7 @@
 #define BLUETOOTHCONNECTOR_H
 
 //--------------------------------------------------- Interfaces utilisées
-#include "bluetooth_listener.h"
+#include <cstdio>
 //------------------------------------------------------------- Constantes 
 
 //------------------------------------------------------------------ Types 
@@ -44,14 +44,6 @@ public:
 	 */
 	virtual bool isConnected(void) = 0;
 	
-	/**
-	 * Met à jour le listener
-	 */
-	void set_listener(bluetooth_listener* bluetooth_listener)
-	{
-		_bluetooth_listener = bluetooth_listener;
-	}
-
 //------------------------------------------------- Surcharge d'opérateurs
 	//N'a pas de sens
     bluetooth_connector & operator = 
@@ -61,13 +53,11 @@ public:
 	//N'a pas de sens
     bluetooth_connector (const bluetooth_connector & unbluetooth_connector) = delete;
 
-	bluetooth_connector ():
-		_bluetooth_listener(NULL)
+	bluetooth_connector ()
 	{}
 	
     virtual ~bluetooth_connector ( )
 	{
-
 	}
 
 //------------------------------------------------------------------ PRIVE 
@@ -83,10 +73,6 @@ protected:
 
 private:
 //------------------------------------------------------- Attributs privés
-	/*
-	 * Is keeped up to date when data is received
-	 */
-	bluetooth_listener const * _bluetooth_listener;
 //---------------------------------------------------------- Classes amies
 
 //-------------------------------------------------------- Classes privées

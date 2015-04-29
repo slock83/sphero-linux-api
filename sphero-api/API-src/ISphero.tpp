@@ -5,7 +5,7 @@
  copyright            : (C) 2015 par slock -- euhhhhh ... disons cela...
  *************************************************************************/
 
-//---------- Réalisation de la tâche <sphero> (fichier ISphero.tpp) ---
+//---------- Réalisation de la tâche <sphero> (fichier Sphero.tpp) ---
 /////////////////////////////////////////////////////////////////  INCLUDE
 //-------------------------------------------------------- Include système
 #include <endian.h>
@@ -25,8 +25,7 @@
 /*
  * BT address (format : "XX:XX:XX:XX:XX:XX")
  */
-template<typename T>
-ISphero<T>::ISphero(char const* const btaddr) {
+Sphero::Sphero(char const* const btaddr) {
 	_btManager = new T();
 	address = btaddr;
 	_btManager->connection(btaddr);
@@ -34,32 +33,27 @@ ISphero<T>::ISphero(char const* const btaddr) {
 
 
 
-template<typename T>
-ISphero<T>::~ISphero()
+Sphero::~Sphero()
 {
 	//TODO : implement destructor
 }
 
-template<typename T>
-void ISphero<T>::reconnect()
+void Sphero::reconnect()
 {
 	_btManager->connection(address);
 }
 
-template<typename T>
-void ISphero<T>::disconnect()
+void Sphero::disconnect()
 {
 	_btManager->disconnect();
 }
 
-template<typename T>
-void ISphero<T>::sendPacket(ClientCommandPacket packet)
+void Sphero::sendPacket(ClientCommandPacket packet)
 {
 	_btManager->send_data(packet.getSize(), packet.toByteArray());
 }
 
-template<typename T>
-void ISphero<T>::ping()
+void Sphero::ping()
 {
 	ClientCommandPacket packet = ClientCommandPacket(
 		0x00,
@@ -73,8 +67,7 @@ void ISphero<T>::ping()
 	_btManager->send_data(packet.getSize(), packet.toByteArray());
 }
 
-template<typename T>
-void ISphero<T>::setColor(uint8_t red, uint8_t green,
+void Sphero::setColor(uint8_t red, uint8_t green,
 		uint8_t blue, bool persist)
 //Changes the color with the given hex values, persist will set as user color
 //02h 	20h 	<any> 	05h 	<value> 	<value> 	<value> 	<bool>
@@ -100,8 +93,7 @@ void ISphero<T>::setColor(uint8_t red, uint8_t green,
 	delete packet;
 }
 
-template<typename T>
-void ISphero<T>::setBackLedOutput(uint8_t power)
+void Sphero::setBackLedOutput(uint8_t power)
 //change the light intensity of the back led
 //02h 	21h 	<any> 	02h 	<value>
 {
@@ -119,8 +111,7 @@ void ISphero<T>::setBackLedOutput(uint8_t power)
 	delete packet;
 }
 
-template<typename T>
-void ISphero<T>::setHeading(uint16_t heading)
+void Sphero::setHeading(uint16_t heading)
 //Change the heading with and angle in ° (range from 0 to 359)
 //02h 	01h 	<any> 	03h 	16-bit val
 {
@@ -143,8 +134,7 @@ void ISphero<T>::setHeading(uint16_t heading)
 	delete packet;
 }
 
-template<typename T>
-void ISphero<T>::setStabilization(bool on)
+void Sphero::setStabilization(bool on)
 //Enable or disable stabilization
 //02h 	02h 	<any> 	02h 	<bool>
 {
@@ -163,8 +153,7 @@ void ISphero<T>::setStabilization(bool on)
 	delete packet;
 }
 
-template<typename T>
-void ISphero<T>::setRotationRate(uint8_t angspeed)
+void Sphero::setRotationRate(uint8_t angspeed)
 //Change the rotation speed, as angspeed*0.784 degrees/sec
 //Warning = high value may become really uncontrollable
 //02h 	03h 	<any> 	02h 	<value>
@@ -182,8 +171,7 @@ void ISphero<T>::setRotationRate(uint8_t angspeed)
 	delete packet;
 }
 
-template<typename T>
-void ISphero<T>::setSelfLevel(uint8_t options,
+void Sphero::setSelfLevel(uint8_t options,
 		uint8_t angle_limit, uint8_t timeout, uint8_t trueTime)
 /**02h 	09h 	<any> 	05h 	<byte> 	<byte> 	<byte> 	<byte>
 
@@ -227,11 +215,10 @@ True Time 	0 Use the default value
 }
 
 
-//void ISphero<T>::setDataStreaming(uint16_t N, uint16_t M,uint32_t MASK, uint8_t 
+//void Sphero::setDataStreaming(uint16_t N, uint16_t M,uint32_t MASK, uint8_t 
 //pcnt, uint32_t MASK2 = 0); not used yet
 
-template<typename T>
-void ISphero<T>::enableCollisionDetection(uint8_t Xt,
+void Sphero::enableCollisionDetection(uint8_t Xt,
 		uint8_t Xspd, uint8_t Yt, uint8_t Yspd, uint8_t Dead)
 //02h 	12h 	<any> 	07h 	<val> 	<val> 	<val> 	<val> 	<val> 	<val>
 /**Xt, Yt 	An 8-bit settable threshold for the X (left/right) and Y 
@@ -262,8 +249,7 @@ Dead 	An 8-bit post-collision dead time to prevent retriggering; specified in
 	delete packet;
 }
 
-template<typename T>
-void ISphero<T>::disableCollisionDetection()
+void Sphero::disableCollisionDetection()
 //pretty self-explanatory
 {
 	uint8_t data_payload[6];
@@ -279,8 +265,7 @@ void ISphero<T>::disableCollisionDetection()
 	delete packet;
 }
 
-template<typename T>
-void ISphero<T>::configureLocator(uint8_t flags, uint16_t X,
+void Sphero::configureLocator(uint8_t flags, uint16_t X,
 		uint16_t Y, uint16_t yaw)
 //02h 	13h 	<any> 	02h 	<8 bit val> 	<16 bit signed val> 	<16 bit 
 //signed val> 	<16 bit signed val>
@@ -309,8 +294,7 @@ void ISphero<T>::configureLocator(uint8_t flags, uint16_t X,
 //getLocator : will have to discuss this...
 //getRGDLed : same
 
-template<typename T>
-void ISphero<T>::setAccelerometerRange(uint8_t range)
+void Sphero::setAccelerometerRange(uint8_t range)
 //02h 	14h 	<any> 	02h 	<8 bit val>
 //change sphero's accelerometer range, warning : may cause strange behaviors
 {
@@ -327,8 +311,7 @@ void ISphero<T>::setAccelerometerRange(uint8_t range)
 	delete packet;
 }
 
-template<typename T>
-void ISphero<T>::roll(uint8_t speed, uint16_t heading,
+void Sphero::roll(uint8_t speed, uint16_t heading,
 		uint8_t state)
 //02h 	30h 	<any> 	05h 	<val> 	<msb> 	<lsb> 	<val>
 //roll the sphero with given direction and speed
@@ -357,8 +340,7 @@ void ISphero<T>::roll(uint8_t speed, uint16_t heading,
 	delete packet;
 }
 
-template<typename T>
-void ISphero<T>::setInactivityTimeout(uint16_t timeout)
+void Sphero::setInactivityTimeout(uint16_t timeout)
 {
 	if(timeout < 60)
 	{
@@ -378,8 +360,7 @@ void ISphero<T>::setInactivityTimeout(uint16_t timeout)
 	_btManager->send_data(packet.getSize(), packet.toByteArray());
 }
 
-template<typename T>
-void ISphero<T>::sleep(uint16_t time, uint8_t macro,
+void Sphero::sleep(uint16_t time, uint8_t macro,
 		uint16_t orbbasic)
 		
 		/**00h 	22h 	<any> 	06h 	<16-bit val wakeup> 	<val macro> 	<16-bit val orbasic>
@@ -417,27 +398,22 @@ orbBasic 	If non-zero, Sphero will attempt to run an orbBasic program in Flash f
 /*
 //setRawMotorValue : not needed ?
 
-template<typename T>
-void ISphero<T>::setMotionTimeout(uint16_t time);
+void Sphero::setMotionTimeout(uint16_t time);
 
-template<typename T>
-void ISphero<T>::setPermOptFlags(uint32_t flags);
+void Sphero::setPermOptFlags(uint32_t flags);
 
 //getPermOptFlags : we'll see
 
-template<typename T>
-void ISphero<T>::setTmpOptFlags(uint32_t flags);
+void Sphero::setTmpOptFlags(uint32_t flags);
 
 //getTmpOptFlags : we'll see
 
-template<typename T>
-void ISphero<T>::setDeviceMode(uint8_t value = 0);
+void Sphero::setDeviceMode(uint8_t value = 0);
 //01h will set to user hack mode
 
 //getDeviceMode
 
-template<typename T>
-void ISphero<T>::runMacro(uint8_t id);
+void Sphero::runMacro(uint8_t id);
 
 //void saveMacro(Macro macro);
 */
