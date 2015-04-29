@@ -38,6 +38,11 @@ public:
 	 * Ferme la connexion
 	 */
 	virtual int disconnect(void) = 0;
+
+	/*
+	 * Informe de l'état de la connexion
+	 */
+	virtual bool isConnected(void) = 0;
 	
 	/**
 	 * Met à jour le listener

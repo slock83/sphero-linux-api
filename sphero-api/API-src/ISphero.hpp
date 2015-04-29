@@ -88,6 +88,11 @@ public:
 
 	void disableCollisionDetection();
 
+	bool isConnected()
+	{
+		return _btManager->isConnected();
+	}
+
 	void configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t yaw);
 
 	//getLocator : will have to discuss this...

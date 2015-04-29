@@ -47,6 +47,8 @@ public:
 	 */
 	virtual int disconnect(void);
 
+	virtual bool isConnected();
+
 //------------------------------------------------- Surcharge d'opérateurs
 	//N'a pas de sens
     bluez_adaptor & operator = ( const bluez_adaptor & unbluez_adaptor ) = delete;

@@ -4,7 +4,7 @@
     début                : mar. 17 mars 2015
 *************************************************************************/
 
-//---------- Réalisation de la classe <bluez_adaptor> (fichier bluez_adaptor.cpp) --
+//------ Réalisation de la classe <bluez_adaptor> (fichier bluez_adaptor.cpp) --
 
 //---------------------------------------------------------------- INCLUDE
 
@@ -68,6 +68,11 @@ ssize_t bluez_adaptor::send_data(size_t data_length, uint8_t const * data)
 		disconnect();
 	}
 	return retour;
+}
+
+bool bluez_adaptor::isConnected()
+{
+	return _connected;
 }
 
 int bluez_adaptor::disconnect(void)
@@ -147,7 +152,7 @@ void* bluez_adaptor::monitorStream(void* arg)
 			//Client disconnected
 			else if(retour == -1 && oldretour == -1)
 			{
-				fprintf(stderr, "Déconnexion !!!!!!\n");
+				fprintf(stderr, "Déconnexion du client\n");
 				pthread_exit(NULL);	
 			}
 
@@ -160,7 +165,7 @@ void* bluez_adaptor::monitorStream(void* arg)
 			
 			else
 			{
-				perror("On ne devrait pas être ici");
+				pthread_exit(NULL);
 			}
 		}while(continuer);
 	}
