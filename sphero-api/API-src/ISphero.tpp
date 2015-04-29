@@ -28,13 +28,34 @@
 template<typename T>
 ISphero<T>::ISphero(char const* const btaddr) {
 	_btManager = new T();
+	address = btaddr;
 	_btManager->connection(btaddr);
 }
+
+
 
 template<typename T>
 ISphero<T>::~ISphero()
 {
 	//TODO : implement destructor
+}
+
+template<typename T>
+void ISphero<T>::reconnect()
+{
+	_btManager->connection(address);
+}
+
+template<typename T>
+void ISphero<T>::disconnect()
+{
+	_btManager->disconnect();
+}
+
+template<typename T>
+void ISphero<T>::sendPacket(ClientCommandPacket packet)
+{
+	_btManager->send_data(packet.getSize(), packet.toByteArray());
 }
 
 template<typename T>
@@ -357,6 +378,42 @@ void ISphero<T>::setInactivityTimeout(uint16_t timeout)
 	_btManager->send_data(packet.getSize(), packet.toByteArray());
 }
 
+template<typename T>
+void ISphero<T>::sleep(uint16_t time, uint8_t macro,
+		uint16_t orbbasic)
+		
+		/**00h 	22h 	<any> 	06h 	<16-bit val wakeup> 	<val macro> 	<16-bit val orbasic>
+
+This command puts Sphero to sleep immediately. There are three optional parameters that program the robot for future actions:
+name 	description
+Wakeup 	The number of seconds for Sphero to sleep for and then automatically reawaken. Zero does not program a wakeup interval, so he sleeps forever. FFFFh attempts to put him into deep sleep (if supported in hardware) and returns an error if the hardware does not support it.
+Macro 	If non-zero, Sphero will attempt to run this macro ID upon wakeup.
+orbBasic 	If non-zero, Sphero will attempt to run an orbBasic program in Flash from this line number.**/
+{
+	uint8_t msbTime = (uint8_t)((time & 0xFF00) >> 8);
+	uint8_t lsbTime = (uint8_t)(time & 0x00FF);
+	uint8_t msbOrb = (uint8_t)((orbbasic & 0xFF00) >> 8);
+	uint8_t lsbOrb = (uint8_t)(orbbasic & 0x00FF);
+	uint8_t data_payload[5];
+	data_payload[0] = msbTime;
+	data_payload[1] = lsbTime;
+	data_payload[2] = macro;
+	data_payload[3] = msbOrb;
+	data_payload[4] = lsbOrb;
+	ClientCommandPacket* packet = new ClientCommandPacket(
+			0x00, 
+			0x22, 
+			0x00, 
+			0x06,
+			data_payload, 
+			waitConfirm, 
+			resetTimer
+		);
+	_btManager->send_data(packet->getSize(),packet->toByteArray());
+	delete packet;
+	
+}
+
 /*
 //setRawMotorValue : not needed ?
 
@@ -381,10 +438,6 @@ void ISphero<T>::setDeviceMode(uint8_t value = 0);
 
 template<typename T>
 void ISphero<T>::runMacro(uint8_t id);
-
-template<typename T>
-void ISphero<T>::sleep(uint16_t time, uint8_t macro = 0,
-		uint16_t orbbasic = 0);
 
 //void saveMacro(Macro macro);
 */

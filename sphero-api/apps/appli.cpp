@@ -14,6 +14,7 @@ int main(void)
 	string command("");
 	do
 	{
+		cout << "Sphero > ";
 		getline(cin, command);
 	}
 	while(handleCommand(command));

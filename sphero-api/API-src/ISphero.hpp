@@ -58,6 +58,12 @@ public:
 
 	virtual ~ISphero ( );
 
+	void reconnect();
+
+	void disconnect();
+
+	void sendPacket(ClientCommandPacket packet);
+
 	void ping();
 
 	void setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist = false);
@@ -159,6 +165,7 @@ private:
 
 	bool resetTimer = true;
 	bool waitConfirm = false;
+	const char * address;
 
 	//To be continued
 
