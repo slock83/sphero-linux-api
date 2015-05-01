@@ -26,13 +26,14 @@ public:
 	/*
 	 * Établie la connexion
 	 * address <-> BT Address : 'XX:XX:XX:XX:XX:XX'
+	 * Renvoie un identifiant de socket ou -1 si erreur
 	 */
 	virtual int connection(const char* address) = 0;
 
 	/*
 	 * Permet l'envoi d'un flux de données au destinataire
-	 */
 	virtual ssize_t send_data(size_t data_length, uint8_t const * data) = 0;
+	 */
 
 	/*
 	 * Ferme la connexion

@@ -9,8 +9,7 @@
 #define SPHERO_H
 
 //--------------------------------------------------- Interfaces utilisées
-
-#include <stddef.h>
+#include <pthread.h>
 #include <cstdint>
 
 #include "bluetooth/bluetooth_connector.h"
@@ -130,6 +129,7 @@ public:
 
 protected:
 	//---------- ------------------------------------------- Méthodes protégées
+	static void* monitorStream(void* sphero_ptr);
 
 
 private:
@@ -158,12 +158,15 @@ private:
 	 */
 	spherocoord_t accelerometer_z;
 
-	bool resetTimer = true;
-	bool waitConfirm = false;
-	const char * address;
-
 	//To be continued
 
+	bool resetTimer = true;
+	bool waitConfirm = false;
+
+	int _bt_socket;
+	pthread_t monitor;
+
+	const char * address;
 
 	//---------------------------------------------------------- Classes amies
 

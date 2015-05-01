@@ -38,11 +38,6 @@ public:
 	virtual int connection( const char* address);
 
 	/**
-	 * Permet l'envoi d'un flux de données au destinataire
-	 */
-	virtual ssize_t send_data(size_t data_length, uint8_t const * data);
-
-	/**
 	 * Ferme la connexion
 	 */
 	virtual int disconnect(void);

@@ -5,10 +5,12 @@
  copyright            : (C) 2015 par slock -- euhhhhh ... disons cela...
  *************************************************************************/
 
-//---------- Réalisation de la tâche <sphero> (fichier Sphero.tpp) ---
+//---------- Réalisation de la classe <sphero> (fichier Sphero.tpp) ---
 /////////////////////////////////////////////////////////////////  INCLUDE
 //-------------------------------------------------------- Include système
 #include <endian.h>
+#include <sys/socket.h>
+#include <pthread.h>
 //------------------------------------------------------ Include personnel
 #include "Sphero.hpp"
 
@@ -17,9 +19,61 @@
 
 //------------------------------------------------------------------ Types
 
-//---------------------------------------------------- Variables statiques
-
 //------------------------------------------------------ Fonctions privées
+void* Sphero::monitorStream(void* sphero_ptr)
+{
+	fd_set ensemble;
+	ssize_t retour;
+	Sphero* sphero = (Sphero*) sphero_ptr;
+	int _bt_sock = sphero->_bt_socket;
+	uint8_t buf;
+	ssize_t oldretour;
+	bool continuer;
+	for(;;)	
+	{
+		FD_ZERO(&ensemble);
+		FD_SET(_bt_sock , &ensemble);
+		while(
+				select(_bt_sock + 1, 
+					&ensemble,
+					NULL, 
+					NULL, 
+					NULL
+				) == -1 && errno == EINTR ){}
+		//On ne fait pas de FD_ISSET car un seul fichier monitoré
+				
+		do{
+			oldretour = retour;
+			retour = recv(_bt_sock, &buf, sizeof(uint8_t), 0);
+			continuer = true;
+
+			if(retour > 0)
+			{
+				fprintf(stderr, "%02X ", buf); 
+			}
+
+			//Client disconnected
+			else if(retour == -1 && oldretour == -1)
+			{
+				fprintf(stderr, "Déconnexion du client\n");
+				pthread_exit(NULL);	
+			}
+
+			//Fin de lecture sur le flux
+			else if(retour == -1 && errno == EAGAIN)
+			{
+				fprintf(stderr, "\n");
+				continuer = false;
+			}
+			
+			else
+			{
+				pthread_exit(NULL);
+			}
+		}while(continuer);
+	}
+}
+
 //////////////////////////////////////////////////////////////////  PUBLIC
 //---------------------------------------------------- Fonctions publiques
 
@@ -30,7 +84,8 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 	_bt_adapter(btcon) 
 {
 	address = btaddr;
-	_bt_adapter->connection(btaddr);
+	_bt_socket = _bt_adapter->connection(btaddr);
+	pthread_create(&monitor, NULL, monitorStream, this);
 }
 
 
@@ -47,12 +102,13 @@ void Sphero::reconnect()
 
 void Sphero::disconnect()
 {
+	pthread_cancel(monitor);
 	_bt_adapter->disconnect();
 }
 
 void Sphero::sendPacket(ClientCommandPacket packet)
 {
-	_bt_adapter->send_data(packet.getSize(), packet.toByteArray());
+	send(_bt_socket, packet.toByteArray(),  packet.getSize(), 0);
 }
 
 void Sphero::ping()
@@ -66,7 +122,7 @@ void Sphero::ping()
 		true,
 		true
 	);
-	_bt_adapter->send_data(packet.getSize(), packet.toByteArray());
+	sendPacket(packet);	
 }
 
 void Sphero::setColor(uint8_t red, uint8_t green,
@@ -82,7 +138,7 @@ void Sphero::setColor(uint8_t red, uint8_t green,
 		data_payload[3] = 1;
 	else
 		data_payload[3] = 0;
-	ClientCommandPacket* packet = new ClientCommandPacket(
+	ClientCommandPacket packet (
 			0x02, 
 			0x20, 
 			0x00, 
@@ -91,15 +147,14 @@ void Sphero::setColor(uint8_t red, uint8_t green,
 			waitConfirm, 
 			resetTimer
 		);
-	_bt_adapter->send_data(packet->getSize(),packet->toByteArray());
-	delete packet;
+	sendPacket(packet);
 }
 
 void Sphero::setBackLedOutput(uint8_t power)
 //change the light intensity of the back led
 //02h 	21h 	<any> 	02h 	<value>
 {
-	ClientCommandPacket* packet = new ClientCommandPacket(
+	ClientCommandPacket packet(
 			0x02, 
 			0x21, 
 			0x00, 
@@ -108,9 +163,7 @@ void Sphero::setBackLedOutput(uint8_t power)
 			waitConfirm, 
 			resetTimer
 		);
-	_bt_adapter->send_data(packet->getSize(),packet->toByteArray());
-
-	delete packet;
+	sendPacket(packet);
 }
 
 void Sphero::setHeading(uint16_t heading)
@@ -122,7 +175,7 @@ void Sphero::setHeading(uint16_t heading)
 	data[0] = ptr[1];
 	data[1] = ptr[0];
 
-	ClientCommandPacket* packet = new ClientCommandPacket(
+	ClientCommandPacket packet(
 			0x02, 
 			0x01, 
 			0x00, 
@@ -132,8 +185,7 @@ void Sphero::setHeading(uint16_t heading)
 			resetTimer
 		); 
 
-	_bt_adapter->send_data(packet->getSize(),packet->toByteArray());
-	delete packet;
+	sendPacket(packet);
 }
 
 void Sphero::setStabilization(bool on)
@@ -142,7 +194,7 @@ void Sphero::setStabilization(bool on)
 {
 	uint8_t state;
 	state = on ? 1 : 0;
-	ClientCommandPacket* packet = new ClientCommandPacket(
+	ClientCommandPacket packet (
 			0x02, 
 			0x02, 
 			0x00, 
@@ -151,8 +203,7 @@ void Sphero::setStabilization(bool on)
 			waitConfirm, 
 			resetTimer
 		); 
-	_bt_adapter->send_data(packet->getSize(),packet->toByteArray());
-	delete packet;
+	sendPacket(packet);
 }
 
 void Sphero::setRotationRate(uint8_t angspeed)
@@ -160,7 +211,7 @@ void Sphero::setRotationRate(uint8_t angspeed)
 //Warning = high value may become really uncontrollable
 //02h 	03h 	<any> 	02h 	<value>
 {
-	ClientCommandPacket* packet = new ClientCommandPacket(
+	ClientCommandPacket packet(
 			0x02, 
 			0x03, 
 			0x00, 
@@ -169,8 +220,7 @@ void Sphero::setRotationRate(uint8_t angspeed)
 			waitConfirm, 
 			resetTimer
 		); 
-	_bt_adapter->send_data(packet->getSize(),packet->toByteArray());
-	delete packet;
+	sendPacket(packet);
 }
 
 void Sphero::setSelfLevel(uint8_t options,
@@ -203,7 +253,7 @@ True Time 	0 Use the default value
 	data_payload[1] = angle_limit;
 	data_payload[2] = timeout;
 	data_payload[3] = trueTime;
-	ClientCommandPacket* packet = new ClientCommandPacket(
+	ClientCommandPacket packet(
 			0x02, 
 			0x09, 
 			0x00, 
@@ -212,8 +262,7 @@ True Time 	0 Use the default value
 			waitConfirm, 
 			resetTimer
 		);
-	_bt_adapter->send_data(packet->getSize(),packet->toByteArray());
-	delete packet;
+	sendPacket(packet);
 }
 
 
@@ -238,7 +287,7 @@ Dead 	An 8-bit post-collision dead time to prevent retriggering; specified in
 	data_payload[3] = Yt;
 	data_payload[4] = Yspd;
 	data_payload[5] = Dead;
-	ClientCommandPacket* packet = new ClientCommandPacket(
+	ClientCommandPacket packet(
 			0x02, 
 			0x12, 
 			0x00, 
@@ -247,8 +296,7 @@ Dead 	An 8-bit post-collision dead time to prevent retriggering; specified in
 			waitConfirm, 
 			resetTimer
 		);
-	_bt_adapter->send_data(packet->getSize(),packet->toByteArray());
-	delete packet;
+	sendPacket(packet);
 }
 
 void Sphero::disableCollisionDetection()
@@ -261,10 +309,9 @@ void Sphero::disableCollisionDetection()
 	data_payload[3] = 0;
 	data_payload[4] = 0;
 	data_payload[5] = 0;
-	ClientCommandPacket* packet = new ClientCommandPacket(0x02, 0x12, 0x00, 0x07,
+	ClientCommandPacket packet(0x02, 0x12, 0x00, 0x07,
 			data_payload, waitConfirm, resetTimer);
-	_bt_adapter->send_data(packet->getSize(),packet->toByteArray());
-	delete packet;
+	sendPacket(packet);
 }
 
 void Sphero::configureLocator(uint8_t flags, uint16_t X,
@@ -287,10 +334,9 @@ void Sphero::configureLocator(uint8_t flags, uint16_t X,
 	data_payload[4] = YB;
 	data_payload[5] = yawA;
 	data_payload[6] = yawB;
-	ClientCommandPacket* packet = new ClientCommandPacket(0x02, 0x13, 0x00, 0x08,
+	ClientCommandPacket packet(0x02, 0x13, 0x00, 0x08,
 			data_payload, waitConfirm, resetTimer);
-	_bt_adapter->send_data(packet->getSize(),packet->toByteArray());
-	delete packet;
+	sendPacket(packet);
 }
 
 //getLocator : will have to discuss this...
@@ -300,7 +346,7 @@ void Sphero::setAccelerometerRange(uint8_t range)
 //02h 	14h 	<any> 	02h 	<8 bit val>
 //change sphero's accelerometer range, warning : may cause strange behaviors
 {
-	ClientCommandPacket* packet = new ClientCommandPacket(
+	ClientCommandPacket packet(
 			0x02, 
 			0x14, 
 			0x00, 
@@ -309,8 +355,7 @@ void Sphero::setAccelerometerRange(uint8_t range)
 			waitConfirm, 
 			resetTimer
 		); 
-	_bt_adapter->send_data(packet->getSize(),packet->toByteArray());
-	delete packet;
+	sendPacket(packet);
 }
 
 void Sphero::roll(uint8_t speed, uint16_t heading,
@@ -329,7 +374,7 @@ void Sphero::roll(uint8_t speed, uint16_t heading,
 	data_payload[1] = msb;
 	data_payload[2] = lsb;
 	data_payload[3] = state;
-	ClientCommandPacket* packet = new ClientCommandPacket(
+	ClientCommandPacket packet(
 			0x02, 
 			0x30, 
 			0x00, 
@@ -338,8 +383,7 @@ void Sphero::roll(uint8_t speed, uint16_t heading,
 			waitConfirm, 
 			resetTimer
 		);
-	_bt_adapter->send_data(packet->getSize(),packet->toByteArray());
-	delete packet;
+	sendPacket(packet);
 }
 
 void Sphero::setInactivityTimeout(uint16_t timeout)
@@ -359,7 +403,7 @@ void Sphero::setInactivityTimeout(uint16_t timeout)
 			waitConfirm,
 			resetTimer
 		);
-	_bt_adapter->send_data(packet.getSize(), packet.toByteArray());
+	sendPacket(packet);
 }
 
 void Sphero::sleep(uint16_t time, uint8_t macro,
@@ -383,7 +427,7 @@ orbBasic 	If non-zero, Sphero will attempt to run an orbBasic program in Flash f
 	data_payload[2] = macro;
 	data_payload[3] = msbOrb;
 	data_payload[4] = lsbOrb;
-	ClientCommandPacket* packet = new ClientCommandPacket(
+	ClientCommandPacket packet(
 			0x00, 
 			0x22, 
 			0x00, 
@@ -392,8 +436,7 @@ orbBasic 	If non-zero, Sphero will attempt to run an orbBasic program in Flash f
 			waitConfirm, 
 			resetTimer
 		);
-	_bt_adapter->send_data(packet->getSize(),packet->toByteArray());
-	delete packet;
+	sendPacket(packet);
 	
 }
 

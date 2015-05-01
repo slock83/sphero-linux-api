@@ -33,9 +33,8 @@ int bluez_adaptor::connection(const char* address)
 {
 	if(_connected)
 	{
-		perror("déjà connecté, réinitialisation ...");
-		disconnect();
-		sleep(5);
+		fprintf(stderr, "Connection attempt was made but peripheral was already connected\n");
+		return _bt_socket;
 	}
 
 
@@ -45,6 +44,7 @@ int bluez_adaptor::connection(const char* address)
 	if(str2ba(address, &bt_address))
 	{
 		perror("BT address conversion");
+		return -1;
 	}
 
 	struct sockaddr_rc dest_addr;
@@ -58,23 +58,11 @@ int bluez_adaptor::connection(const char* address)
 
 	if(connect(_bt_socket, (sockaddr*) &dest_addr, sizeof(dest_addr)) < 0)
 	{
-		perror("First attempt to connect");
+		perror("BT connection");
+		return -1;
 	}
-	pthread_create(&_listening_thread, NULL, monitorStream, &_bt_socket);
-	
 	_connected = true;
-	return 0;
-}
-
-ssize_t bluez_adaptor::send_data(size_t data_length, uint8_t const * data)
-{
-	ssize_t retour;
-	if((retour = send(_bt_socket, (char const *) data, data_length, MSG_NOSIGNAL)) == -1)
-	{
-		perror("Connexion perdue");
-		disconnect();
-	}
-	return retour;
+	return _bt_socket;
 }
 
 bool bluez_adaptor::isConnected()
@@ -125,56 +113,5 @@ bluez_adaptor::~bluez_adaptor ( )
 //----------------------------------------------------- Méthodes protégées
 
 //------------------------------------------------------- Méthodes privées
-void* bluez_adaptor::monitorStream(void* arg)
-{
-	fd_set ensemble;
-	ssize_t retour;
-	int _bt_sock = *((int*) arg);
-	uint8_t buf;
-	ssize_t oldretour;
-	bool continuer;
-	for(;;)	
-	{
-		FD_ZERO(&ensemble);
-		FD_SET(_bt_sock , &ensemble);
-		while(
-				select(_bt_sock + 1, 
-					&ensemble,
-					NULL, 
-					NULL, 
-					NULL
-				) == -1 && errno == EINTR ){}
-		//On ne fait pas de FD_ISSET car un seul fichier monitoré
-				
-		do{
-			oldretour = retour;
-			retour = recv(_bt_sock, &buf, sizeof(uint8_t), 0);
-			continuer = true;
 
-			if(retour > 0)
-			{
-				fprintf(stderr, "%02X ", buf); 
-			}
-
-			//Client disconnected
-			else if(retour == -1 && oldretour == -1)
-			{
-				fprintf(stderr, "Déconnexion du client\n");
-				pthread_exit(NULL);	
-			}
-
-			//Fin de lecture sur le flux
-			else if(retour == -1 && errno == EAGAIN)
-			{
-				fprintf(stderr, "\n");
-				continuer = false;
-			}
-			
-			else
-			{
-				pthread_exit(NULL);
-			}
-		}while(continuer);
-	}
-}
 
