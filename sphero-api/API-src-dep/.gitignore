@@ -1,3 +1,6 @@
 /bluez_adaptor.P
 /byte-utils.P
 /ClientCommandPacket.P
+/Sphero.P
+/SpheroAnswerPacket.P
+/SpheroAsyncPacket.P
