@@ -37,7 +37,6 @@ int bluez_adaptor::connection(const char* address)
 		return _bt_socket;
 	}
 
-
 	bdaddr_t bt_address;
 
 	//Conversion de l'adresse 
@@ -54,13 +53,14 @@ int bluez_adaptor::connection(const char* address)
 
 	//Création du socket de communication
 	_bt_socket = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);	
-	fcntl(_bt_socket, F_SETFL, O_NONBLOCK);
 
 	if(connect(_bt_socket, (sockaddr*) &dest_addr, sizeof(dest_addr)) < 0)
 	{
 		perror("BT connection");
 		return -1;
 	}
+
+	fcntl(_bt_socket, F_SETFL, O_NONBLOCK);
 	_connected = true;
 	return _bt_socket;
 }

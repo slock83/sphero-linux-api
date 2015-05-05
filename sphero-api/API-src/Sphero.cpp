@@ -23,7 +23,7 @@
 void* Sphero::monitorStream(void* sphero_ptr)
 {
 	fd_set ensemble;
-	ssize_t retour;
+	ssize_t retour = 0;
 	Sphero* sphero = (Sphero*) sphero_ptr;
 	int _bt_sock = sphero->_bt_socket;
 	uint8_t buf;
