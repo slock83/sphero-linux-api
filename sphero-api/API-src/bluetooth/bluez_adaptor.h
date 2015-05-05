@@ -63,8 +63,6 @@ protected:
 
 private:
 //------------------------------------------------------- Méthodes privées
-	static void* monitorStream(void* arg);
-	int listen();
 
 protected:
 //----------------------------------------------------- Attributs protégés
@@ -73,7 +71,6 @@ private:
 //------------------------------------------------------- Attributs privés
 	int _bt_socket;	
 	bool _connected;
-	pthread_t _listening_thread;
 
 //---------------------------------------------------------- Classes amies
 

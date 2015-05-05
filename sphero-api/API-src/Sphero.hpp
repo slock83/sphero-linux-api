@@ -11,6 +11,7 @@
 //--------------------------------------------------- Interfaces utilisées
 #include <pthread.h>
 #include <cstdint>
+#include <string>
 
 #include "bluetooth/bluetooth_connector.h"
 #include "ClientCommandPacket.hpp"
@@ -51,7 +52,7 @@ public:
 
 	//----------------------------------------------------- Méthodes publiques
 
-	void reconnect();
+	bool connect();
 
 	void disconnect();
 
@@ -134,13 +135,16 @@ protected:
 
 private:
 	//------------------------------------------------------- Méthodes privées
+	static const size_t MAX_CONNECT_ATTEMPT = 5;
 
 protected:
 	//----------------------------------------------------- Attributs protégés
 
 private:
 	//------------------------------------------------------- Attributs privés
-	
+
+	bool _connected;
+
 	bluetooth_connector* _bt_adapter;
 
 	/*
@@ -166,7 +170,7 @@ private:
 	int _bt_socket;
 	pthread_t monitor;
 
-	const char * address;
+	const std::string _address;
 
 	//---------------------------------------------------------- Classes amies
 

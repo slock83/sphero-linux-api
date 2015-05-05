@@ -10,6 +10,7 @@
 
 //-------------------------------------------------------- Include système
 #include <iostream>
+#include <unistd.h>
 #include <sys/select.h>
 #include <fcntl.h>
 
@@ -19,6 +20,7 @@ using namespace std;
 
 
 //------------------------------------------------------------- Constantes
+static const size_t MAX_CONNECT_ATTEMPT_BUSY = 3;
 
 //---------------------------------------------------- Variables de classe
 
@@ -31,6 +33,10 @@ using namespace std;
 //----------------------------------------------------- Méthodes publiques
 int bluez_adaptor::connection(const char* address)
 {
+	int errval = 0;
+	bool continuer = true;
+	size_t i;
+
 	if(_connected)
 	{
 		fprintf(stderr, "Connection attempt was made but peripheral was already connected\n");
@@ -54,10 +60,24 @@ int bluez_adaptor::connection(const char* address)
 	//Création du socket de communication
 	_bt_socket = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);	
 
-	if(connect(_bt_socket, (sockaddr*) &dest_addr, sizeof(dest_addr)) < 0)
+	while(continuer)
 	{
-		perror("BT connection");
-		return -1;
+		errval = connect(_bt_socket, (sockaddr*) &dest_addr, sizeof(dest_addr));
+		if(errval >= 0)
+		{
+			continuer = false;
+		}
+		
+		else if(errno == EBUSY && i++ < MAX_CONNECT_ATTEMPT_BUSY)
+		{
+			usleep(500000);
+		}
+
+		else
+		{
+			perror("BT connection");
+			return -1;
+		}
 	}
 
 	fcntl(_bt_socket, F_SETFL, O_NONBLOCK);
@@ -73,7 +93,6 @@ bool bluez_adaptor::isConnected()
 int bluez_adaptor::disconnect(void)
 {
 	_connected = false;	
-	pthread_cancel(_listening_thread);
 	return close(_bt_socket);
 }
 

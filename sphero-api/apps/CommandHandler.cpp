@@ -60,6 +60,7 @@ static void handleConnect(stringstream& css)
 		delete(s);
 	}
 	s = new Sphero(address.c_str(), new bluez_adaptor());
+	s->connect();
 }
 
 static void handleSleep(stringstream& css)
@@ -74,7 +75,7 @@ static void handleSleep(stringstream& css)
 	s->sleep((uint16_t) time);
 	s->disconnect();
 	sleep(time+3);
-	s->reconnect();
+	s->connect();
 }
 
 static void handleDirect(stringstream& css)

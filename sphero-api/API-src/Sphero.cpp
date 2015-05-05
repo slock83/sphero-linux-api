@@ -56,7 +56,7 @@ void* Sphero::monitorStream(void* sphero_ptr)
 			else if(retour == -1 && oldretour == -1)
 			{
 				fprintf(stderr, "Déconnexion du client\n");
-				pthread_exit(NULL);	
+				sphero->disconnect();	
 			}
 
 			//Fin de lecture sur le flux
@@ -68,7 +68,7 @@ void* Sphero::monitorStream(void* sphero_ptr)
 			
 			else
 			{
-				pthread_exit(NULL);
+				sphero->disconnect();
 			}
 		}while(continuer);
 	}
@@ -78,32 +78,51 @@ void* Sphero::monitorStream(void* sphero_ptr)
 //---------------------------------------------------- Fonctions publiques
 
 /*
- * BT address (format : "XX:XX:XX:XX:XX:XX")
+ * BT _address (format : "XX:XX:XX:XX:XX:XX")
  */
 Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
-	_bt_adapter(btcon) 
+	_connected(false),
+	_bt_adapter(btcon),
+	_address(btaddr)
 {
-	address = btaddr;
-	_bt_socket = _bt_adapter->connection(btaddr);
-	pthread_create(&monitor, NULL, monitorStream, this);
 }
-
-
 
 Sphero::~Sphero()
 {
-	//TODO : implement destructor
+	disconnect();
 }
 
-void Sphero::reconnect()
+bool Sphero::connect()
 {
-	_bt_adapter->connection(address);
+	disconnect();
+
+	size_t i = 0;
+	while((_bt_socket = _bt_adapter->connection(_address.c_str())) == -1 && 
+			i++ < MAX_CONNECT_ATTEMPT)
+	{
+		//Coucou
+	}
+
+	if(_bt_socket != -1)
+	{
+		pthread_create(&monitor, NULL, monitorStream, this);
+
+		_connected = true;
+
+		return true;
+	}
+
+	return false;
 }
 
 void Sphero::disconnect()
 {
-	pthread_cancel(monitor);
-	_bt_adapter->disconnect();
+	if(_connected)
+	{
+		_connected = false;
+		pthread_cancel(monitor);
+		_bt_adapter->disconnect();
+	}
 }
 
 void Sphero::sendPacket(ClientCommandPacket& packet)
