@@ -1,9 +1,9 @@
 #include <algorithm>
 #include <iostream>
-#include <regex>
 #include <string>
 #include <cstdint>
 #include <sstream>
+#include <vector>
 
 #include "CommandHandler.h"
 #include "Sphero.hpp"
@@ -12,7 +12,9 @@
 using namespace std;
 
 /**/
-static Sphero *s = NULL;
+static Sphero* s;
+static size_t nbActif = 0;
+static vector<Sphero*> spheroVec;
 /**/
 
 
@@ -26,6 +28,7 @@ static void showHelp()
 	cout << "roll <speed> <angle> -- moves the sphero" << endl;
 	cout << "ping -- does what it says" << endl;
 	cout << "sleep <duration> -- puts the sphero to sleep for the given duration" << endl;
+	cout << "select <spheroid> -- Sélectionne le sphéro à controller" << endl;
 }
 
 static void ping()
@@ -44,23 +47,41 @@ static void handleConnect(stringstream& css)
 	//void
 	string address;
 	css >> address;
-	/*
-	regex r("[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}:[A-Fa-f0-9]{2}");
-	if(!regex_match(address, r))
-	{
-		cerr << "Usage: connect xx:xx:xx:xx:xx" << endl;
-		return;
-	}
-	
-	if(s != NULL)
-		delete s;
-	*/
+
 	if(s != nullptr)
 	{
-		delete(s);
+		delete s;
 	}
-	s = new Sphero(address.c_str(), new bluez_adaptor());
-	s->connect();
+
+	Sphero* sph = new Sphero(address.c_str(), new bluez_adaptor());
+	if(sph->connect())
+	{
+		size_t idx = nbActif++;
+		spheroVec[idx] = sph;
+		cout << "Sphero enregistré : identifiant " << idx << endl;
+		s = sph;
+	}
+	else
+	{
+		delete sph;
+		cout << "Erreur de connexion" << endl;
+	}
+}
+
+static void handleSelect(stringstream& css)
+{
+	size_t idx;
+	css >> idx;
+	if(nbActif > idx)
+	{
+		s = spheroVec[idx];
+		cout << "Sphero actif : "<< idx << endl;
+	}
+
+	else
+	{
+		cout << "Erreur d'indice" << endl;
+	}
 }
 
 static void handleSleep(stringstream& css)
@@ -161,6 +182,10 @@ int handleCommand(const string& command)
 	else if(cmd == "setit")
 	{
 		handleIT(css);
+	}
+	else if(cmd == "sleep")
+	{
+		handleSelect(css);
 	}
 	else if(cmd == "sleep")
 	{
