@@ -10,6 +10,8 @@ int main(void)
 	
 	cout << "\033]0;Sphero-cmd\007";
 	cout.flush();
+	
+	init();
 
 	string command("");
 	do

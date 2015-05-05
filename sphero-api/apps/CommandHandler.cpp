@@ -48,16 +48,11 @@ static void handleConnect(stringstream& css)
 	string address;
 	css >> address;
 
-	if(s != nullptr)
-	{
-		delete s;
-	}
-
 	Sphero* sph = new Sphero(address.c_str(), new bluez_adaptor());
 	if(sph->connect())
 	{
 		size_t idx = nbActif++;
-		spheroVec[idx] = sph;
+		spheroVec.push_back(sph);
 		cout << "Sphero enregistré : identifiant " << idx << endl;
 		s = sph;
 	}
@@ -154,6 +149,11 @@ static void handleCc(stringstream& css)
 		);
 }
 
+void init()
+{
+	spheroVec = vector<Sphero*>();
+}
+
 int handleCommand(const string& command)
 {
 	stringstream css(command);
@@ -183,7 +183,7 @@ int handleCommand(const string& command)
 	{
 		handleIT(css);
 	}
-	else if(cmd == "sleep")
+	else if(cmd == "select")
 	{
 		handleSelect(css);
 	}

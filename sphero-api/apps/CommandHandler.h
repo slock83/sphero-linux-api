@@ -5,6 +5,7 @@
 
 using namespace std;
 
+void init();
 int handleCommand(const string& command);
 
 #endif //C_HANDLER_H
