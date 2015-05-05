@@ -55,7 +55,7 @@ public:
 
 	void disconnect();
 
-	void sendPacket(ClientCommandPacket packet);
+	void sendPacket(ClientCommandPacket& packet);
 
 	void ping();
 

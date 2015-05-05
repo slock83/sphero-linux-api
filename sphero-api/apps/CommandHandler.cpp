@@ -55,6 +55,10 @@ static void handleConnect(stringstream& css)
 	if(s != NULL)
 		delete s;
 	*/
+	if(s != nullptr)
+	{
+		delete(s);
+	}
 	s = new Sphero(address.c_str(), new bluez_adaptor());
 }
 

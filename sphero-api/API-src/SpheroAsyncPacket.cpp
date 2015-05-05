@@ -14,7 +14,7 @@
 #include <fcntl.h>
 
 //------------------------------------------------------ Include personnel
-#include "SpheroAsyncPacket.h"
+#include "SpheroAsyncPacket.hpp"
 
 //------------------------------------------------------------- Constantes
 

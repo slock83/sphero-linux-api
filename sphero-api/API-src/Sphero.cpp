@@ -106,7 +106,7 @@ void Sphero::disconnect()
 	_bt_adapter->disconnect();
 }
 
-void Sphero::sendPacket(ClientCommandPacket packet)
+void Sphero::sendPacket(ClientCommandPacket& packet)
 {
 	send(_bt_socket, packet.toByteArray(),  packet.getSize(), 0);
 }

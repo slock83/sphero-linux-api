@@ -9,7 +9,7 @@
 #define SPHEROPACKET_H
 
 //--------------------------------------------------- Interfaces utilisées
-
+#include "Sphero.hpp"
 //------------------------------------------------------------- Constantes 
 
 //------------------------------------------------------------------ Types 
@@ -31,11 +31,11 @@ public:
     // Extrait les informations du descripteur de fichier
     // afin de construire un paquet bien formé.
     // <!--- Question : Virtual pure ?? -->
-    virtual extractPacket(int fd) = 0;
+    virtual void extractPacket(int fd) = 0;
 
     // Effectue l'action associée au paquet sur l'instance
     // du Sphero passée en paramètre.
-    virtual packetAction(Sphero* sphero) = 0;
+    virtual void packetAction(Sphero* sphero) = 0;
 
 //------------------------------------------------- Surcharge d'opérateurs
     SpheroPacket & operator = ( const SpheroPacket & unSpheroPacket ) = delete;

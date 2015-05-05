@@ -11,7 +11,7 @@
 #define SPHEROASYNCPACKET_H
 
 //--------------------------------------------------- Interfaces utilisées
-#include "ShperoPacket.hpp"
+#include "SpheroPacket.hpp"
 
 //------------------------------------------------------------- Constantes 
 
@@ -23,15 +23,15 @@
 // Définir les comportements des paquets asynchrones reçus par sphero
 //------------------------------------------------------------------------ 
 
-class SpheroAsyncPacket
+class SpheroAsyncPacket : public SpheroPacket
 {
 //----------------------------------------------------------------- PUBLIC
 
 public:
 //----------------------------------------------------- Méthodes publiques
 	
-    virtual extractPacket(int fd);
-    virtual packetAction(Sphero* sphero);
+    virtual void extractPacket(int fd) = 0;
+    virtual void packetAction(Sphero* sphero) = 0;
 
 //------------------------------------------------- Surcharge d'opérateurs
     SpheroAsyncPacket & operator = ( const SpheroAsyncPacket & unSpheroAsyncPacket ) = delete;

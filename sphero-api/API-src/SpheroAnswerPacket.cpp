@@ -14,7 +14,7 @@
 #include <fcntl.h>
 
 //------------------------------------------------------ Include personnel
-#include "SpheroAnswerPacket.h"
+#include "SpheroAnswerPacket.hpp"
 
 //------------------------------------------------------------- Constantes
 
@@ -27,7 +27,6 @@
 //-------------------------------------------------------- Fonctions amies
 
 //----------------------------------------------------- Méthodes publiques
-
 //------------------------------------------------- Surcharge d'opérateurs
 
 
