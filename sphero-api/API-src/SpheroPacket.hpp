@@ -9,10 +9,18 @@
 #define SPHEROPACKET_H
 
 //--------------------------------------------------- Interfaces utilisées
+#include <unordered_map>
 #include "Sphero.hpp"
 //------------------------------------------------------------- Constantes 
+static uint8_t const ASYNC_FLAG  = 0xFE;
+static uint8_t const ANSWER_FLAG = 0xFF;
 
 //------------------------------------------------------------------ Types 
+class SpheroPacket;
+
+typedef bool (*packetExtractor)(int socketd, Sphero* sphero, SpheroPacket** packet_ptr);
+typedef std::unordered_map<uint8_t, packetExtractor> extractorMap_t;
+typedef std::pair<uint8_t, packetExtractor> extractorMapEntry_t;
 
 //------------------------------------------------------------------------ 
 // Rôle de la classe <SpheroPacket>
@@ -30,37 +38,35 @@ public:
 	
     // Extrait les informations du descripteur de fichier
     // afin de construire un paquet bien formé.
-    // <!--- Question : Virtual pure ?? -->
-    virtual void extractPacket(int fd) = 0;
+   	static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
 
     // Effectue l'action associée au paquet sur l'instance
     // du Sphero passée en paramètre.
-    virtual void packetAction(Sphero* sphero) = 0;
+    virtual void packetAction() = 0;
 
 //------------------------------------------------- Surcharge d'opérateurs
-    SpheroPacket & operator = ( const SpheroPacket & unSpheroPacket ) = delete;
+    SpheroPacket& operator=(const SpheroPacket& unSpheroPacket) = delete;
 
 //-------------------------------------------- Constructeurs - destructeur
-    SpheroPacket() : _packet(nullptr) {};
 
-    SpheroPacket ( const SpheroPacket & unSpheroPacket ) = delete;
+    SpheroPacket(const SpheroPacket& unSpheroPacket) = delete;
 
-    virtual ~SpheroPacket() {};
+    virtual ~SpheroPacket();
 //------------------------------------------------------------------ PRIVE 
 
 protected:
 //----------------------------------------------------- Méthodes protégées
-    
-
+    SpheroPacket(Sphero* sphero);
 private:
 //------------------------------------------------------- Méthodes privées
 
 protected:
 //----------------------------------------------------- Attributs protégés
-    ClientCommandPacket* _packet;
+	Sphero* _sphero;
+
 private:
 //------------------------------------------------------- Attributs privés
-	
+	static extractorMap_t _extractorMap;
 //---------------------------------------------------------- Classes amies
 
 //-------------------------------------------------------- Classes privées

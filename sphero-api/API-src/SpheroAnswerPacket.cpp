@@ -31,7 +31,7 @@
 
 
 //-------------------------------------------- Constructeurs - destructeur
-SpheroAnswerPacket::SpheroAnswerPacket() : SpheroPacket()
+SpheroAnswerPacket::SpheroAnswerPacket(Sphero* sphero) : SpheroPacket(sphero)
 {
 
 }

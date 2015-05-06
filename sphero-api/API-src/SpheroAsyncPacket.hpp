@@ -30,15 +30,14 @@ class SpheroAsyncPacket : public SpheroPacket
 public:
 //----------------------------------------------------- Méthodes publiques
 	
-    virtual void extractPacket(int fd) = 0;
-    virtual void packetAction(Sphero* sphero) = 0;
+   	static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
+    virtual void packetAction() = 0;
 
 //------------------------------------------------- Surcharge d'opérateurs
     SpheroAsyncPacket & operator = ( const SpheroAsyncPacket & unSpheroAsyncPacket ) = delete;
 
 
 //-------------------------------------------- Constructeurs - destructeur
-    SpheroAsyncPacket();
 
     SpheroAsyncPacket ( const SpheroAsyncPacket & unSpheroAsyncPacket ) = delete;
 
@@ -47,7 +46,7 @@ public:
 
 protected:
 //----------------------------------------------------- Méthodes protégées
-    
+    SpheroAsyncPacket(Sphero* sphero);
 
 private:
 //------------------------------------------------------- Méthodes privées
@@ -57,7 +56,7 @@ protected:
 
 private:
 //------------------------------------------------------- Attributs privés
-	
+	static extractorMap_t _extractorMap;	
 //---------------------------------------------------------- Classes amies
 
 //-------------------------------------------------------- Classes privées

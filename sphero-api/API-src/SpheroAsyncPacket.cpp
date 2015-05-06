@@ -30,9 +30,8 @@
 
 //------------------------------------------------- Surcharge d'opérateurs
 
-
 //-------------------------------------------- Constructeurs - destructeur
-SpheroAsyncPacket::SpheroAsyncPacket() : SpheroPacket()
+SpheroAsyncPacket::SpheroAsyncPacket(Sphero* sphero) : SpheroPacket(sphero)
 {
 
 }
