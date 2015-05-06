@@ -32,7 +32,6 @@ void* Sphero::monitorStream(void* sphero_ptr)
 	{
 		if(recv(_bt_sock, &buf, sizeof(buf), MSG_PEEK) <= 0)
 		{
-			fprintf(stderr, "deconnexion\n");
 			sphero->disconnect();
 		}
 		else
@@ -61,6 +60,7 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 Sphero::~Sphero()
 {
 	disconnect();
+	delete _bt_adapter;
 }
 
 bool Sphero::connect()
@@ -88,6 +88,9 @@ bool Sphero::connect()
 
 void Sphero::disconnect()
 {
+#ifdef MAP
+	fprintf(stderr, "Deconnexion\n");
+#endif
 	if(_connected)
 	{
 		_connected = false;
@@ -98,7 +101,12 @@ void Sphero::disconnect()
 
 void Sphero::sendPacket(ClientCommandPacket& packet)
 {
-	send(_bt_socket, packet.toByteArray(),  packet.getSize(), 0);
+	ssize_t retour;
+	if((retour = send(_bt_socket, packet.toByteArray(),  packet.getSize(), 0)) <= 0)
+	{
+		disconnect();
+	}
+	fprintf(stderr, "%ld\n", retour);
 }
 
 void Sphero::ping()
@@ -259,8 +267,13 @@ True Time 	0 Use the default value
 //void Sphero::setDataStreaming(uint16_t N, uint16_t M,uint32_t MASK, uint8_t 
 //pcnt, uint32_t MASK2 = 0); not used yet
 
-void Sphero::enableCollisionDetection(uint8_t Xt,
-		uint8_t Xspd, uint8_t Yt, uint8_t Yspd, uint8_t Dead)
+void Sphero::enableCollisionDetection(
+		uint8_t Xt,
+		uint8_t Xspd, 
+		uint8_t Yt, 
+		uint8_t Yspd, 
+		uint8_t Dead
+	)
 //02h 	12h 	<any> 	07h 	<val> 	<val> 	<val> 	<val> 	<val> 	<val>
 /**Xt, Yt 	An 8-bit settable threshold for the X (left/right) and Y 
  * (front/back) axes of Sphero. A value of 00h disables the contribution of that 
@@ -403,9 +416,11 @@ void Sphero::sleep(uint16_t time, uint8_t macro,
 
 This command puts Sphero to sleep immediately. There are three optional parameters that program the robot for future actions:
 name 	description
-Wakeup 	The number of seconds for Sphero to sleep for and then automatically reawaken. Zero does not program a wakeup interval, so he sleeps forever. FFFFh attempts to put him into deep sleep (if supported in hardware) and returns an error if the hardware does not support it.
+Wakeup 	The number of seconds for Sphero to sleep for and then automatically reawaken. 
+Zero does not program a wakeup interval, so he sleeps forever. FFFFh attempts to put him into deep sleep 
+(if supported in hardware) and returns an error if the hardware does not support it.
 Macro 	If non-zero, Sphero will attempt to run this macro ID upon wakeup.
-orbBasic 	If non-zero, Sphero will attempt to run an orbBasic program in Flash from this line number.**/
+If non-zero, Sphero will attempt to run an orbBasic program in Flash from this line number.**/
 {
 	uint8_t msbTime = (uint8_t)((time & 0xFF00) >> 8);
 	uint8_t lsbTime = (uint8_t)(time & 0x00FF);

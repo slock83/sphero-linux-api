@@ -33,6 +33,7 @@ static void showHelp()
 	cout << "ping -- does what it says" << endl;
 	cout << "sleep <duration> -- puts the sphero to sleep for the given duration" << endl;
 	cout << "select <spheroid> -- Sélectionne le sphéro à controller" << endl;
+	cout << "collision -- enable collision detection feature" << endl;
 }
 
 static void ping()
@@ -45,6 +46,16 @@ static void ping()
 	s->ping();
 }
 
+static void handleCollision()
+{
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+
+	s->enableCollisionDetection(1,128,1,128, 15);
+}
 
 static void handleConnect(stringstream& css)
 {
@@ -202,6 +213,10 @@ int handleCommand(const string& command)
 	else if(cmd == "roll")
 	{
 		handleDirect(css);
+	}
+	else if(cmd == "collision")
+	{
+		handleCollision();
 	}
 	else if(cmd == "ping")
 	{
