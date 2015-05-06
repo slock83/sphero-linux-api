@@ -13,6 +13,7 @@
 #include <pthread.h>
 //------------------------------------------------------ Include personnel
 #include "Sphero.hpp"
+#include "SpheroPacket.hpp"
 
 ///////////////////////////////////////////////////////////////////  PRIVE
 //------------------------------------------------------------- Constantes
@@ -22,55 +23,25 @@
 //------------------------------------------------------ Fonctions privées
 void* Sphero::monitorStream(void* sphero_ptr)
 {
-	fd_set ensemble;
-	ssize_t retour = 0;
 	Sphero* sphero = (Sphero*) sphero_ptr;
 	int _bt_sock = sphero->_bt_socket;
 	uint8_t buf;
-	ssize_t oldretour;
-	bool continuer;
-	for(;;)	
+	SpheroPacket* packet_ptr;
+
+	for(;;)
 	{
-		FD_ZERO(&ensemble);
-		FD_SET(_bt_sock , &ensemble);
-		while(
-				select(_bt_sock + 1, 
-					&ensemble,
-					NULL, 
-					NULL, 
-					NULL
-				) == -1 && errno == EINTR ){}
-		//On ne fait pas de FD_ISSET car un seul fichier monitoré
-				
-		do{
-			oldretour = retour;
-			retour = recv(_bt_sock, &buf, sizeof(uint8_t), 0);
-			continuer = true;
-
-			if(retour > 0)
+		if(recv(_bt_sock, &buf, sizeof(buf), MSG_PEEK) <= 0)
+		{
+			fprintf(stderr, "deconnexion\n");
+			sphero->disconnect();
+		}
+		else
+		{
+			if(SpheroPacket::extractPacket(_bt_sock, sphero, &packet_ptr))
 			{
-				fprintf(stderr, "%02X ", buf); 
+				packet_ptr->packetAction();
 			}
-
-			//Client disconnected
-			else if(retour == -1 && oldretour == -1)
-			{
-				fprintf(stderr, "Déconnexion du client\n");
-				sphero->disconnect();	
-			}
-
-			//Fin de lecture sur le flux
-			else if(retour == -1 && errno == EAGAIN)
-			{
-				fprintf(stderr, "\n");
-				continuer = false;
-			}
-			
-			else
-			{
-				sphero->disconnect();
-			}
-		}while(continuer);
+		}
 	}
 }
 

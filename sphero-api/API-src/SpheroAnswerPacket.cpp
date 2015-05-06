@@ -27,6 +27,13 @@
 //-------------------------------------------------------- Fonctions amies
 
 //----------------------------------------------------- Méthodes publiques
+bool SpheroAnswerPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr)
+{
+	//TODO
+	fprintf(stderr, "Test : AnswerPacket\n");
+	return false;
+}
+
 //------------------------------------------------- Surcharge d'opérateurs
 
 

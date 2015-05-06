@@ -80,7 +80,6 @@ int bluez_adaptor::connection(const char* address)
 		}
 	}
 
-	fcntl(_bt_socket, F_SETFL, O_NONBLOCK);
 	_connected = true;
 	return _bt_socket;
 }

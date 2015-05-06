@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include "Sphero.hpp"
 //------------------------------------------------------------- Constantes 
+static uint8_t const START_OF_PACKET_FLAG = 0xFF;
 static uint8_t const ASYNC_FLAG  = 0xFE;
 static uint8_t const ANSWER_FLAG = 0xFF;
 
