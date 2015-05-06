@@ -1,13 +1,17 @@
+#include "CommandHandler.h"
+
+#include <stddef.h>
+#include <unistd.h>
 #include <algorithm>
-#include <iostream>
-#include <string>
+#include <cctype>
 #include <cstdint>
-#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <string>
 #include <vector>
 
-#include "CommandHandler.h"
-#include "Sphero.hpp"
-#include "bluetooth/bluez_adaptor.h"
+#include "../API-src/bluetooth/bluez_adaptor.h"
+#include "../API-src/Sphero.hpp"
 
 using namespace std;
 
@@ -47,6 +51,21 @@ static void handleConnect(stringstream& css)
 	//void
 	string address;
 	css >> address;
+	if(address.length() ==0)
+	{
+		ifstream myfile ("lastConnection");
+		  if (myfile.is_open())
+		  {
+		    getline(myfile,address);
+		    myfile.close();
+		  }
+
+		  else
+			  {
+			  cout << "impossible de charger le fichier"<<endl;
+			  return;
+			  }
+	}
 
 	Sphero* sph = new Sphero(address.c_str(), new bluez_adaptor());
 	if(sph->connect())
@@ -55,6 +74,15 @@ static void handleConnect(stringstream& css)
 		spheroVec.push_back(sph);
 		cout << "Sphero enregistré : identifiant " << idx << endl;
 		s = sph;
+		ofstream myfile ("lastConnection", ios::out | ios::trunc);
+		  if (myfile.is_open())
+		  {
+		    myfile <<address;
+		    myfile.close();
+		    cout << "addresse du Sphero sauvegardée"<< endl;
+		  }
+		  else cout << "Erreur : impossible de sauvegarder l'addresse du Sphero :("<< endl;
+
 	}
 	else
 	{
