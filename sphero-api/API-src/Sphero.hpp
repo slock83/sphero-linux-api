@@ -108,7 +108,8 @@ class Sphero
 
 
 		/**
-		 * @brief setBackLedOutput : Lights the back led(used to calibrate the spero direction) with the given power
+		 * @brief setBackLedOutput : Lights the back led(used to calibrate 
+		 * 							 the spero direction) with the given power
 		 * @param power : The power the LED will receive
 		 */
 		void setBackLedOutput(uint8_t power);
@@ -215,7 +216,8 @@ class Sphero
 		bool isConnected();
 
 		/**
-		 * @brief configureLocator : Configure sphero's internal location calculation unit offsets
+		 * @brief configureLocator : Configure sphero's internal location 
+		 * 							 calculation unit offsets
 		 * @param flags
 		 * @param X
 		 * @param Y
@@ -228,9 +230,13 @@ class Sphero
 		//getRGDLed : same
 
 		/**
-		 * @brief setAccelerometerRange : change sphero's accelerometer range, warning : may cause strange behaviors
-		 * @param range : The accelerometer range. Use one (and only one!) of the next flags to set the right range
-		 *					Any other value will have indeterminate consequences for driving and collision detection
+		 * @brief setAccelerometerRange : change sphero's accelerometer range, 
+		 * 								warning : may cause strange behaviors
+		 * @param range : 	The accelerometer range. Use one (and only one!) of 
+		 * 				  	the next flags to set the right range
+		 *					Any other value will have indeterminate consequences 
+		 *					for driving and collision detection
+		 *
 		 *				ACC_2G : ±2Gs
 		 *				ACC_4G : ±4Gs
 		 *				ACC_8G : ±8Gs (default)
@@ -251,12 +257,12 @@ class Sphero
 
 		//setRawMotorValue : not needed ?
 
-
+		/**
+		 * @brief setMotionTimeout 
+		 */
 		void setMotionTimeout(uint16_t time);
 
-
 		void setPermOptFlags(uint32_t flags);
-
 
 		//getPermOptFlags : we'll see
 
@@ -286,8 +292,12 @@ class Sphero
 		void setInactivityTimeout(uint16_t timeout);
 		
 
+		/*
+		 * Notify sphero that a collision occured.
+		 * All collisionListeners will be notified
+		 */
+		//TODO Quentin : implémenter les différentes struct
 		void reportCollision();
-
 
 		//------------ Evenements ------------//
 		// type(types) : signature attendue pour le callback

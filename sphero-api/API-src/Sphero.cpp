@@ -345,9 +345,9 @@ bool Sphero::isConnected()
 
 void Sphero::configureLocator(uint8_t flags, uint16_t X,
 		uint16_t Y, uint16_t yaw)
-//02h 	13h 	<any> 	02h 	<8 bit val> 	<16 bit signed val> 	<16 bit 
-//signed val> 	<16 bit signed val>
-//Configure sphero's internal location calculation unit offsets
+/*02h 	13h 	<any> 	02h 	<8 bit val> 	<16 bit signed val> 	
+<16 bit signed val> 	<16 bit signed val>
+Configure sphero's internal location calculation unit offsets*/
 {
 	uint8_t XA = (uint8_t)((X & 0xFF00) >> 8);
 	uint8_t XB = (uint8_t)(X & 0x00FF);
@@ -444,14 +444,17 @@ void Sphero::sleep(uint16_t time, uint8_t macro,
 		uint16_t orbbasic)
 		
 		/**00h 	22h 	<any> 	06h 	<16-bit val wakeup> 	<val macro> 	<16-bit val orbasic>
-
-This command puts Sphero to sleep immediately. There are three optional parameters that program the robot for future actions:
-name 	description
-Wakeup 	The number of seconds for Sphero to sleep for and then automatically reawaken. 
-Zero does not program a wakeup interval, so he sleeps forever. FFFFh attempts to put him into deep sleep 
-(if supported in hardware) and returns an error if the hardware does not support it.
-Macro 	If non-zero, Sphero will attempt to run this macro ID upon wakeup.
-If non-zero, Sphero will attempt to run an orbBasic program in Flash from this line number.**/
+	
+			This command puts Sphero to sleep immediately. There are three optional 
+			parameters that program the robot for future actions:
+			name 	description
+			Wakeup 	The number of seconds for Sphero to sleep for and then 
+					automatically reawaken. 
+					Zero does not program a wakeup interval, so he sleeps forever. 
+					FFFFh attempts to put him into deep sleep (if supported 
+					in hardware) and returns an error if the hardware does not support it.
+			Macro 	If non-zero, Sphero will attempt to run this macro ID upon wakeup.
+		*/
 {
 	uint8_t msbTime = (uint8_t)((time & 0xFF00) >> 8);
 	uint8_t lsbTime = (uint8_t)(time & 0x00FF);
