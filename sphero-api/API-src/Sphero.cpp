@@ -44,24 +44,6 @@ void* Sphero::monitorStream(void* sphero_ptr)
 	}
 }
 
-void Sphero::handleOnConnect()
-{
-	for(callback_connect_t callback : _callback_connect_list)
-		callback();
-}
-
-void Sphero::handleOnDisonnect()
-{
-	for(callback_disconnect_t callback : _callback_disconnect_list)
-		callback();
-}
-
-void Sphero::handleOncollision(sphero_coord_t x, sphero_coord_t y)
-{
-	for(callback_collision_t callback : _callback_collision_list)
-		callback(x, y);
-}
-
 //////////////////////////////////////////////////////////////////  PUBLIC
 //---------------------------------------------------- Fonctions publiques
 
@@ -335,11 +317,6 @@ void Sphero::disableCollisionDetection()
 	sendPacket(packet);
 }
 
-void Sphero::isConnected()
-{
-	return _bt_adapter->isConnected();
-}
-
 void Sphero::configureLocator(uint8_t flags, uint16_t X,
 		uint16_t Y, uint16_t yaw)
 //02h 	13h 	<any> 	02h 	<8 bit val> 	<16 bit signed val> 	<16 bit 
@@ -490,18 +467,3 @@ void Sphero::runMacro(uint8_t id);
 
 //void saveMacro(Macro macro);
 */
-
-void Sphero::onConnect(callback_connect_t callback)
-{
-	_callback_connect_list.push_front(callback);
-}
-
-void Sphero::onDisonnect(callback_disconnect_t callback)
-{
-	_callback_disconnect_list.push_front(callback);
-}
-
-void Sphero::onCollision(callback_collision_t callback)
-{
-	_callback_collision_list.push_front(callback);
-}
