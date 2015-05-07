@@ -10,16 +10,19 @@
 
 //-------------------------------------------------------- Include système
 #include <iostream>
-#include <sys/select.h>
+#include <sys/socket.h>
 #include <fcntl.h>
 
 //------------------------------------------------------ Include personnel
 #include "SpheroAsyncPacket.hpp"
+#include "async/SpheroCollisionPacket.hpp"
 
 //------------------------------------------------------------- Constantes
 
 //---------------------------------------------------- Variables de classe
-
+extractorMap_t SpheroAsyncPacket::_extractorMap = {
+	{COLLISION_DETECTED, SpheroCollisionPacket::extractPacket}
+};
 //----------------------------------------------------------- Types privés
 
 
@@ -29,7 +32,23 @@
 //----------------------------------------------------- Méthodes publiques
 bool SpheroAsyncPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr)
 {
-	fprintf(stderr, "Test : AyncPacket\n");
+#ifdef MAP
+	fprintf(stdout, "Réception d'un paquet asynchrone\n");
+#endif
+	uint8_t idCode;
+	int rcvVal = 0;
+
+	rcvVal = recv(fd, &idCode, sizeof(idCode), 0);
+	if(rcvVal != sizeof(idCode))
+	{
+		return false;
+	}
+
+	extractorMap_t::iterator mapIt = _extractorMap.find(idCode);
+	if(mapIt != _extractorMap.end())
+	{
+		return mapIt->second(fd, sphero, packet_ptr);
+	}
 	return false;
 }
 

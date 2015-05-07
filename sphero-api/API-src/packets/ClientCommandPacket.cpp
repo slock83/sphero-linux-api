@@ -11,7 +11,6 @@
 #include <cstddef>
 #include <sstream>
 #include <iostream>
-#include "../utils/byte-utils.hpp"
 #include "../utils/Toolbox.hpp"
 
 using namespace std;
