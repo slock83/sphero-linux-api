@@ -33,6 +33,8 @@
 #define ACC_8G 0x02
 #define ACC16G 0x03
 
+#define FLOATING_Y_AXIS 1
+
 //------------------------------------------------------------------- Types
 class ClientCommandPacket;
 class sphero_listener;
@@ -217,9 +219,12 @@ class Sphero
 		/**
 		 * @brief configureLocator : Configure sphero's internal location calculation unit offsets
 		 * @param flags
-		 * @param X
-		 * @param Y
-		 * @param yaw
+		 *			FLOATING_Y_AXIS : the Y axis won't be memorized, so heading 0 will do nothing
+		 * @param X : The current position on X axis of Sphero on the ground plane (in centimeters)
+		 * @param Y : The current position on Y axis of Sphero on the ground plane (in centimeters)
+		 * @param yaw : (yaw tare) Controls how the X,Y-plane is aligned with Sphero’s heading coordinate system.
+		 *			When this parameter is set to zero, it means that having yaw = 0 corresponds to facing down the Y- axis in the positive direction.
+		 *			The value will be interpreted in the range 0-359 inclusive.
 		 */
 		void configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t yaw);
 
