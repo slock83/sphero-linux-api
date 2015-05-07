@@ -16,7 +16,7 @@
 #include <functional>
 
 #include "bluetooth/bluetooth_connector.h"
-#include "ClientCommandPacket.hpp"
+#include "packets/ClientCommandPacket.hpp"
 
 class ClientCommandPacket;
 
@@ -153,7 +153,7 @@ protected:
 
 	void handleOnConnect();
 	void handleOnDisonnect();
-	void handleOncollision(spherocoord_t x, spherocoord_t y);
+	void handleOnCollision(spherocoord_t x, spherocoord_t y);
 
 private:
 	//------------------------------------------------------- Méthodes privées

@@ -1,7 +1,5 @@
-
-
 /*************************************************************************
-    SpheroAsyncPacket  -  description
+    SpheroAsyncPacket 
                              -------------------
     début                : mar. 28 avril 2015
 *************************************************************************/
@@ -14,6 +12,18 @@
 #include "SpheroPacket.hpp"
 
 //------------------------------------------------------------- Constantes 
+static const uint8_t POWER_NOTIFICATION_FLAG = 0x1;
+static const uint8_t LVL_1_DIAGNOSTIC_RESPONSE = 0x2;
+static const uint8_t SENSOR_DATA_STREAMING = 0x3;
+static const uint8_t CONFIG_BLOCK_CONTENT = 0x4;
+static const uint8_t PRESLEEP_WARNING = 0x5;
+static const uint8_t MACRO_MARKERS = 0x6;
+static const uint8_t COLLISION_DETECTED = 0x7;
+static const uint8_t ORBBASIC_PRINT_MESSAGE = 0x8;
+static const uint8_t ORBBASIC_ASCII_ERROR = 0x9;
+static const uint8_t ORBBASIC_BINARY_ERROR = 0xA;
+static const uint8_t SELF_LEVEL_RESULT = 0xB;
+static const uint8_t GYRO_AXIS_LIMIT_EXCEEDED = 0xC;
 
 //------------------------------------------------------------------ Types 
 

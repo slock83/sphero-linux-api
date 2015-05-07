@@ -13,7 +13,7 @@
 #include <pthread.h>
 //------------------------------------------------------ Include personnel
 #include "Sphero.hpp"
-#include "SpheroPacket.hpp"
+#include "packets/SpheroPacket.hpp"
 
 ///////////////////////////////////////////////////////////////////  PRIVE
 //------------------------------------------------------------- Constantes
@@ -56,7 +56,7 @@ void Sphero::handleOnDisonnect()
 		callback();
 }
 
-void Sphero::handleOncollision(sphero_coord_t x, sphero_coord_t y)
+void Sphero::handleOnCollision(spherocoord_t x, spherocoord_t y)
 {
 	for(callback_collision_t callback : _callback_collision_list)
 		callback(x, y);
@@ -117,7 +117,7 @@ void Sphero::disconnect()
 		pthread_cancel(monitor);
 		_bt_adapter->disconnect();
 		
-		handleOnDisconnect();
+		handleOnDisonnect();
 	}
 }
 
@@ -339,7 +339,7 @@ void Sphero::disableCollisionDetection()
 	sendPacket(packet);
 }
 
-void Sphero::isConnected()
+bool Sphero::isConnected()
 {
 	return _bt_adapter->isConnected();
 }
@@ -505,7 +505,7 @@ void Sphero::onConnect(callback_connect_t callback)
 	_callback_connect_list.push_front(callback);
 }
 
-void Sphero::onDisonnect(callback_disconnect_t callback)
+void Sphero::onDisconnect(callback_disconnect_t callback)
 {
 	_callback_disconnect_list.push_front(callback);
 }

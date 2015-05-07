@@ -29,7 +29,6 @@
 //----------------------------------------------------- Méthodes publiques
 bool SpheroAsyncPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr)
 {
-	//TODO
 	fprintf(stderr, "Test : AyncPacket\n");
 	return false;
 }
