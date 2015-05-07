@@ -128,7 +128,6 @@ void Sphero::sendPacket(ClientCommandPacket& packet)
 	{
 		disconnect();
 	}
-	fprintf(stderr, "%ld\n", retour);
 }
 
 void Sphero::ping()

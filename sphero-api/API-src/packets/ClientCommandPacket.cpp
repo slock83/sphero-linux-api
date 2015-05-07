@@ -11,7 +11,6 @@
 #include <cstddef>
 #include <sstream>
 #include <iostream>
-#include "utils/byte-utils.hpp"
 
 using namespace std;
 
