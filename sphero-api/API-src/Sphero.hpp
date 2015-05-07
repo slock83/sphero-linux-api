@@ -5,13 +5,15 @@
  *************************************************************************/
 
 //---------- Interface de la classe <Sphero> (fichier Sphero.h) ------
-#if ! defined ( SPHERO_H )
-#define SPHERO_H
+#if ! defined ( SPHERO_HPP )
+#define SPHERO_HPP
 
 //--------------------------------------------------- Interfaces utilisées
 #include <pthread.h>
 #include <cstdint>
 #include <string>
+#include <list>
+#include <functional>
 
 #include "bluetooth/bluetooth_connector.h"
 #include "ClientCommandPacket.hpp"
@@ -22,6 +24,11 @@ class ClientCommandPacket;
 
 //------------------------------------------------------------------ Types 
 typedef int16_t spherocoord_t;
+
+typedef std::function<void(void)> callback_connect_t;
+typedef std::function<void(void)> callback_disconnect_t;
+typedef std::function
+	<void(spherocoord_t, spherocoord_t)> callback_collision_t;
 
 class sphero_listener;
 
@@ -36,11 +43,11 @@ public:
 
 	//------------------------------------------------- Surcharge d'opérateurs
 	//N'a pas de sens
-	Sphero & operator = ( const Sphero & unSphero ) = delete;
+	Sphero & operator=(const Sphero&) = delete;
 
 	//-------------------------------------------- Constructeurs - destructeur
 	//N'a pas de sens
-	Sphero ( const Sphero & unSphero ) = delete;
+	Sphero (const Sphero&) = delete;
 
 	/*
 	 * BT addres
@@ -88,10 +95,7 @@ public:
 
 	void disableCollisionDetection();
 
-	bool isConnected()
-	{
-		return _bt_adapter->isConnected();
-	}
+	bool isConnected();
 
 	void configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t yaw);
 
@@ -126,12 +130,30 @@ public:
 	void sleep(uint16_t time, uint8_t macro = 0,uint16_t orbbasic = 0);
 
 	void setInactivityTimeout(uint16_t timeout);
+	
+	void reportCollision();
+
+	//------------ Evenements ------------//
+	// type(types) : signature attendue pour le callback
+
+	// void(void)
+	void onConnect(callback_connect_t callback);
+
+	// void(void)
+	void onDisconnect(callback_disconnect_t callback);
+
+	// void(spherocoord_t, spherocoord_t)
+	void onCollision(callback_collision_t callback);
+
 	//------------------------------------------------------------------ PRIVE
 
 protected:
 	//---------- ------------------------------------------- Méthodes protégées
 	static void* monitorStream(void* sphero_ptr);
 
+	void handleOnConnect();
+	void handleOnDisonnect();
+	void handleOncollision(spherocoord_t x, spherocoord_t y);
 
 private:
 	//------------------------------------------------------- Méthodes privées
@@ -146,6 +168,9 @@ private:
 	bool _connected;
 
 	bluetooth_connector* _bt_adapter;
+	
+	spherocoord_t _position_x;
+	spherocoord_t _position_y;
 
 	/*
 	 * X accelerometer
@@ -172,6 +197,12 @@ private:
 
 	const std::string _address;
 
+	// Liste de callback pour chaque événement
+
+	std::list<callback_connect_t> _callback_connect_list;
+	std::list<callback_disconnect_t> _callback_disconnect_list;
+	std::list<callback_collision_t> _callback_collision_list;
+
 	//---------------------------------------------------------- Classes amies
 
 	//-------------------------------------------------------- Classes privées
@@ -181,5 +212,5 @@ private:
 
 //----------------------------------------- Types dépendants de <sphero>
 
-#endif // SPHERO_H
+#endif // SPHERO_HPP
 
