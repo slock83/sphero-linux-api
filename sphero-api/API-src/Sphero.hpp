@@ -28,6 +28,11 @@
 #define KEEP_CONTROL_SYSTEM 0x08
 
 
+#define ACC_2G 0x00
+#define ACC_4G 0x01
+#define ACC_8G 0x02
+#define ACC16G 0x03
+
 //------------------------------------------------------------------- Types
 class ClientCommandPacket;
 class sphero_listener;
@@ -222,6 +227,15 @@ class Sphero
 		//getLocator : will have to discuss this...
 		//getRGDLed : same
 
+		/**
+		 * @brief setAccelerometerRange : change sphero's accelerometer range, warning : may cause strange behaviors
+		 * @param range : The accelerometer range. Use one (and only one!) of the next flags to set the right range
+		 *					Any other value will have indeterminate consequences for driving and collision detection
+		 *				ACC_2G : ±2Gs
+		 *				ACC_4G : ±4Gs
+		 *				ACC_8G : ±8Gs (default)
+		 *				ACC_16G : ±16Gs
+		 */
 		void setAccelerometerRange(uint8_t range = 0x02);
 
 		/**
