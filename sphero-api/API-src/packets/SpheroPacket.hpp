@@ -11,6 +11,7 @@
 //--------------------------------------------------- Interfaces utilisées
 #include <unordered_map>
 #include "Sphero.hpp"
+
 //------------------------------------------------------------- Constantes 
 static uint8_t const START_OF_PACKET_FLAG = 0xFF;
 static uint8_t const ASYNC_FLAG  = 0xFE;
@@ -46,11 +47,11 @@ public:
     virtual void packetAction() = 0;
 
 //------------------------------------------------- Surcharge d'opérateurs
-    SpheroPacket& operator=(const SpheroPacket& unSpheroPacket) = delete;
+    SpheroPacket& operator=(const SpheroPacket&) = delete;
 
 //-------------------------------------------- Constructeurs - destructeur
 
-    SpheroPacket(const SpheroPacket& unSpheroPacket) = delete;
+    SpheroPacket(const SpheroPacket&) = delete;
 
     virtual ~SpheroPacket();
 //------------------------------------------------------------------ PRIVE 

@@ -11,7 +11,8 @@
 #include <cstddef>
 #include <sstream>
 #include <iostream>
-#include "utils/byte-utils.hpp"
+#include "../utils/byte-utils.hpp"
+#include "../utils/Toolbox.hpp"
 
 using namespace std;
 
@@ -41,19 +42,8 @@ _data(data)
 		_sop2 ^= RST_FLAG;
 	}
 
-	_chk = _did;
-	_chk += cid;
-	_chk += seq;
-	_chk += dlen;
+	_chk = packet_toolbox::checksum(did, cid, seq, dlen, data);
 
-	//dlen - 1 car dlen compte aussi la taille de la checksum
-	for(size_t i = 0 ; i+1 < _dlen ; _chk += data[i++] )
-		//Bloc vide
-	{
-	}
-
-	//Inversion de la somme obtenue
-	_chk ^= 0xFF;
 #ifdef MAP
 	std::cout << "Checksum :" << (unsigned int) _chk << std::endl;
 #endif
