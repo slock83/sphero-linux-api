@@ -9,6 +9,8 @@
 #define TOOLBOX_HPP
 
 //--------------------------------------------------- Interfaces utilisées
+#include <cstdint>
+#include <cstddef>
 
 //------------------------------------------------------------- Constantes 
 
@@ -17,7 +19,7 @@
 //------------------------------------------------------------- Procédures
 namespace packet_toolbox
 {
-    uint8_t cheksum(uint8_t did,
+    uint8_t checksum(uint8_t did,
         uint8_t cid,
         uint8_t seq,
         uint8_t dlen,
@@ -25,4 +27,3 @@ namespace packet_toolbox
 }
 
 #endif //TOOLBOX_HPP
-

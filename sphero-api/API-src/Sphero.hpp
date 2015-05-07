@@ -119,7 +119,8 @@ class Sphero
 
 
 		/**
-		 * @brief setBackLedOutput : Lights the back led(used to calibrate the spero direction) with the given power
+		 * @brief setBackLedOutput : Lights the back led(used to calibrate 
+		 * 							 the spero direction) with the given power
 		 * @param power : The power the LED will receive
 		 */
 		void setBackLedOutput(uint8_t power);
@@ -226,7 +227,8 @@ class Sphero
 		bool isConnected();
 
 		/**
-		 * @brief configureLocator : Configure sphero's internal location calculation unit offsets
+		 * @brief configureLocator : Configure sphero's internal location 
+		 * 							 calculation unit offsets
 		 * @param flags
 		 *			FLOATING_Y_AXIS : the Y axis won't be memorized, so heading 0 will do nothing
 		 * @param X : The current position on X axis of Sphero on the ground plane (in centimeters)
@@ -242,9 +244,13 @@ class Sphero
 		//getRGDLed : same
 
 		/**
-		 * @brief setAccelerometerRange : change sphero's accelerometer range, warning : may cause strange behaviors
-		 * @param range : The accelerometer range. Use one (and only one!) of the next flags to set the right range
-		 *					Any other value will have indeterminate consequences for driving and collision detection
+		 * @brief setAccelerometerRange : change sphero's accelerometer range, 
+		 * 								warning : may cause strange behaviors
+		 * @param range : 	The accelerometer range. Use one (and only one!) of 
+		 * 				  	the next flags to set the right range
+		 *					Any other value will have indeterminate consequences 
+		 *					for driving and collision detection
+		 *
 		 *				ACC_2G : ±2Gs
 		 *				ACC_4G : ±4Gs
 		 *				ACC_8G : ±8Gs (default)
@@ -284,7 +290,6 @@ class Sphero
 		 */
 		void setPermOptFlags(uint32_t flags);
 
-
 		//getPermOptFlags : we'll see
 
 		/**
@@ -323,15 +328,27 @@ class Sphero
 		//TODO quelqu'un : implémenter les fonctions de setMacro (parce que ça sert pas à grand chose de pouvoir les lancer si on en a pas)
 		//void saveMacro(Macro macro);
 
-
+		/**
+		 * @brief sleep : This command puts Sphero to sleep immediately
+		 * @param time : The number of seconds for Sphero to sleep for and then automatically reawaken.
+		 *			Zero does not program a wakeup interval, so he sleeps forever.
+		 *			0xFFFF attempts to put him into deep sleep (if supported in hardware)
+		 *									and returns an error if the hardware does not support it.
+		 * @param macro : If non-zero, Sphero will attempt to run this macro ID upon wakeup.
+		 * @param orbbasic : If non-zero, Sphero will attempt to run an orbBasic program in Flash from this line number.
+		 */
 		void sleep(uint16_t time, uint8_t macro = 0,uint16_t orbbasic = 0);
 
 
 		void setInactivityTimeout(uint16_t timeout);
 		
 
+		/*
+		 * Notify sphero that a collision occured.
+		 * All collisionListeners will be notified
+		 */
+		//TODO Quentin : implémenter les différentes struct
 		void reportCollision();
-
 
 		//------------ Evenements ------------//
 		// type(types) : signature attendue pour le callback
