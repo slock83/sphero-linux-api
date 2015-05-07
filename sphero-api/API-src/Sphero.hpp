@@ -33,7 +33,7 @@
 #define ACC_8G 0x02
 #define ACC16G 0x03
 
-#define FLOATING_Y_AXIS 1
+#define FLOATING_Y_AXIS 0x01
 
 #define OPT_PREVENT_SLEEP 0x01
 #define OPT_EN_VDRIVE 0x02
@@ -41,6 +41,8 @@
 #define OPT_FORCE_TAIL_LED 0x08
 #define OPT_EN_MOTION_TO 0x10
 #define OPT_EN_RETAIL_DEMO 0x20
+
+#define TOPT_EN_STOP_ON_DISC 0x01
 
 //------------------------------------------------------------------- Types
 class ClientCommandPacket;
@@ -272,7 +274,7 @@ class Sphero
 
 		/**
 		 * @brief setPermOptFlags : Assigns the permanent option flags to the provided value and writes them to the config block for persistence across power cycles.
-		 * @param flags
+		 * @param flags :
 		 *			OPT_PREVENT_SLEEP : Prevent Sphero from immediately going to sleep when placed in the charger and connected over Bluetooth.
 		 *			OPT_EN_VDRIVE : Enable Vector Drive, that is, when Sphero is stopped and a new roll command is issued it achieves the heading before moving along it.
 		 *			OPT_DIS_CHARGER_SL : Disable self-leveling when Sphero is inserted into the charger.
@@ -285,7 +287,13 @@ class Sphero
 
 		//getPermOptFlags : we'll see
 
-
+		/**
+		 * @brief setTmpOptFlags : Assigns the temporary option flags to the provided value. These do not persist across a power cycle.
+		 * @param flags
+		 *			TOPT_EN_STOP_ON_DISC : hen the Bluetooth link transitions from connected to disconnected, Sphero is commanded to stop rolling.
+		 *					This is ignored if a macro or orbBasic program is running though both have option flags to allow this during their execution.
+		 *					This flag is cleared after it is obeyed, thus it is a one-shot.
+		 */
 		void setTmpOptFlags(uint32_t flags);
 
 
