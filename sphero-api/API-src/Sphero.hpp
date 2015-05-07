@@ -300,16 +300,27 @@ class Sphero
 		//getTmpOptFlags : we'll see
 
 
+		/**
+		 * @brief setDeviceMode
+		 * @param value :
+		 *			0x01 : user hack mode
+		 */
 		void setDeviceMode(uint8_t value = 0);
-		//01h will set to user hack mode
 
 
 		//getDeviceMode
 
-
+		/**
+		 * @brief runMacro : This attempts to execute the specified macro
+		 * @param id : Macro IDs are organized into groups
+		 *			01-31 : System Macros. Compiled into the Main Application. Always available to run, cannot be deleted.
+		 *			32-253 : User Macros. Downloaded and permanently stored, can be deleted in total.
+		 *			254 : Stream Macro, a special user macro that doesn't require this call to begin execution
+		 *			255 : Temporary Macro, a special user macro that's held in RAM for execution
+		 */
 		void runMacro(uint8_t id);
 
-
+		//TODO quelqu'un : implémenter les fonctions de setMacro (parce que ça sert pas à grand chose de pouvoir les lancer si on en a pas)
 		//void saveMacro(Macro macro);
 
 
