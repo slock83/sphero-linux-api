@@ -1,25 +1,24 @@
-/************************************************************************
-	Sphero  -  Wrapper implementing all sphero-linked features
-								(like packet creation, emissionreception)
+/*************************************************************************************************************************
+			Sphero  -  Wrapper implementing all sphero-linked features (like packet creation, emissionreception)
                              -------------------
-	started                : 16/03/2015
- *************************************************************************/
+			started                : 16/03/2015
+ ************************************************************************************************************************/
 
-#if ! defined ( SPHERO_HPP )
+#ifndef ( SPHERO_HPP )
 #define SPHERO_HPP
 
-//--------------------------------------------------------- System includes
+//-------------------------------------------------------------------------------------------------------- System includes
 #include <pthread.h>
 #include <cstdint>
 #include <string>
 #include <list>
 #include <functional>
 
-//---------------------------------------------------------- Local includes
+//--------------------------------------------------------------------------------------------------------- Local includes
 #include "bluetooth/bluetooth_connector.h"
 #include "packets/ClientCommandPacket.hpp"
 
-//--------------------------------------------------------------- Constants
+//-------------------------------------------------------------------------------------------------------------- Constants
 
 #define ABORT_ROUTINE 0x00
 #define START_ROUTINE 0x01
@@ -44,7 +43,7 @@
 
 #define TOPT_EN_STOP_ON_DISC 0x01
 
-//------------------------------------------------------------------- Types
+//------------------------------------------------------------------------------------------------------------------ Types
 class ClientCommandPacket;
 class sphero_listener;
 
@@ -57,18 +56,17 @@ typedef std::function
 	<void(spherocoord_t, spherocoord_t)> callback_collision_t;
 
 
-//-------------------------------------------------------- Class definition
+//------------------------------------------------------------------------------------------------------- Class definition
 
 class Sphero 
 {
 	public:
 
-
-		//------------------------------------------------------- Operators
+		//------------------------------------------------------------------------------------------------------ Operators
 			//No sense
 		Sphero & operator=(const Sphero&) = delete;
 
-		//----------------------------------------- Constructors/Destructor
+		//---------------------------------------------------------------------------------------- Constructors/Destructor
 			//No sense
 		Sphero (const Sphero&) = delete;
 
@@ -80,7 +78,7 @@ class Sphero
 
 		virtual ~Sphero();
 
-		//-------------------------------------------------- Public methods
+		//------------------------------------------------------------------------------------------------- Public methods
 
 		/**
 		 * @brief connect : Initializes the bluetooth connection to the sphero instance
@@ -234,7 +232,8 @@ class Sphero
 		 * @param X : The current position on X axis of Sphero on the ground plane (in centimeters)
 		 * @param Y : The current position on Y axis of Sphero on the ground plane (in centimeters)
 		 * @param yaw : (yaw tare) Controls how the X,Y-plane is aligned with Sphero’s heading coordinate system.
-		 *			When this parameter is set to zero, it means that having yaw = 0 corresponds to facing down the Y- axis in the positive direction.
+		 *			When this parameter is set to zero, it means that having yaw = 0 corresponds to facing down the Y-axis
+		 *																						 in the positive direction
 		 *			The value will be interpreted in the range 0-359 inclusive.
 		 */
 		void configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t yaw);
@@ -279,24 +278,31 @@ class Sphero
 		void setMotionTimeout(uint16_t time);
 
 		/**
-		 * @brief setPermOptFlags : Assigns the permanent option flags to the provided value and writes them to the config block for persistence across power cycles.
+		 * @brief setPermOptFlags : Assigns the permanent option flags to the provided value and writes them to the config 
+		 * 																		block for persistence across power cycles.
 		 * @param flags :
-		 *			OPT_PREVENT_SLEEP : Prevent Sphero from immediately going to sleep when placed in the charger and connected over Bluetooth.
-		 *			OPT_EN_VDRIVE : Enable Vector Drive, that is, when Sphero is stopped and a new roll command is issued it achieves the heading before moving along it.
+		 *			OPT_PREVENT_SLEEP : Prevent Sphero from immediately going to sleep when placed in the charger and 
+		 * 																						connected over Bluetooth.
+		 *			OPT_EN_VDRIVE : Enable Vector Drive, that is, when Sphero is stopped and a new roll command is issued 
+		 * 																	it achieves the heading before moving along it
 		 *			OPT_DIS_CHARGER_SL : Disable self-leveling when Sphero is inserted into the charger.
 		 *			OPT_FORCE_TAIL_LED : Force the tail LED always on.
 		 *			OPT_EN_MOTION_TO : Enable motion timeouts
-		 *			OPT_EN_RETAIL_DEMO : Enable retail Demo Mode (when placed in the charger, ball runs a slow rainbow macro for 60 minutes and then goes to sleep).
+		 *			OPT_EN_RETAIL_DEMO : Enable retail Demo Mode (when placed in the charger, ball runs a slow rainbow 
+		 * 																	acro for 60 minutes and then goes to sleep).
 		 */
 		void setPermOptFlags(uint32_t flags);
 
 		//getPermOptFlags : we'll see
 
 		/**
-		 * @brief setTmpOptFlags : Assigns the temporary option flags to the provided value. These do not persist across a power cycle.
+		 * @brief setTmpOptFlags : Assigns the temporary option flags to the provided value. These do not persist across 
+		 * 																									a power cycle.
 		 * @param flags
-		 *			TOPT_EN_STOP_ON_DISC : hen the Bluetooth link transitions from connected to disconnected, Sphero is commanded to stop rolling.
-		 *					This is ignored if a macro or orbBasic program is running though both have option flags to allow this during their execution.
+		 *			TOPT_EN_STOP_ON_DISC : hen the Bluetooth link transitions from connected to disconnected, Sphero is 
+		 * 																						commanded to stop rolling.
+		 *					This is ignored if a macro or orbBasic program is running though both have option flags to
+		 *																				allow this during their execution.
 		 *					This flag is cleared after it is obeyed, thus it is a one-shot.
 		 */
 		void setTmpOptFlags(uint32_t flags);
@@ -339,33 +345,57 @@ class Sphero
 		 */
 		void sleep(uint16_t time, uint8_t macro = 0,uint16_t orbbasic = 0);
 
-
+		/**
+		 * @brief setInactivityTimeout :To save battery power, Sphero normally goes to sleep after a period of inactivity.
+		 * @param timeout : Time before Sphero goes to sleep (when nothing happens), in seconds
+		 *			From the factory this value is set to 600 seconds (10 minutes)
+		 *			The inactivity timer is reset every time an API command is received over Bluetooth or a shell
+		 *																			command is executed in User Hack mode.
+		 *			In addition, the timer is continually reset when a macro is running unless the MF_STEALTH
+		 *										flag is set, and the same for orbBasic unless the BF_STEALTH flag is set.
+		 */
 		void setInactivityTimeout(uint16_t timeout);
 		
 
-		/*
-		 * Notify sphero that a collision occured.
-		 * All collisionListeners will be notified
-		 */
 		//TODO Quentin : implémenter les différentes struct
+		/**
+		 * @brief reportCollision : Notify sphero that a collision occured.
+		 *			All collisionListeners will be notified
+		 */
 		void reportCollision();
 
-		//------------ Evenements ------------//
-		// type(types) : signature attendue pour le callback
 
-		// void(void)
+		//--------------------------------------------------------------------------------------------------------- Events
+
+		/**
+		 * @brief onConnect : Event thrown on Sphero connection
+		 * @param callback : The callback function to assign to this event
+		 *			Return type : void
+		 *			Parameters : none (void)
+		 */
 		void onConnect(callback_connect_t callback);
 
-		// void(void)
+
+		/**
+		 * @brief onDisconnect : Event thrown on Sphero disconnection
+		 * @param callback : The callback function to assign to this event
+		 *			Return type : void
+		 *			Parameters : none (void)
+		 */
 		void onDisconnect(callback_disconnect_t callback);
 
-		// void(spherocoord_t, spherocoord_t)
+
+		/**
+		 * @brief onCollision : Event thrown when the Sphero detects a collision
+		 * @param callback : The callback function to assign to this event
+		 *			Return type : void
+		 *			Parameters : spherocoord_t xCoord, spherocoord_t yCoord
+		 */
 		void onCollision(callback_collision_t callback);
 
-		//------------------------------------------------------------------ PRIVE
 
 	protected:
-		//---------- ------------------------------------------- Méthodes protégées
+		//---------- ----------------------------------------------------------------------------------- Protected methods
 		static void* monitorStream(void* sphero_ptr);
 
 		void handleOnConnect();
@@ -373,7 +403,7 @@ class Sphero
 		void handleOnCollision(spherocoord_t x, spherocoord_t y);
 
 	private:
-		//------------------------------------------------------- Attributs privés
+		//--------------------------------------------------------------------------------------------- Private attributes
 
 		static const size_t MAX_CONNECT_ATTEMPT = 5;
 		bool _connected;
@@ -383,19 +413,14 @@ class Sphero
 		spherocoord_t _position_x;
 		spherocoord_t _position_y;
 
-		/*
-		* X accelerometer
-		*/
+
+		/* X accelerometer */
 		spherocoord_t accelerometer_x;
 
-		/*
-		* Y accelerometer
-		*/
+		/* Y accelerometer */
 		spherocoord_t accelerometer_y;
 
-		/*
-		* Z accelerometer
-		*/
+		/* Z accelerometer */
 		spherocoord_t accelerometer_z;
 
 		//To be continued
@@ -408,8 +433,7 @@ class Sphero
 
 		const std::string _address;
 
-		// Liste de callback pour chaque événement
-
+			/* Callbacks lists (one for each declared event) */
 		std::list<callback_connect_t> _callback_connect_list;
 		std::list<callback_disconnect_t> _callback_disconnect_list;
 		std::list<callback_collision_t> _callback_collision_list;
