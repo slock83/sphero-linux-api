@@ -35,6 +35,13 @@
 
 #define FLOATING_Y_AXIS 1
 
+#define OPT_PREVENT_SLEEP 0x01
+#define OPT_EN_VDRIVE 0x02
+#define OPT_DIS_CHARGER_SL 0x04
+#define OPT_FORCE_TAIL_LED 0x08
+#define OPT_EN_MOTION_TO 0x10
+#define OPT_EN_RETAIL_DEMO 0x20
+
 //------------------------------------------------------------------- Types
 class ClientCommandPacket;
 class sphero_listener;
@@ -256,10 +263,23 @@ class Sphero
 
 		//setRawMotorValue : not needed ?
 
-
+		/**
+		 * @brief setMotionTimeout : This sets the ultimate timeout for the last motion command to keep Sphero from
+		 *			rolling away in the case of a crashed (or paused) client app.
+		 * @param time : Expressed in milliseconds. Defaults to 2000 upon wake-up.
+		 */
 		void setMotionTimeout(uint16_t time);
 
-
+		/**
+		 * @brief setPermOptFlags : Assigns the permanent option flags to the provided value and writes them to the config block for persistence across power cycles.
+		 * @param flags
+		 *			OPT_PREVENT_SLEEP : Prevent Sphero from immediately going to sleep when placed in the charger and connected over Bluetooth.
+		 *			OPT_EN_VDRIVE : Enable Vector Drive, that is, when Sphero is stopped and a new roll command is issued it achieves the heading before moving along it.
+		 *			OPT_DIS_CHARGER_SL : Disable self-leveling when Sphero is inserted into the charger.
+		 *			OPT_FORCE_TAIL_LED : Force the tail LED always on.
+		 *			OPT_EN_MOTION_TO : Enable motion timeouts
+		 *			OPT_EN_RETAIL_DEMO : Enable retail Demo Mode (when placed in the charger, ball runs a slow rainbow macro for 60 minutes and then goes to sleep).
+		 */
 		void setPermOptFlags(uint32_t flags);
 
 
