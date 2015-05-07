@@ -218,6 +218,7 @@ class Sphero
 		 */
 		void disableCollisionDetection();
 
+
 		/**
 		 * @brief isConnected : Checks the Sphero's connection state
 		 * @return true if it is connected.
