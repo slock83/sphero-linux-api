@@ -69,6 +69,8 @@ void showHelp()
 	cout << "list -- Shows the list of connected sphero" << endl;
 	cout << "select <spheroId> -- Selects the Sphero to control" << endl;
 	cout << "disconnect <spheroId> -- Disconnects the given Sphero" << endl;
+	cout << endl;
+	cout << "interactive -- switch to interactive mode (WIP)" << endl;
 	cout << "======================================================================" << endl;
 }
 
