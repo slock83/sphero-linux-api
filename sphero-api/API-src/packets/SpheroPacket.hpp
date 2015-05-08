@@ -12,7 +12,7 @@
 #include <unordered_map>
 
 //--------------------------------------------------------- Local includes
-#include "Sphero.hpp"
+#include "../Sphero.hpp"
 
 //-------------------------------------------------------------- Constants
 #define START_OF_PACKET_FLAG 0xFF;

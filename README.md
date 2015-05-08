@@ -4,6 +4,7 @@ Simple API for sphero 1&amp;2.0 written in c++
 The API is (for now) built only over the bluez bluetooth stack, making it compatible with most recent linux distributions. It will NOT work on osx systems as of now.
 
 Sphero reference doc: http://docs-beta.gosphero.com/reference/
+User Hack mode reference : https://s3.amazonaws.com/docs.gosphero.com/api/Sphero_Shell_Commands_1.0.pdf
 
 ### How To build :
 ####1. Dependencies : 
