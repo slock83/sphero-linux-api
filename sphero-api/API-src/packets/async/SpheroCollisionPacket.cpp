@@ -14,6 +14,7 @@
 
 //--------------------------------------------------------- Local includes
 #include "SpheroCollisionPacket.hpp"
+#include "../Toolbox.hpp"
 
 
 //-------------------------------------------------------------- Constants
@@ -61,10 +62,13 @@ bool SpheroCollisionPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket*
 	{
 		return false;
 	}
+	if(!packet_toolbox::checksum(packet_data+2, packet_data[18]))
+	{
+		return false;
+	}	
 	
 	return false;
 }
-
 
 /**
  * @brief packetAction : Performs the action associated to the packet

@@ -43,11 +43,11 @@ void* Sphero::monitorStream(void* sphero_ptr)
 	}
 
     return NULL;
-}
+}//END monitorStream
 
-void Sphero::handleOnCollision(spherocoord_t x, spherocoord_t y)
+void Sphero::handleOnCollision(CollisionStruct* infos)
 {
-	_collision_handler.reportAction();
+	_collision_handler.reportAction(infos);
 }
 
 //------------------------------------------------ Constructors/Destructor
@@ -66,7 +66,7 @@ Sphero::~Sphero()
 {
 	disconnect();
 	delete _bt_adapter;
-}
+}//END destructor
 
 
 //--------------------------------------------------------- Public methods
@@ -96,7 +96,7 @@ bool Sphero::connect()
 	}
 
 	return false;
-}
+}//END connect
 
 
 /**
@@ -116,7 +116,7 @@ void Sphero::disconnect()
 		
 		_disconnect_handler.reportAction();
 	}
-}
+}//END disconnect
 
 
 /**
@@ -130,7 +130,7 @@ void Sphero::sendPacket(ClientCommandPacket& packet)
 	{
 		disconnect();
 	}
-}
+}//END sendPacket
 
 
 /**
@@ -148,7 +148,7 @@ void Sphero::ping()
 		true
 	);
 	sendPacket(packet);	
-}
+}//END ping
 
 
 /**
@@ -157,8 +157,6 @@ void Sphero::ping()
  * @param green : level of green (between 0x00 and 0xFF)
  * @param blue : level of blue (between 0x00 and 0xFF)
  * @param persist : true if you want the color to be defined as user color
- *
- * packet spec : 02h 	20h 	<any> 	05h 	<value> 	<value> 	<value> 	<bool>
  */
 void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
 {
@@ -181,15 +179,13 @@ void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
 			resetTimer
 		);
 	sendPacket(packet);
-}
+}//END setColor
 
 
 /**
  * @brief setBackLedOutput : Lights the back led(used to calibrate
  * 							 the spero direction) with the given power
  * @param power : The power the LED will receive
- *
- * packet spec : 02h 	21h 	<any> 	02h 	<value>
  */
 void Sphero::setBackLedOutput(uint8_t power)
 {
@@ -203,14 +199,12 @@ void Sphero::setBackLedOutput(uint8_t power)
 			resetTimer
 		);
 	sendPacket(packet);
-}
+}//END setBackLedOutput
 
 
 /**
  * @brief setHeading : Change the heading angle
  * @param heading : the new angle, in ° (range from 0 to 359)
- *
- * packet spec : 02h 	01h 	<any> 	03h 	16-bit val
  */
 void Sphero::setHeading(uint16_t heading)
 {
@@ -230,14 +224,12 @@ void Sphero::setHeading(uint16_t heading)
 		); 
 
 	sendPacket(packet);
-}
+}//END setHeading
 
 
 /**
  * @brief setStabilization : Enable or disable stabilization
  * @param on : enables if true, disables otherwise
- *
- * packet spec : 02h 	02h 	<any> 	02h 	<bool>
  */
 void Sphero::setStabilization(bool on)
 {
@@ -254,15 +246,13 @@ void Sphero::setStabilization(bool on)
 			resetTimer
 		); 
 	sendPacket(packet);
-}
+}//END setStabilization
 
 
 /**
  * @brief setRotationRate : Change the rotation speed
  * @param angspeed : The new rotation speed (new speed will be angspeed*0.784 degrees/sec)
  *		Warning :=: high value may become really uncontrollable
- *
- * packet spec : 02h 	03h 	<any> 	02h 	<value>
  */
 void Sphero::setRotationRate(uint8_t angspeed)
 {
@@ -276,7 +266,7 @@ void Sphero::setRotationRate(uint8_t angspeed)
 			resetTimer
 		); 
 	sendPacket(packet);
-}
+}//END setRotationRate
 
 
 /**
@@ -314,8 +304,6 @@ void Sphero::setRotationRate(uint8_t angspeed)
 *					10*<True Time> (in milliseconds)
 *			0 : Use the default value
 *			Bounds : Between 1 and 255
-*
-* Packet spec : 02h 	09h 	<any> 	05h 	<byte> 	<byte> 	<byte> 	<byte>
 */
 void Sphero::setSelfLevel(uint8_t options, uint8_t angle_limit,
 						  uint8_t timeout, uint8_t trueTime)
@@ -336,7 +324,7 @@ void Sphero::setSelfLevel(uint8_t options, uint8_t angle_limit,
 			resetTimer
 		);
 	sendPacket(packet);
-}
+}//END setSelfLevel
 
 
 //void Sphero::setDataStreaming(uint16_t N, uint16_t M,uint32_t MASK, uint8_t 
@@ -359,8 +347,6 @@ void Sphero::setSelfLevel(uint8_t options, uint8_t angle_limit,
  *
  * @param Dead : An 8-bit post-collision dead time to prevent retriggering; specified in
  *			10ms increments.
- *
- * Packet spec : 02h 	12h 	<any> 	07h 	<val> 	<val> 	<val> 	<val> 	<val> 	<val>
  */
 void Sphero::enableCollisionDetection(uint8_t Xt, uint8_t Xspd,
 									  uint8_t Yt,  uint8_t Yspd,  uint8_t Dead)
@@ -383,7 +369,7 @@ void Sphero::enableCollisionDetection(uint8_t Xt, uint8_t Xspd,
 			resetTimer
 		);
 	sendPacket(packet);
-}
+}//END enableCollisionDetection
 
 
 /**
@@ -408,7 +394,7 @@ void Sphero::disableCollisionDetection()
 			waitConfirm,
 			resetTimer);
 	sendPacket(packet);
-}
+}//END disableCollisionDetection
 
 
 /**
@@ -418,7 +404,7 @@ void Sphero::disableCollisionDetection()
 bool Sphero::isConnected()
 {
 	return _bt_adapter->isConnected();
-}
+}//END isConnected
 
 
 /**
@@ -432,9 +418,6 @@ bool Sphero::isConnected()
  *			When this parameter is set to zero, it means that having yaw = 0 corresponds to facing down the Y-axis
  *																						 in the positive direction
  *			The value will be interpreted in the range 0-359 inclusive.
- *
- * Packet spec : 02h 	13h 	<any> 	02h 	<8 bit val> 	<16 bit signed val>
- *																	<16 bit signed val> 	<16 bit signed val>
  */
 void Sphero::configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t yaw)
 {
@@ -462,7 +445,7 @@ void Sphero::configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t ya
 			waitConfirm,
 			resetTimer);
 	sendPacket(packet);
-}
+}//END configureLocator
 
 //getLocator : we'll have to discuss this...
 //getRGDLed : same
@@ -480,8 +463,6 @@ void Sphero::configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t ya
  *				ACC_4G : ±4Gs
  *				ACC_8G : ±8Gs (default)
  *				ACC_16G : ±16Gs
- *
- * Packet spec : 02h 	14h 	<any> 	02h 	<8 bit val>
  */
 void Sphero::setAccelerometerRange(uint8_t range)
 {
@@ -495,7 +476,7 @@ void Sphero::setAccelerometerRange(uint8_t range)
 			resetTimer
 		); 
 	sendPacket(packet);
-}
+}//END setAccelerometerRange
 
 
 /**
@@ -505,8 +486,6 @@ void Sphero::setAccelerometerRange(uint8_t range)
  * @param state : In the CES firmware, this was used to gate the
  *			control system to either obey the roll vector or ignore it and apply optimal
  *			braking to zero speed
- *
- * Packet spec : 02h 	30h 	<any> 	05h 	<val> 	<msb> 	<lsb> 	<val>
  */
 void Sphero::roll(uint8_t speed, uint16_t heading, uint8_t state)
 {
@@ -528,7 +507,7 @@ void Sphero::roll(uint8_t speed, uint16_t heading, uint8_t state)
 			resetTimer
 		);
 	sendPacket(packet);
-}
+}//END roll
 
 
 /**
@@ -559,7 +538,7 @@ void Sphero::setInactivityTimeout(uint16_t timeout)
 			resetTimer
 		);
 	sendPacket(packet);
-}
+}//END setInactivityTimeout
 
 
 /**
@@ -569,7 +548,7 @@ void Sphero::setInactivityTimeout(uint16_t timeout)
 void Sphero::reportCollision()
 {
 	handleOnCollision(_position_x, _position_y);
-}
+}//END reportCollision
 
 
 /**
@@ -580,8 +559,6 @@ void Sphero::reportCollision()
  *									and returns an error if the hardware does not support it.
  * @param macro : If non-zero, Sphero will attempt to run this macro ID upon wakeup.
  * @param orbbasic : If non-zero, Sphero will attempt to run an orbBasic program in Flash from this line number.
- *
- * Packet spec : 00h 	22h 	<any> 	06h 	<16-bit val wakeup> 	<val macro> 	<16-bit val orbasic>
  */
 void Sphero::sleep(uint16_t time, uint8_t macro, uint16_t orbbasic)
 {
@@ -607,7 +584,7 @@ void Sphero::sleep(uint16_t time, uint8_t macro, uint16_t orbbasic)
 		);
 	sendPacket(packet);
 	
-}
+}//END sleep
 
 /*
 //setRawMotorValue : not needed ?
@@ -642,7 +619,7 @@ void Sphero::runMacro(uint8_t id);
 void Sphero::onConnect(callback_connect_t callback)
 {
 	_connect_handler.addActionListener(callback);
-}
+}//END onConnect
 
 
 /**
@@ -654,7 +631,7 @@ void Sphero::onConnect(callback_connect_t callback)
 void Sphero::onDisconnect(callback_disconnect_t callback)
 {
 	_disconnect_handler.addActionListener(callback);
-}
+}//END onDisconnect
 
 
 /**
@@ -666,4 +643,4 @@ void Sphero::onDisconnect(callback_disconnect_t callback)
 void Sphero::onCollision(callback_collision_t callback)
 {
 	_collision_handler.addActionListener(callback);
-}
+}//END onCollision
