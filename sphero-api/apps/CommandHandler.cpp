@@ -59,7 +59,6 @@ static void handleCollision()
 
 static void handleConnect(stringstream& css)
 {
-	//void
 	string address;
 	css >> address;
 	if(address.length() ==0)
@@ -73,12 +72,13 @@ static void handleConnect(stringstream& css)
 
 		  else
 			  {
-			  cout << "impossible de charger le fichier"<<endl;
+			  cerr << "impossible de charger le fichier"<<endl;
 			  return;
 			  }
 	}
 
 	Sphero* sph = new Sphero(address.c_str(), new bluez_adaptor());
+	sph->onConnect();
 	if(sph->connect())
 	{
 		size_t idx = nbActif++;

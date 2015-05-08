@@ -4,7 +4,7 @@
     début                : ven. 8 mai 2015
 *************************************************************************/
 
-#ifndef ( CONSTANTS_HPP )
+#ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
 //------------------------------------------------------------- Constants
@@ -57,7 +57,7 @@ namespace CID
 	const uint8_t selfLevel = 0x09;
 
 	const uint8_t setDataStreaming = 0x11;
-	const uint8_t ConfigureCollisionDetection = 0x12;
+	const uint8_t configureCollisionDetection = 0x12;
 	const uint8_t configureLocator = 0x13;
 	const uint8_t setAccelerometerRange = 0x14;
 	const uint8_t readLocator = 0x15;

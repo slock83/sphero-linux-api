@@ -4,7 +4,7 @@
 	started                : 17/03/2015
 *************************************************************************/
 
-#ifndef ( BLUEZ_ADAPTOR_H )
+#ifndef BLUEZ_ADAPTOR_H
 #define BLUEZ_ADAPTOR_H
 
 //------------------------------------------------------- System includes
