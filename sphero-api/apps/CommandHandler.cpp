@@ -32,7 +32,7 @@ void showHelp()
 	cout << "roll <speed> <angle> -- moves the sphero" << endl;
 	cout << "ping -- does what it says" << endl;
 	cout << "sleep <duration> -- puts the sphero to sleep for the given duration" << endl;
-	cout << "select <spheroid> -- Sélectionne le sphéro à controller" << endl;
+	cout << "select <spheroid> -- Selects the sphero to control" << endl;
 	cout << "collision -- enable collision detection feature" << endl;
     cout << "======================================================================" << endl;
 }
