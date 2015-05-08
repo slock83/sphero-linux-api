@@ -547,7 +547,9 @@ void Sphero::setInactivityTimeout(uint16_t timeout)
  */
 void Sphero::reportCollision()
 {
-	handleOnCollision(_position_x, _position_y);
+
+	//TODO : fix this
+	//handleOnCollision(_position_x, _position_y);
 }//END reportCollision
 
 
