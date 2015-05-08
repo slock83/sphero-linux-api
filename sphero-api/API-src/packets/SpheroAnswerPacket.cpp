@@ -8,25 +8,38 @@
 
 //---------------------------------------------------------------- INCLUDE
 
-//-------------------------------------------------------- Include système
+//-------------------------------------------------------- System includes
 #include <iostream>
 #include <sys/select.h>
 #include <fcntl.h>
 
-//------------------------------------------------------ Include personnel
+//--------------------------------------------------------- Local includes
 #include "SpheroAnswerPacket.hpp"
 
-//------------------------------------------------------------- Constantes
+//------------------------------------------------ Constructors/Destructor
 
-//---------------------------------------------------- Variables de classe
+/**
+ * @brief SpheroAnswerPacket : Constructor
+ * @param sphero : The Sphero instance that sends the answer packet
+ */
+SpheroAnswerPacket::SpheroAnswerPacket(Sphero* sphero) : SpheroPacket(sphero)
+{}
 
-//----------------------------------------------------------- Types privés
+
+SpheroAnswerPacket::~SpheroAnswerPacket()
+{}
 
 
-//----------------------------------------------------------------- PUBLIC
-//-------------------------------------------------------- Fonctions amies
+//--------------------------------------------------------- Public methods
 
-//----------------------------------------------------- Méthodes publiques
+//TODO: Implémenter cette fonction
+/**
+ * @brief extractPacket : extracts the packet from a socket
+ * @param fd : The socket file descriptor
+ * @param sphero : The Sphero sending the packet
+ * @param packet_ptr : A pointer to a SpheroPacket pointer
+ * @return true if the packet was successfully extracted from the socket, false otherwise
+ */
 bool SpheroAnswerPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr)
 {
 	//TODO
@@ -34,23 +47,6 @@ bool SpheroAnswerPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** pa
 	return false;
 }
 
-//------------------------------------------------- Surcharge d'opérateurs
 
-
-//-------------------------------------------- Constructeurs - destructeur
-SpheroAnswerPacket::SpheroAnswerPacket(Sphero* sphero) : SpheroPacket(sphero)
-{
-
-}
-
-SpheroAnswerPacket::~SpheroAnswerPacket()
-{
-
-}
-//------------------------------------------------------------------ PRIVE
-
-//----------------------------------------------------- Méthodes protégées
-
-//------------------------------------------------------- Méthodes privées
 
 

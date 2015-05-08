@@ -1,81 +1,74 @@
 /*************************************************************************
-    SpheroAsyncPacket 
+	SpheroAsyncPacket - Defines asynchronous packets behavior received by Sphero
                              -------------------
     début                : mar. 28 avril 2015
 *************************************************************************/
 
-//---------- Interface de la classe <SpheroAsyncPacket> (fichier SpheroAsyncPacket.hpp) ------
-#if ! defined ( SPHEROASYNCPACKET_H )
+#ifndef ( SPHEROASYNCPACKET_H )
 #define SPHEROASYNCPACKET_H
 
-//--------------------------------------------------- Interfaces utilisées
+//--------------------------------------------------------- Local includes
 #include "SpheroPacket.hpp"
 
-//------------------------------------------------------------- Constantes 
-static const uint8_t POWER_NOTIFICATION_FLAG = 0x1;
-static const uint8_t LVL_1_DIAGNOSTIC_RESPONSE = 0x2;
-static const uint8_t SENSOR_DATA_STREAMING = 0x3;
-static const uint8_t CONFIG_BLOCK_CONTENT = 0x4;
-static const uint8_t PRESLEEP_WARNING = 0x5;
-static const uint8_t MACRO_MARKERS = 0x6;
-static const uint8_t COLLISION_DETECTED = 0x7;
-static const uint8_t ORBBASIC_PRINT_MESSAGE = 0x8;
-static const uint8_t ORBBASIC_ASCII_ERROR = 0x9;
-static const uint8_t ORBBASIC_BINARY_ERROR = 0xA;
-static const uint8_t SELF_LEVEL_RESULT = 0xB;
-static const uint8_t GYRO_AXIS_LIMIT_EXCEEDED = 0xC;
+//-------------------------------------------------------------- Constants
+#define POWER_NOTIFICATION_FLAG 0x1;
+#define LVL_1_DIAGNOSTIC_RESPONSE 0x2;
+#define SENSOR_DATA_STREAMING 0x3;
+#define CONFIG_BLOCK_CONTENT 0x4;
+#define PRESLEEP_WARNING 0x5;
+#define MACRO_MARKERS 0x6;
+#define COLLISION_DETECTED 0x7;
+#define ORBBASIC_PRINT_MESSAGE 0x8;
+#define ORBBASIC_ASCII_ERROR 0x9;
+#define ORBBASIC_BINARY_ERROR 0xA;
+#define SELF_LEVEL_RESULT 0xB;
+#define GYRO_AXIS_LIMIT_EXCEEDED 0xC;
 
-//------------------------------------------------------------------ Types 
-
-//------------------------------------------------------------------------ 
-// Rôle de la classe <SpheroAsyncPacket>
-//
-// Définir les comportements des paquets asynchrones reçus par sphero
-//------------------------------------------------------------------------ 
 
 class SpheroAsyncPacket : public SpheroPacket
 {
-//----------------------------------------------------------------- PUBLIC
+	public:
+		//-------------------------------------------- Operators overload
 
-public:
-//----------------------------------------------------- Méthodes publiques
-	
-   	static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
-    virtual void packetAction() = 0;
-
-//------------------------------------------------- Surcharge d'opérateurs
-    SpheroAsyncPacket & operator = ( const SpheroAsyncPacket & unSpheroAsyncPacket ) = delete;
+		SpheroAsyncPacket & operator = ( const SpheroAsyncPacket & unSpheroAsyncPacket ) = delete;
 
 
-//-------------------------------------------- Constructeurs - destructeur
+		//--------------------------------------- Constructors/Destructor
 
-    SpheroAsyncPacket ( const SpheroAsyncPacket & unSpheroAsyncPacket ) = delete;
+		SpheroAsyncPacket ( const SpheroAsyncPacket & unSpheroAsyncPacket ) = delete;
 
-    virtual ~SpheroAsyncPacket();
-//------------------------------------------------------------------ PRIVE 
+		virtual ~SpheroAsyncPacket();
 
-protected:
-//----------------------------------------------------- Méthodes protégées
-    SpheroAsyncPacket(Sphero* sphero);
 
-private:
-//------------------------------------------------------- Méthodes privées
+		//------------------------------------------------ Public methods
 
-protected:
-//----------------------------------------------------- Attributs protégés
+		/**
+		 * @brief extractPacket : extracts the packet from a socket
+		 * @param fd : The socket file descriptor
+		 * @param sphero : The Sphero sending the packet
+		 * @param packet_ptr : A pointer to a SpheroPacket pointer
+		 * @return true if the packet was successfully extracted from the socket, false otherwise
+		 */
+		static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
 
-private:
-//------------------------------------------------------- Attributs privés
-	static extractorMap_t _extractorMap;	
-//---------------------------------------------------------- Classes amies
+		/**
+		 * @brief packetAction : Defines the packet behavior on reception
+		 */
+		virtual void packetAction() = 0;
 
-//-------------------------------------------------------- Classes privées
 
-//----------------------------------------------------------- Types privés
+	protected:
 
-};
+		/**
+		 * @brief SpheroAnswerPacket : Constructor
+		 * @param sphero : The Sphero instance that sends the asynchronous answer packet
+		 */
+		SpheroAsyncPacket(Sphero* sphero);
 
-//----------------------------------------- Types dépendants de <SpheroAsyncPacket>
+	private:
 
-#endif // SpheroAsyncPacket_H
+		static extractorMap_t _extractorMap;
+	};
+
+#endif //SPHEROASYNCPACKET_H
 

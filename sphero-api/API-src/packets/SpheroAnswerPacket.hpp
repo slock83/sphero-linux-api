@@ -1,69 +1,61 @@
-
-
 /*************************************************************************
-    SpheroAnswerPacket  -  description
+	SpheroAnswerPacket  -  Defines the behavior of
+									"answer" packets received by Sphero
                              -------------------
     début                : mar. 28 avril 2015
 *************************************************************************/
 
-//---------- Interface de la classe <SpheroAnswerPacket> (fichier SpheroAnswerPacket.hpp) ------
-#if ! defined ( SPHEROANSWERPACKET_H )
+#ifndef ( SPHEROANSWERPACKET_H )
 #define SPHEROANSWERPACKET_H
 
-//--------------------------------------------------- Interfaces utilisées
+//--------------------------------------------------------- Local includes
 #include "SpheroPacket.hpp"
 
-//------------------------------------------------------------- Constantes 
-
-//------------------------------------------------------------------ Types 
-
-//------------------------------------------------------------------------ 
-// Rôle de la classe <SpheroAnswerPacket>
-//
-// Définir les comportements des paquets "réponses" reçus par sphero
-//------------------------------------------------------------------------ 
 
 class SpheroAnswerPacket : public SpheroPacket
 {
-//----------------------------------------------------------------- PUBLIC
+	public:
+		//--------------------------------------------- Operators overload
+			//No sense
+		SpheroAnswerPacket& operator=(const SpheroAnswerPacket& unSpheroAnswerPacket) = delete;
 
-public:
-//----------------------------------------------------- Méthodes publiques
-   	static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
-    virtual void packetAction() = 0;
+		//---------------------------------------- Constructors/Destructor
+			//No sense
+		SpheroAnswerPacket(const SpheroAnswerPacket& unSpheroAnswerPacket) = delete;
 
-//------------------------------------------------- Surcharge d'opérateurs
-    SpheroAnswerPacket& operator=(const SpheroAnswerPacket& unSpheroAnswerPacket) = delete;
+		virtual ~SpheroAnswerPacket();
 
+		//------------------------------------------------- Public methods
 
-//-------------------------------------------- Constructeurs - destructeur
-    SpheroAnswerPacket(const SpheroAnswerPacket& unSpheroAnswerPacket) = delete;
+		/**
+		 * @brief extractPacket : extracts the packet from a socket
+		 * @param fd : The socket file descriptor
+		 * @param sphero : The Sphero sending the packet
+		 * @param packet_ptr : A pointer to a SpheroPacket pointer
+		 * @return true if the packet was successfully extracted from the socket, false otherwise
+		 */
+		static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
 
-    virtual ~SpheroAnswerPacket();
-//------------------------------------------------------------------ PRIVE 
+		/**
+		 * @brief packetAction : Defines the packet behavior on reception
+		 */
+		virtual void packetAction() = 0;
 
-protected:
-//----------------------------------------------------- Méthodes protégées
-    SpheroAnswerPacket(Sphero* sphero);
+	protected:
 
-private:
-//------------------------------------------------------- Méthodes privées
+		//-------------------------------------------------- Constructors
 
-protected:
-//----------------------------------------------------- Attributs protégés
+		/**
+		 * @brief SpheroAnswerPacket : Constructor
+		 * @param sphero : The Sphero instance that sends the answer packet
+		 */
+		SpheroAnswerPacket(Sphero* sphero);
 
-private:
-//------------------------------------------------------- Attributs privés
-   static extractorMap_t _extractorMap; 
-//---------------------------------------------------------- Classes amies
+	private:
 
-//-------------------------------------------------------- Classes privées
-
-//----------------------------------------------------------- Types privés
+	   static extractorMap_t _extractorMap;
 
 };
-
-//----------------------------------------- Types dépendants de <SpheroAnswerPacket>
 
 #endif // SpheroAnswerPacket_H
 

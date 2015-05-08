@@ -4,9 +4,6 @@
     début                : mar. 17 mars 2015
 *************************************************************************/
 
-//------ Réalisation de la classe <SpheroAsyncPacket> (fichier SpheroAsyncPacket.cpp) --
-
-//---------------------------------------------------------------- INCLUDE
 
 //-------------------------------------------------------- Include système
 #include <iostream>
@@ -17,19 +14,28 @@
 #include "SpheroAsyncPacket.hpp"
 #include "async/SpheroCollisionPacket.hpp"
 
-//------------------------------------------------------------- Constantes
-
 //---------------------------------------------------- Variables de classe
 extractorMap_t SpheroAsyncPacket::_extractorMap = {
 	{COLLISION_DETECTED, SpheroCollisionPacket::extractPacket}
 };
-//----------------------------------------------------------- Types privés
+
+//------------------------------------------------ Constructors/Destructor
+SpheroAsyncPacket::SpheroAsyncPacket(Sphero* sphero) : SpheroPacket(sphero)
+{}
+
+SpheroAsyncPacket::~SpheroAsyncPacket()
+{}
 
 
-//----------------------------------------------------------------- PUBLIC
-//-------------------------------------------------------- Fonctions amies
+//--------------------------------------------------------- Public methods
 
-//----------------------------------------------------- Méthodes publiques
+/**
+ * @brief extractPacket : extracts the packet from a socket
+ * @param fd : The socket file descriptor
+ * @param sphero : The Sphero sending the packet
+ * @param packet_ptr : A pointer to a SpheroPacket pointer
+ * @return true if the packet was successfully extracted from the socket, false otherwise
+ */
 bool SpheroAsyncPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr)
 {
 #ifdef MAP
@@ -52,22 +58,5 @@ bool SpheroAsyncPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** pac
 	return false;
 }
 
-//------------------------------------------------- Surcharge d'opérateurs
-
-//-------------------------------------------- Constructeurs - destructeur
-SpheroAsyncPacket::SpheroAsyncPacket(Sphero* sphero) : SpheroPacket(sphero)
-{
-
-}
-
-SpheroAsyncPacket::~SpheroAsyncPacket()
-{
-
-}
-//------------------------------------------------------------------ PRIVE
-
-//----------------------------------------------------- Méthodes protégées
-
-//------------------------------------------------------- Méthodes privées
 
 
