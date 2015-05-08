@@ -20,7 +20,7 @@
 
 
 //-------------------------------------------------------------- Constants
-static size_t const PACKET_SIZE = 19;
+static size_t const PACKET_SIZE = 20;
 
 
 //------------------------------------------------ Constructors/Destructor
@@ -66,42 +66,54 @@ bool SpheroCollisionPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket*
 	uint8_t packet_data[PACKET_SIZE];
 	if(recv(fd, &packet_data, sizeof(packet_data), 0) != sizeof(packet_data))
 	{
+#ifdef MAP
+		fprintf(stderr, "Erreur réception du packet\n");
+#endif
 		return false;
 	}
-	if(!packet_toolbox::checksum(packet_data+2, packet_data[18]))
+	if(packet_toolbox::checksum(packet_data, 19) != packet_data[19])
 	{
+#ifdef MAP
+		fprintf(stderr, "Erreur de checksum\n");
+#endif
 		return false;
 	}	
-	if(packet_data[0] != 0 || packet_data[1] != 0x10)
+	if(packet_data[1] != 0 || packet_data[2] != 0x11)
 	{
+#ifdef MAP
+		fprintf(stderr, "Erreur de taille message\n");
+#endif
 		return false;
 	}
-	if(packet_data[5] > 3)
+	if(packet_data[8] > 3)
 	{
+#ifdef MAP
+		fprintf(stderr, "Erreur valeur axe\n");
+#endif
 		return false;
 	}
 	
 	CollisionStruct* infos = new CollisionStruct();
-	uint16_t* uint16_ptr = (uint16_t*) &packet_data[2];
+	uint16_t* uint16_ptr = (uint16_t*) &packet_data[3];
 	infos->impact_component_x = be16toh(*uint16_ptr++);	
 	infos->impact_component_y = be16toh(*uint16_ptr++);	
 	infos->impact_component_z = be16toh(*uint16_ptr);	
 	
-	infos->setAxis(packet_data[8]);
+	infos->setAxis(packet_data[9]);
 
-	uint16_ptr = (uint16_t*) &packet_data[9];
+	uint16_ptr = (uint16_t*) &packet_data[10];
 	infos->magnitude_component_x = be16toh(*uint16_ptr++); 
 	infos->magnitude_component_y = be16toh(*uint16_ptr);
 
-	infos->speed = packet_data[13];
+	infos->speed = packet_data[14];
 	
-	uint32_t* uint32_ptr = (uint32_t*) &packet_data[14];
+	uint32_t* uint32_ptr = (uint32_t*) &packet_data[15];
 	infos->timestamp = be32toh(*uint32_ptr);
 
 	*packet_ptr = new SpheroCollisionPacket(sphero, infos);
-
 	return true;
 }
+
 
 /**
  * @brief packetAction : Performs the action associated to the packet

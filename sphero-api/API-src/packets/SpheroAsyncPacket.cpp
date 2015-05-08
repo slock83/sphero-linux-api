@@ -52,7 +52,7 @@ bool SpheroAsyncPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** pac
 	uint8_t idCode;
 	int rcvVal = 0;
 
-	rcvVal = recv(fd, &idCode, sizeof(idCode), 0);
+	rcvVal = recv(fd, &idCode, sizeof(idCode), MSG_PEEK);
 	if(rcvVal != sizeof(idCode))
 	{
 		return false;
@@ -63,6 +63,7 @@ bool SpheroAsyncPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** pac
 	{
 		return mapIt->second(fd, sphero, packet_ptr);
 	}
+	recv(fd, &idCode, sizeof(idCode), 0);
 	return false;
 }
 

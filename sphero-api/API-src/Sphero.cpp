@@ -10,6 +10,7 @@
 #include <endian.h>
 #include <sys/socket.h>
 #include <pthread.h>
+#include <unistd.h>
 
 //--------------------------------------------------------- Local includes
 
@@ -130,6 +131,9 @@ void Sphero::sendPacket(ClientCommandPacket& packet)
 	{
 		disconnect();
 	}
+
+	fsync(_bt_socket);
+
 }//END sendPacket
 
 

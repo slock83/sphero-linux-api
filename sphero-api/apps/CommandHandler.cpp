@@ -324,6 +324,11 @@ int handleCommand(const string& command)
 	{
 		handleSleep(css);
 	}
+		else if(cmd == "coll")
+	{
+		CollisionStruct coll;
+		s->reportCollision(&coll);
+	}
 	else if(cmd == "interactive")
 	{
 		interactiveMode();
