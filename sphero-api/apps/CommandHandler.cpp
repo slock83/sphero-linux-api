@@ -24,34 +24,34 @@ static vector<Sphero*> spheroVec;
 
 class BufferToggle
 {
-private:
-	struct termios t;
+	private:
+		struct termios t;
 
-public:
+	public:
 
-	/*
-	 * Disables buffered input
-	 */
+		/*
+		 * Disables buffered input
+		 */
 
-	void off(void)
-	{
-		tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
-		t.c_lflag &= ~ICANON; //disable canonical mmode
-		t.c_lflag &= ~ECHO; //disable echoing
-		tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
-	}
+		void off(void)
+		{
+			tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
+			t.c_lflag &= ~ICANON; //disable canonical mmode
+			t.c_lflag &= ~ECHO; //disable echoing
+			tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
+		}
 
-	/*
-	 * Enables buffered input
-	 */
+		/*
+		 * Enables buffered input
+		 */
 
-	void on(void)
-	{
-		tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
-		t.c_lflag |= ICANON;
-		t.c_lflag |= ECHO;
-		tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
-	}
+		void on(void)
+		{
+			tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
+			t.c_lflag |= ICANON;
+			t.c_lflag |= ECHO;
+			tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
+		}
 };
 
 void init()
