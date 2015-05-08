@@ -1,22 +1,22 @@
 /******************************************************************************
-    ActionHandler  - Template générique de gestion des différentes actions 
+	ActionHandler  - Generic template to handle diverse actions
                              -------------------
-    					   started on  : 05/08/2015
+	début                : ven. 08 mai 2015
 ******************************************************************************/
 
-//--- Interface de la classe <ActionHandler> (fichier ActionHandler.hpp) ------
-#if ! defined ( ACTIONHANDLER_HPP )
+#ifndef ( ACTIONHANDLER_HPP )
 #define ACTIONHANDLER_HPP
 
-//--------------------------------------------------- Interfaces utilisées
+//-------------------------------------------------------- System includes
 #include <queue>
 #include <functional>
 //------------------------------------------------------------- Constantes 
 
 //------------------------------------------------------------------ Types 
 
+
 /**
- * T : type de la structure de donnée qui sera communiquée à tous les listener
+ * T : Data structure type which will be communicated to all listeners
  */
 template<typename ...T>
 class ActionHandler 
@@ -78,11 +78,6 @@ private:
 //---------------------------------------------------------- Classes amies
 
 //-------------------------------------------------------- Classes privées
-
-
 };
 
-//----------------------------------------- Types dépendants de <ActionHandler>
-#include "ActionHandler.tpp"
 #endif // ACTIONHANDLER_HPP
-
