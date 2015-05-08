@@ -74,6 +74,7 @@ void showHelp()
 	cout << "sleep <duration> -- Puts the sphero to sleep for the given duration" << endl;
 	cout << endl;
 	cout << "changecolor <red> <green> <blue> <persist> -- Changes the Sphero color" << endl;
+	cout << "backled <intensity> -- Changes the Sphero's back LED intensity" << endl;
 	cout << "setIT <TO> -- Set inactivity timeout for the sphero" << endl;
 	cout << "roll <speed> <angle> -- Moves the sphero" << endl;
 	cout << "collision -- Enable collision detection feature" << endl;
@@ -272,6 +273,24 @@ static void handleCc(stringstream& css)
 				);
 }
 
+/**
+ * @brief handleBackLED : Handles the back LED intensity
+ */
+static void handleBackLED(stringstream& css)
+{
+	if(!isConnected()) return;
+
+	unsigned int r, g, b;
+	bool persist;
+
+	css >> i;
+#ifdef MAP
+	std::cout << "i = " << i << std::endl;
+#endif
+	sm.getSphero()->setBackLedOutput((uint8_t) i%256);
+}
+
+
 void init()
 {
 }
@@ -322,6 +341,10 @@ int handleCommand(const string& command)
 	else if(cmd == "changecolor")
 	{
 		handleCc(css);
+	}
+	else if(cmd == "backled")
+	{
+		handleBackLED(css);
 	}
 	else if(cmd == "roll")
 	{
