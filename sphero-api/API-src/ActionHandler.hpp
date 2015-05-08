@@ -8,7 +8,7 @@
 #define ACTIONHANDLER_HPP
 
 //-------------------------------------------------------- System includes
-#include <queue>
+#include <list>
 #include <functional>
 
 
@@ -65,10 +65,10 @@ class ActionHandler
 
 	private:
 		//-------------------------------------------------- Private types
-		using listenerQueue_t = std::queue<listener_t>;
+		using listenerList_t = std::list<listener_t>;
 
 		//--------------------------------------------- Private attributes
-		listenerQueue_t _listenerQueue;
+		listenerList_t _listenerList;
 };
 
 #include "ActionHandler.tpp"

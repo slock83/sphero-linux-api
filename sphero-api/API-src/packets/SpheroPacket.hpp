@@ -44,11 +44,13 @@ class SpheroPacket
 		//------------------------------------------------ Public methods
 
 		/**
-		 * @brief extractPacket : extracts informations from the file descriptor to build a well made packet
+		 * @brief extractPacket : extracts informations from the file descriptor 
+		 * 						  to build a well made packet
 		 * @param fd : The socket file descriptor
 		 * @param sphero : The Sphero sending the packet
 		 * @param packet_ptr : A pointer to a SpheroPacket pointer
-		 * @return true if the packet was successfully extracted from the socket, false otherwise
+		 * @return true if the packet was successfully extracted from the 
+		 * 		   socket, false otherwise
 		 *
 		 * Contract: the socket has to be in blocking read
 		 */
