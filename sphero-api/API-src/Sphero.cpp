@@ -41,6 +41,8 @@ void* Sphero::monitorStream(void* sphero_ptr)
 			}
 		}
 	}
+
+    return NULL;
 }
 
 

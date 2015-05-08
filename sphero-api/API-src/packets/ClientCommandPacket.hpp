@@ -70,7 +70,7 @@ class ClientCommandPacket
 		 * @param acknowledge : if true, client send reply after acting
 		 * @param rstTO : if true, reset client inactivity timeout
 		 */
-		ClientCommandPacket(byte did, byte cid, byte seq, byte dlen,
+        ClientCommandPacket(byte did, byte cid, byte seq, byte dlen,
 							byte* data, bool acknowledge = false, bool rstTO = false);
 
 		virtual ~ClientCommandPacket();
