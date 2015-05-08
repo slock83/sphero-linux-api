@@ -80,7 +80,7 @@ static void handleConnect(stringstream& css)
 
 	Sphero* sph = new Sphero(address.c_str(), new bluez_adaptor());
 	sph->onConnect([](){
-				std::cout << "I am connected, master" << std::endl;
+				std::cout << "Here I come, honourable people !" << std::endl;
 			});
 	if(sph->connect())
 	{
