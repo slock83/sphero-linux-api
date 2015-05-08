@@ -1,5 +1,5 @@
 /*************************************************************************
-	CommandHandler  -  Sphero control applicaiton -- comand interpreter
+	CommandHandler  -  Sphero control applicaiton -- command interpreter
 							 -------------------
 	started                : 08/05/2015
 *************************************************************************/

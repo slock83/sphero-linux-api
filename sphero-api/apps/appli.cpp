@@ -1,5 +1,14 @@
+/*************************************************************************
+	Appli  -  Sphero control applicaiton -- main
+							 -------------------
+	started                : 08/05/2015
+*************************************************************************/
+
 #include <iostream>
 #include <string>
+
+#include <readline/readline.h>
+#include <readline/history.h>
 
 #include "CommandHandler.h"
 
@@ -7,20 +16,27 @@ using namespace std;
 
 int main(void)
 {
-
 	cout << "\033]0;Sphero-cmd\007";
 	cout.flush();
 
-	init();
+	char *buf;
+	rl_bind_key('\t',rl_abort);//disable auto-complete
 
 	string command("");
 	showHelp();
-	do
+
+	while((buf = readline("\nSphero >> ")) != NULL)
 	{
-		cout << "Sphero > ";
-		getline(cin, command);
+		if (strcmp(buf,"quit")==0)
+			break;
+
+		if (buf[0]!=0)
+			add_history(buf);
+
+		command = string(buf);
+		if(handleCommand(command) == 0)
+			return 0;
 	}
-	while(handleCommand(command));
 
 
 	return 0;
