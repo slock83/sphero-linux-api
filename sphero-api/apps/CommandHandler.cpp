@@ -21,6 +21,10 @@ static size_t nbActif = 0;
 static vector<Sphero*> spheroVec;
 /**/
 
+void init()
+{
+	spheroVec = vector<Sphero*>();
+}//END init
 
 void showHelp()
 {
@@ -35,28 +39,7 @@ void showHelp()
 	cout << "select <spheroid> -- Selects the sphero to control" << endl;
 	cout << "collision -- enable collision detection feature" << endl;
     cout << "======================================================================" << endl;
-}
-
-static void ping()
-{
-	if(s == NULL)
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
-	s->ping();
-}
-
-static void handleCollision()
-{
-	if(s == NULL)
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
-
-	s->enableCollisionDetection(1,128,1,128, 15);
-}
+}//END showHelp
 
 static void handleConnect(stringstream& css)
 {
@@ -103,7 +86,7 @@ static void handleConnect(stringstream& css)
 		delete sph;
 		cout << "Connection error" << endl;
 	}
-}
+}//END handleConnect
 
 static void handleSelect(stringstream& css)
 {
@@ -119,7 +102,29 @@ static void handleSelect(stringstream& css)
 	{
 		cout << "ID not recognized" << endl;
 	}
-}
+}//END handleSelect
+
+static void ping()
+{
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+	s->ping();
+}//END ping
+
+static void handleCollision()
+{
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+
+	s->enableCollisionDetection(1,128,1,128, 15);
+}//END handleCollision
+
 
 static void handleSleep(stringstream& css)
 {
@@ -134,7 +139,7 @@ static void handleSleep(stringstream& css)
 	s->disconnect();
 	sleep(time+3);
 	s->connect();
-}
+}//END handleSleep
 
 static void handleDirect(stringstream& css)
 {
@@ -150,7 +155,7 @@ static void handleDirect(stringstream& css)
 
 	s->roll((uint8_t) speed % 256, (uint16_t) angle % 0x10000, 1);
 	
-}
+}//END handleDirect
 
 static void handleIT(stringstream& css)
 {
@@ -165,7 +170,7 @@ static void handleIT(stringstream& css)
 
 	s->setInactivityTimeout(inactivityTO);
 	
-}
+}//END handleIT
 
 static void handleCc(stringstream& css)
 {
@@ -189,12 +194,7 @@ static void handleCc(stringstream& css)
 			(uint8_t) b%256, 
 			(persist==1)
 		);
-}
-
-void init()
-{
-	spheroVec = vector<Sphero*>();
-}
+}//END handleCC
 
 int handleCommand(const string& command)
 {
@@ -243,4 +243,4 @@ int handleCommand(const string& command)
 		showHelp();
 	
 	return -1;
-}
+}//END handleCommand
