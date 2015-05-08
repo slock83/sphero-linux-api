@@ -91,7 +91,6 @@ bool Sphero::connect()
 	while((_bt_socket = _bt_adapter->connection(_address.c_str())) == -1 && 
 			i++ < MAX_CONNECT_ATTEMPT)
 	{
-		//TODO
 	}
 
 	if(_bt_socket != -1)
@@ -99,9 +98,7 @@ bool Sphero::connect()
 		pthread_create(&monitor, NULL, monitorStream, this);
 
 		_connected = true;
-		
-		//TODO : create action to report
-		//_connect_handler.reportAction();
+		_connect_handler.reportAction();
 
 		return true;
 	}

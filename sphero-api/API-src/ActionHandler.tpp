@@ -5,14 +5,14 @@
 *************************************************************************/
 
 //--------------------------------------------------------- Local includes
-
+//
 //------------------------------------------------ Constructors/Destructor
 
 /**
  * @brief ActionHandler : Constructor
  */
 template<typename ...T>
-ActionHandler<T...>::ActionHandler():_listenerQueue()
+ActionHandler<T...>::ActionHandler():_listenerList()
 {}
 
 
@@ -31,10 +31,10 @@ ActionHandler<T...>::~ActionHandler ( )
 template<typename ...T>
 void ActionHandler<T...>::reportAction(T... action)
 {
-	typename listenerQueue_t::iterator it;
-	for(it = _listenerQueue.begin() ; it != _listenerQueue.end() ; it++)
+	typename listenerList_t::iterator it;
+	for(it = _listenerList.begin() ; it != _listenerList.end() ; it++)
 	{
-		*it(action...);
+		(*it)(action...);
 	}
 }
 
@@ -46,7 +46,7 @@ void ActionHandler<T...>::reportAction(T... action)
 template<typename ...T>
 void ActionHandler<T...>::addActionListener(listener_t listener)
 {
-	_listenerQueue.push(listener);
+	_listenerList.push_front(listener);
 }
 
 
@@ -56,9 +56,7 @@ void ActionHandler<T...>::addActionListener(listener_t listener)
 template<typename ...T>
 void ActionHandler<T...>::clearListener()
 {
-	listenerQueue_t empty;
-	std::swap(_listenerQueue, empty);
+	listenerList_t empty;
+	std::swap(_listenerList, empty);
 
 }
-
-
