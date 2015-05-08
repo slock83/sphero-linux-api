@@ -10,9 +10,6 @@
 //-------------------------------------------------------- System includes
 #include <queue>
 #include <functional>
-//------------------------------------------------------------- Constantes 
-
-//------------------------------------------------------------------ Types 
 
 
 /**
@@ -21,63 +18,54 @@
 template<typename ...T>
 class ActionHandler 
 {
-//----------------------------------------------------------------- PUBLIC
-
-public :
-//--------------------------------------------------------- Types internes 
-	using listener_t = std::function<void(T...)>;
-
-//----------------------------------------------------- Méthodes publiques
-	/**
-	 * @brief reportAction : Permet de tenir l'actionHandler au courant de 
-	 * 						 l'action survenue. Tous les listener sont ensuite
-	 * 						 notifiés.
-	 * @param action : 	Un pointeur sur la structure de donnée qui contient
-	 * 					les informations relatives à l'action.
-	 */
-	void reportAction(T... action);
-
-	/**
-	 * @brief addActionListener : Permet d'enregistrer un listener d'action
-	 * @param : listener : le listener à ajouter
-	 */
-	void addActionListener(listener_t listener);
-
-	/**
-	 * @brief clearListener : désenregistre tous les listeners
-	 */
-	void clearListener();
-
-//------------------------------------------------- Surcharge d'opérateurs
-    ActionHandler& operator=(const ActionHandler&) = delete;
-
-//-------------------------------------------- Constructeurs - destructeur
-    ActionHandler(const ActionHandler&) = delete;
-
-    ActionHandler();
-
-    virtual ~ActionHandler();
+	public :
+		//---------------------------------------------------- Local types
+		using listener_t = std::function<void(T...)>;
 
 
-//------------------------------------------------------------------ PRIVE 
 
-protected:
-//----------------------------------------------------- Méthodes protégées
+		//--------------------------------------------- Operators overload
+			//No sense
+		ActionHandler& operator=(const ActionHandler&) = delete;
 
-private:
-//------------------------------------------------------- Méthodes privées
+		//---------------------------------------- Constructors/Destructor
+			//No sense
+		ActionHandler(const ActionHandler&) = delete;
 
-protected:
-//----------------------------------------------------- Attributs protégés
+		/**
+		 * @brief ActionHandler : Constructor
+		 */
+		ActionHandler();
 
-private:
-//----------------------------------------------------------- Types privés
-	using listenerQueue_t = std::queue<listener_t>;
-//------------------------------------------------------- Attributs privés
-	listenerQueue_t _listenerQueue;
-//---------------------------------------------------------- Classes amies
+		virtual ~ActionHandler();
+		//------------------------------------------------- Public methods
 
-//-------------------------------------------------------- Classes privées
+		/**
+		 * @brief reportAction : Reports the ocurred actions to actionHandler.
+		 *				All listeners are then notified.
+		 * @param action : A pointer to the action informations data structure
+		 */
+		void reportAction(T... action);
+
+
+		/**
+		 * @brief addActionListener : Registers a new listener
+		 * @param : listener : The new listener which will be registered
+		 */
+		void addActionListener(listener_t listener);
+
+
+		/**
+		 * @brief clearListener : Unregisters all listeners
+		 */
+		void clearListener();
+
+	private:
+		//-------------------------------------------------- Private types
+		using listenerQueue_t = std::queue<listener_t>;
+
+		//--------------------------------------------- Private attributes
+		listenerQueue_t _listenerQueue;
 };
 
 #endif // ACTIONHANDLER_HPP

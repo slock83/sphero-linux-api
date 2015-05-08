@@ -4,9 +4,7 @@
     début                : ven. 08 mai 2015
 *************************************************************************/
 
-//-------------------------------------------------------- Include système
-
-//------------------------------------------------------ Include personnel
+//--------------------------------------------------------- Local includes
 #include "ActionHandler.hpp"
 
 //------------------------------------------------ Constructors/Destructor
@@ -14,21 +12,25 @@
 /**
  * @brief ActionHandler : Constructor
  */
-ActionHandler::ActionHandler():_listenerQueue()
+template<typename ...T>
+ActionHandler<T...>::ActionHandler():_listenerQueue()
 {}
 
-ActionHandler::~ActionHandler ( )
+
+template<typename ...T>
+ActionHandler<T...>::~ActionHandler ( )
 {}
+
 
 //--------------------------------------------------------- Public methods
 
-template<typename T>
 /**
- * @brief reportAction : Reports the ocurred action to actionHandler.
+ * @brief reportAction : Reports the ocurred actions to actionHandler.
  *				All listeners are then notified.
  * @param action : A pointer to the action informations data structure
  */
-void ActionHandler::reportAction(T* action)
+template<typename ...T>
+void ActionHandler<T...>::reportAction(T... action)
 {
 	std::queue<listener<T> const>::iterator it;
 	for(it = _listenerQueue.begin() ; it != _listenerQueue.end() ; it++)
@@ -38,25 +40,26 @@ void ActionHandler::reportAction(T* action)
 }
 
 
-template<typename T>
 /**
  * @brief addActionListener : Registers a new listener
  * @param : listener : The new listener which will be registered
  */
-void ActionHandler::addActionListener(listener<T> const listener)
+template<typename ...T>
+void ActionHandler<T...>::addActionListener(listener_t listener)
 {
 	_listenerQueue.push(listener);
 }
 
 
-template<typename T>
 /**
  * @brief clearListener : Unregisters all listeners
  */
-void clearListener()
+template<typename ...T>
+void ActionHandler<T...>::clearListener()
 {
 	std::queue<listener<T> const> empty;
 	std::swap(_listenerQueue, empty);
 
 }
+
 
