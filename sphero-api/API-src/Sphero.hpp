@@ -457,7 +457,7 @@ class Sphero
 
 		void handleOnConnect();
 		void handleOnDisonnect();
-		void handleOnCollision(spherocoord_t x, spherocoord_t y);
+		void handleOnCollision(CollisionStruct* infos);
 
 	private:
 		//-------------------------------------------------- Private attributes

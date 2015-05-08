@@ -28,10 +28,11 @@ struct CollisionStruct
 
 	/**
 	 * @brief CollisionStruct : convert axis raw data to enun axis_t
+								and affect the result to threshold_axis
 	 *
 	 * @param rawAxis : raw information from sphero
 	 *
-	 * @return TODO 
+	 * @return XAXIS if rawAxis is 0, else YAXIS
 	 *
 	 **/
 	
