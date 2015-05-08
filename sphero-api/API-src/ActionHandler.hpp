@@ -1,7 +1,7 @@
 /******************************************************************************
 	ActionHandler  - Generic template to handle diverse actions
                              -------------------
-	début                : ven. 08 mai 2015
+	started                : 08/05/2015
 ******************************************************************************/
 
 #ifndef ( ACTIONHANDLER_HPP )
@@ -12,6 +12,7 @@
 #include <functional>
 
 
+//------------------------------------------------------- Class definition
 /**
  * T : Data structure type which will be communicated to all listeners
  */
@@ -23,10 +24,10 @@ class ActionHandler
 		using listener_t = std::function<void(T...)>;
 
 
-
 		//--------------------------------------------- Operators overload
 			//No sense
 		ActionHandler& operator=(const ActionHandler&) = delete;
+
 
 		//---------------------------------------- Constructors/Destructor
 			//No sense
@@ -38,6 +39,8 @@ class ActionHandler
 		ActionHandler();
 
 		virtual ~ActionHandler();
+
+
 		//------------------------------------------------- Public methods
 
 		/**

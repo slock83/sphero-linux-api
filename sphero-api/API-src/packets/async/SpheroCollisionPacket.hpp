@@ -1,7 +1,7 @@
 /*************************************************************************
    SpheroCollisionPacket  - Represents an asynchronous collision packet
                              -------------------
-    début                : jeu. 07 mai 2015
+	started                : 07/05/2015
 *************************************************************************/
 
 #ifndef ( SPHEROCOLLISIONPACKET_H )
@@ -11,10 +11,12 @@
 #include "../SpheroAsyncPacket.hpp"
 
 
+//------------------------------------------------------- Class definition
 class SpheroCollisionPacket : public SpheroAsyncPacket 
 {
 	public:
 		//------------------------------------------------- Public methods
+
 		/**
 		 * @brief extractPacket : extracts the packet from a socket
 		 * @param fd : The socket file descriptor
@@ -25,6 +27,7 @@ class SpheroCollisionPacket : public SpheroAsyncPacket
 		 * Contract: the socket has to be in blocking read
 		 */
 		static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
+
 
 		/**
 		 * @brief packetAction : Performs the action associated to the packet
@@ -42,6 +45,7 @@ class SpheroCollisionPacket : public SpheroAsyncPacket
 			//No sense
 		SpheroCollisionPacket(
 				const SpheroCollisionPacket& unSpheroCollisionPacket) = delete;
+
 
 		virtual ~SpheroCollisionPacket();
 

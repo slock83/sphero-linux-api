@@ -2,7 +2,7 @@
 	SpheroPacket  -  Abstract class. Defines the behavior of
 												packets received by Sphero
                              -------------------
-    début                : mar. 28 avril 2015
+	started                : 28/04/2015
 *************************************************************************/
 
 #ifndef ( SPHEROPACKET_H )
@@ -27,6 +27,7 @@ typedef std::unordered_map<uint8_t, packetExtractor> extractorMap_t;
 typedef std::pair<uint8_t, packetExtractor> extractorMapEntry_t;
 
 
+//------------------------------------------------------- Class definition
 class SpheroPacket
 {
 	public:
@@ -63,7 +64,7 @@ class SpheroPacket
 
 		/**
 		 * @brief SpheroPacket::SpheroPacket
-		 * @param sphero : The Sphero instance to which the packet is linked
+		 * @param sphero : The Sphero instance that receives the packet
 		 */
 		SpheroPacket(Sphero* sphero);
 

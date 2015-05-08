@@ -20,7 +20,7 @@
 
 /**
  * @brief SpheroAnswerPacket : Constructor
- * @param sphero : The Sphero instance that sends the answer packet
+ * @param sphero : The Sphero instance that receives the answer packet
  */
 SpheroAnswerPacket::SpheroAnswerPacket(Sphero* sphero) : SpheroPacket(sphero)
 {}
@@ -32,7 +32,6 @@ SpheroAnswerPacket::~SpheroAnswerPacket()
 
 //--------------------------------------------------------- Public methods
 
-//TODO: Implémenter cette fonction
 /**
  * @brief extractPacket : extracts the packet from a socket
  * @param fd : The socket file descriptor
@@ -44,7 +43,7 @@ SpheroAnswerPacket::~SpheroAnswerPacket()
  */
 bool SpheroAnswerPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr)
 {
-	//TODO
+	//TODO: Implement
 	fprintf(stderr, "Test : AnswerPacket\n");
 	return false;
 }

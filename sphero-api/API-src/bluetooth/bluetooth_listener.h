@@ -1,7 +1,7 @@
 /*************************************************************************
 	bluetooth_listener - Bluetooth socket listening utilities
                              -------------------
-    début                : mar. 17 mars 2015
+	started                : 17/03/2015
 *************************************************************************/
 
 #ifndef ( BLUETOOTH_LISTENER_H )
@@ -11,6 +11,7 @@
 #include <cstdint>
 
 
+//------------------------------------------------------- Class definition
 class bluetooth_listener 
 {
 	public:
@@ -25,13 +26,13 @@ class bluetooth_listener
 
 		//--------------------------------------------- Operators overload
 			//No sense
-		bluetooth_listener & operator = ( const bluetooth_listener & unbluetooth_listener ) = delete;
+		bluetooth_listener & operator=(const bluetooth_listener & unbluetooth_listener) = delete;
 
 		//---------------------------------------- Constructors/Destructor
 			//No sense
-		bluetooth_listener ( const bluetooth_listener & unbluetooth_listener ) = delete;
+		bluetooth_listener(const bluetooth_listener & unbluetooth_listener) = delete;
 
-		virtual ~bluetooth_listener ( );
+		virtual ~bluetooth_listener();
 };
 
 #endif // BLUETOOTH_LISTENER_H

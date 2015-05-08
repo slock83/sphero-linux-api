@@ -1,8 +1,9 @@
-/*************************************************************************************************************************
-			Sphero  -  Wrapper implementing all sphero-linked features (like packet creation, emission, reception)
+/*************************************************************************
+	Sphero  -  Wrapper implementing all sphero-linked features
+								(like packet creation, emission, reception)
 							 -------------------
-			started                : 07/03/2015
- ************************************************************************************************************************/
+	started                : 07/03/2015
+ ************************************************************************/
 
 //-------------------------------------------------------- System includes
 
@@ -88,7 +89,7 @@ bool Sphero::connect()
 	while((_bt_socket = _bt_adapter->connection(_address.c_str())) == -1 && 
 			i++ < MAX_CONNECT_ATTEMPT)
 	{
-		//Coucou
+		//TODO
 	}
 
 	if(_bt_socket != -1)
@@ -97,7 +98,8 @@ bool Sphero::connect()
 
 		_connected = true;
 		
-		_connect_handler.reportAction();
+		//TODO : create action to report
+		//_connect_handler.reportAction();
 
 		return true;
 	}
@@ -112,7 +114,7 @@ bool Sphero::connect()
 void Sphero::disconnect()
 {
 #ifdef MAP
-	fprintf(stderr, "Deconnexion\n");
+	fprintf(stderr, "Logging out\n");
 #endif
 	if(_connected)
 	{
@@ -176,6 +178,7 @@ void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
 		data_payload[3] = 1;
 	else
 		data_payload[3] = 0;
+
 	ClientCommandPacket packet (
 			DID::sphero,
 			CID::setRGBLEDOutput,
@@ -248,6 +251,7 @@ void Sphero::setStabilization(bool on)
 {
 	uint8_t state;
 	state = on ? 1 : 0;
+
 	ClientCommandPacket packet (
 			DID::sphero,
 			CID::setStabilization,
@@ -329,6 +333,7 @@ void Sphero::setSelfLevel(uint8_t options, uint8_t angle_limit,
 	data_payload[1] = angle_limit;
 	data_payload[2] = timeout;
 	data_payload[3] = trueTime;
+
 	ClientCommandPacket packet(
 			DID::sphero,
 			CID::selfLevel,
@@ -366,7 +371,7 @@ void Sphero::setSelfLevel(uint8_t options, uint8_t angle_limit,
  * Packet spec : 02h 	12h 	<any> 	07h 	<val> 	<val> 	<val> 	<val> 	<val> 	<val>
  */
 void Sphero::enableCollisionDetection(uint8_t Xt, uint8_t Xspd,
-		uint8_t Yt,  uint8_t Yspd,  uint8_t Dead)
+									  uint8_t Yt,  uint8_t Yspd,  uint8_t Dead)
 {
 	uint8_t data_payload[6];
 	data_payload[0] = 0x01;
@@ -401,6 +406,7 @@ void Sphero::disableCollisionDetection()
 	data_payload[3] = 0;
 	data_payload[4] = 0;
 	data_payload[5] = 0;
+
 	ClientCommandPacket packet(
 			DID::sphero,
 			CID::configureCollisionDetection,
@@ -519,6 +525,7 @@ void Sphero::roll(uint8_t speed, uint16_t heading, uint8_t state)
 	data_payload[1] = msb;
 	data_payload[2] = lsb;
 	data_payload[3] = state;
+
 	ClientCommandPacket packet(
 			DID::sphero,
 			CID::roll,
@@ -549,6 +556,7 @@ void Sphero::setInactivityTimeout(uint16_t timeout)
 	}
 	timeout = htobe16(timeout);
 	uint8_t* data = (uint8_t*) &timeout;
+
 	ClientCommandPacket packet(
 			DID::core,
 			CID::setInactivityTimeout,
@@ -595,6 +603,7 @@ void Sphero::sleep(uint16_t time, uint8_t macro, uint16_t orbbasic)
 	data_payload[2] = macro;
 	data_payload[3] = msbOrb;
 	data_payload[4] = lsbOrb;
+
 	ClientCommandPacket packet(
 			DID::core,
 			CID::sleep,

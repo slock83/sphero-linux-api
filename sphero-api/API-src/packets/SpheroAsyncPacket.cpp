@@ -20,6 +20,11 @@ extractorMap_t SpheroAsyncPacket::_extractorMap = {
 };
 
 //------------------------------------------------ Constructors/Destructor
+
+/**
+ * @brief SpheroAsyncPacket : Constructor
+ * @param sphero : The Sphero instance that receives the asynchronous answer packet
+ */
 SpheroAsyncPacket::SpheroAsyncPacket(Sphero* sphero) : SpheroPacket(sphero)
 {}
 

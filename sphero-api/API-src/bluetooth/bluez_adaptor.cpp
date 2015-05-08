@@ -1,7 +1,7 @@
 /*************************************************************************
 	bluez_adaptor  -  Bluez stack adaptor for Sphero
                              -------------------
-    début                : mar. 17 mars 2015
+	started                : 17/03/2015
 *************************************************************************/
 
 //-------------------------------------------------------- System includes
@@ -22,11 +22,10 @@ static const size_t MAX_CONNECT_ATTEMPT_BUSY = 3;
 //------------------------------------------------ Constructors/Destructor
 
 
-bluez_adaptor::bluez_adaptor():
-	bluetooth_connector(), _bt_socket(0), _connected(false)
+bluez_adaptor::bluez_adaptor():bluetooth_connector(), _bt_socket(0), _connected(false)
 {
 #ifdef MAP
-	cout << "Appel au constructeur de <bluez_adaptor>" << endl;
+	cout << "<bluez_adaptor> constructor called" << endl;
 #endif
 } //----- Fin de bluez_adaptor
 
@@ -34,7 +33,7 @@ bluez_adaptor::bluez_adaptor():
 bluez_adaptor::~bluez_adaptor()
 {
 #ifdef MAP
-	cout << "Appel au destructeur de <bluez_adaptor>" << endl;
+	cout << "<bluez_adaptor> destructor called" << endl;
 #endif
 	if(_connected)
 	{
@@ -63,7 +62,7 @@ int bluez_adaptor::connection(const char* address)
 
 	bdaddr_t bt_address;
 
-	//Conversion de l'adresse 
+		//Address conversion
 	if(str2ba(address, &bt_address))
 	{
 		fprintf(stderr, "BT address conversion error");

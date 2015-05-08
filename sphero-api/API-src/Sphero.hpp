@@ -2,7 +2,7 @@
 	Sphero  -  	Wrapper implementing all sphero-linked features (like packet
 				creation, emission, reception)
 							-------------------
-			started                : 16/03/2015
+	started                : 16/03/2015
 ******************************************************************************/
 
 #if ! defined ( SPHERO_HPP )
@@ -186,12 +186,8 @@ class Sphero
 		 *			0 : Use the default value
 		 *			Bounds : Between 1 and 255
 		 */
-		void setSelfLevel(
-				uint8_t options = 0, 
-				uint8_t angle_limit = 3, 
-				uint8_t timeout = 15, 
-				uint8_t trueTime = 30
-			);
+		void setSelfLevel(uint8_t options = 0, uint8_t angle_limit = 3,
+						  uint8_t timeout = 15, uint8_t trueTime = 30);
 
 
 		//void setDataStreaming(

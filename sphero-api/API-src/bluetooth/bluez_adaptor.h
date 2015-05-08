@@ -1,7 +1,7 @@
 /*************************************************************************
 	bluez_adaptor  -  Bluez stack adaptor for Sphero
                              -------------------
-    début                : mar. 17 mars 2015
+	started                : 17/03/2015
 *************************************************************************/
 
 #ifndef ( BLUEZ_ADAPTOR_H )
@@ -15,22 +15,28 @@
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
 
+//-------------------------------------------------------- Local includes
 #include "bluetooth_connector.h"
 
 
+//------------------------------------------------------- Class definition
 class bluez_adaptor : public bluetooth_connector
 {
 	public:
 
 		//-------------------------------------------- Operators overload
-			//N'a pas de sens
-		bluez_adaptor & operator = ( const bluez_adaptor & unbluez_adaptor ) = delete;
+			//No sense
+		bluez_adaptor & operator=(const bluez_adaptor & unbluez_adaptor) = delete;
 
 
 		//--------------------------------------- Constructors/Destructor
-		bluez_adaptor ( const bluez_adaptor & unbluez_adaptor ) = delete;
+			//No sense
+		bluez_adaptor(const bluez_adaptor & unbluez_adaptor) = delete;
 
-		bluez_adaptor ();
+		/**
+		 * @brief bluez_adaptor : Constructor
+		 */
+		bluez_adaptor();
 
 		virtual ~bluez_adaptor ( );
 
@@ -57,7 +63,9 @@ class bluez_adaptor : public bluetooth_connector
 
 	private:
 
+			/* The socket associated to the connector */
 		int _bt_socket;
+			/* The connection state */
 		bool _connected;
 };
 

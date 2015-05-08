@@ -53,15 +53,15 @@ SpheroCollisionPacket::~SpheroCollisionPacket ( )
 bool SpheroCollisionPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket** packet_ptr)
 {
 #ifdef MAP
-	fprintf(stdout, "Réception d'un paquet de collision\n");
+	fprintf(stdout, "Receiving collision detection packet\n");
 #endif
+
 	uint8_t packet_data[PACKET_SIZE];
 	if(recv(fd, &packet_data, sizeof(packet_data), 0) != sizeof(packet_data))
 	{
 		return false;
 	}
 	
-
 	return false;
 }
 

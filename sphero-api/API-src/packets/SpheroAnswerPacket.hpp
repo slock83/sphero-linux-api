@@ -12,6 +12,7 @@
 #include "SpheroPacket.hpp"
 
 
+//------------------------------------------------------- Class definition
 class SpheroAnswerPacket : public SpheroPacket
 {
 	public:
@@ -50,7 +51,7 @@ class SpheroAnswerPacket : public SpheroPacket
 
 		/**
 		 * @brief SpheroAnswerPacket : Constructor
-		 * @param sphero : The Sphero instance that sends the answer packet
+		 * @param sphero : The Sphero instance that receives the answer packet
 		 */
 		SpheroAnswerPacket(Sphero* sphero);
 

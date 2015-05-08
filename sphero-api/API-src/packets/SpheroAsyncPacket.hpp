@@ -11,20 +11,21 @@
 #include "SpheroPacket.hpp"
 
 //-------------------------------------------------------------- Constants
-#define POWER_NOTIFICATION_FLAG 0x1;
-#define LVL_1_DIAGNOSTIC_RESPONSE 0x2;
-#define SENSOR_DATA_STREAMING 0x3;
-#define CONFIG_BLOCK_CONTENT 0x4;
-#define PRESLEEP_WARNING 0x5;
-#define MACRO_MARKERS 0x6;
-#define COLLISION_DETECTED 0x7;
-#define ORBBASIC_PRINT_MESSAGE 0x8;
-#define ORBBASIC_ASCII_ERROR 0x9;
-#define ORBBASIC_BINARY_ERROR 0xA;
-#define SELF_LEVEL_RESULT 0xB;
-#define GYRO_AXIS_LIMIT_EXCEEDED 0xC;
+static const uint8_t POWER_NOTIFICATION_FLAG = 0x1;
+static const uint8_t LVL_1_DIAGNOSTIC_RESPONSE = 0x2;
+static const uint8_t SENSOR_DATA_STREAMING = 0x3;
+static const uint8_t CONFIG_BLOCK_CONTENT = 0x4;
+static const uint8_t PRESLEEP_WARNING = 0x5;
+static const uint8_t MACRO_MARKERS = 0x6;
+static const uint8_t COLLISION_DETECTED = 0x7;
+static const uint8_t ORBBASIC_PRINT_MESSAGE = 0x8;
+static const uint8_t ORBBASIC_ASCII_ERROR = 0x9;
+static const uint8_t ORBBASIC_BINARY_ERROR = 0xA;
+static const uint8_t SELF_LEVEL_RESULT = 0xB;
+static const uint8_t GYRO_AXIS_LIMIT_EXCEEDED = 0xC;
 
 
+//------------------------------------------------------- Class definition
 class SpheroAsyncPacket : public SpheroPacket
 {
 	public:
@@ -63,7 +64,7 @@ class SpheroAsyncPacket : public SpheroPacket
 
 		/**
 		 * @brief SpheroAnswerPacket : Constructor
-		 * @param sphero : The Sphero instance that sends the asynchronous answer packet
+		 * @param sphero : The Sphero instance that receives the asynchronous answer packet
 		 */
 		SpheroAsyncPacket(Sphero* sphero);
 

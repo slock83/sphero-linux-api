@@ -2,7 +2,7 @@
 	SpheroPacket  -  Abstract class. Defines the behavior of
 												packets received by Sphero
                              -------------------
-    début                : mer. 06 mai 2015
+	started                : 06/05/2015
 *************************************************************************/
 
 
@@ -27,7 +27,7 @@ extractorMap_t SpheroPacket::_extractorMap = {
 
 /**
  * @brief SpheroPacket::SpheroPacket
- * @param sphero : The Sphero instance to which the packet is linked
+ * @param sphero : The Sphero instance that receives the packet
  */
 SpheroPacket::SpheroPacket(Sphero* sphero):_sphero(sphero)
 {}

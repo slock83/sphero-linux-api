@@ -1,7 +1,7 @@
 /*************************************************************************
 	bluetooth_connector  -  Bluetooth connection utilities
                              -------------------
-    début                : lun. 16 mars 2015
+	started                : 16/03/2015
 *************************************************************************/
 
 #ifndef ( BLUETOOTHCONNECTOR_H )
@@ -11,14 +11,14 @@
 #include <cstdio>
 
 
+//------------------------------------------------------- Class definition
 class bluetooth_connector 
 {
 	public:
 
 		//--------------------------------------------- Operators overload
 			//No sense
-		bluetooth_connector & operator =
-			( const bluetooth_connector & unbluetooth_connector ) = delete;
+		bluetooth_connector & operator=(const bluetooth_connector & unbluetooth_connector) = delete;
 
 
 		//---------------------------------------- Constructors/Destructor
