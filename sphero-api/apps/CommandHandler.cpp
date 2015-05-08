@@ -19,9 +19,6 @@ using namespace std;
 
 /**/
 static SpheroManager sm;
-static Sphero* s;
-static size_t nbActif = 0;
-static vector<Sphero*> spheroVec;
 /**/
 
 
@@ -45,34 +42,7 @@ void showHelp()
 	cout << "======================================================================" << endl;
 }
 
-/**
- * @brief ping : Ping command...
- */
-static void ping()
-{
-	if(s == NULL)
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
-	s->ping();
-}
-
-
-/**
- * @brief handleCollision : Handles the collision detection activation
- */
-static void handleCollision()
-{
-	if(s == NULL)
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
-
-	s->enableCollisionDetection(1,128,1,128, 15);
-}
-
+//------------------------------------------------- SpheroManager related
 /**
  * @brief handleConnect : Handles the connexion command
  */
@@ -90,34 +60,67 @@ static void handleSelect(stringstream& css)
 {
 	size_t idx;
 	css >> idx;
-	if(nbActif > idx)
+	sm.selectSphero(idx);
+}
+
+/**
+ * @brief handleDisconnect : Handles the disconnect command
+ */
+static void handleDisconnect(stringstream& css)
+{
+	size_t idx;
+	css >> idx;
+	sm.disconnectSphero(idx);
+}
+
+
+//--------------------------------------------------------- Others
+
+/**
+ * @brief ping : Ping command...
+ */
+static void ping()
+{
+	if(sm.getSphero() == NULL)
 	{
-		s = spheroVec[idx];
-		cout << "Active Sphero : "<< idx << endl;
+		cerr << "Please connect first" << endl;
+		return;
+	}
+	sm.getSphero()->ping();
+}
+
+
+/**
+ * @brief handleCollision : Handles the collision detection activation
+ */
+static void handleCollision()
+{
+	if(sm.getSphero() == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
 	}
 
-	else
-	{
-		cout << "Error : invalid index" << endl;
-	}
+	sm.getSphero()->enableCollisionDetection(1,128,1,128, 15);
 }
+
 
 /**
  * @brief handleSleep : Handles the sleep command
  */
 static void handleSleep(stringstream& css)
 {
-	if(s == NULL)
+	if(sm.getSphero() == NULL)
 	{
 		cerr << "Please connect first" << endl;
 		return;
 	}
 	unsigned int time;
 	css >> time;
-	s->sleep((uint16_t) time);
-	s->disconnect();
+	sm.getSphero()->sleep((uint16_t) time);
+	sm.getSphero()->disconnect();
 	sleep(time+3);
-	s->connect();
+	sm.getSphero()->connect();
 }
 
 /**
@@ -125,7 +128,7 @@ static void handleSleep(stringstream& css)
  */
 static void handleRoll(stringstream& css)
 {
-	if(s == NULL)
+	if(sm.getSphero() == NULL)
 	{
 		cerr << "Please connect first" << endl;
 		return;
@@ -135,7 +138,7 @@ static void handleRoll(stringstream& css)
 	unsigned int angle;
 	css >> speed >> angle;
 
-	s->roll((uint8_t) speed % 256, (uint16_t) angle % 0x10000, 1);
+	sm.getSphero()->roll((uint8_t) speed % 256, (uint16_t) angle % 0x10000, 1);
 
 }
 
@@ -144,7 +147,7 @@ static void handleRoll(stringstream& css)
  */
 static void handleIT(stringstream& css)
 {
-	if(s == NULL)
+	if(sm.getSphero() == NULL)
 	{
 		cerr << "Please connect first" << endl;
 		return;
@@ -153,7 +156,7 @@ static void handleIT(stringstream& css)
 	uint16_t inactivityTO;
 	css >> inactivityTO;
 
-	s->setInactivityTimeout(inactivityTO);
+	sm.getSphero()->setInactivityTimeout(inactivityTO);
 
 }
 
@@ -162,7 +165,7 @@ static void handleIT(stringstream& css)
  */
 static void handleCc(stringstream& css)
 {
-	if(s == NULL)
+	if(sm.getSphero() == NULL)
 	{
 		cerr << "Please connect first" << endl;
 		return;
@@ -175,7 +178,7 @@ static void handleCc(stringstream& css)
 #ifdef MAP
 	std::cout << "[R, G, B] = " << r << " " << g << " " << b << std::endl;
 #endif
-	s->setColor(
+	sm.getSphero()->setColor(
 				(uint8_t) r%256,
 				(uint8_t) g%256,
 				(uint8_t) b%256,
@@ -185,7 +188,6 @@ static void handleCc(stringstream& css)
 
 void init()
 {
-	spheroVec = vector<Sphero*>();
 }
 
 /**
@@ -201,11 +203,25 @@ int handleCommand(const string& command)
 	css >> cmd;
 	transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
 
+		//------------------------------ SpheroManager related
 	if(cmd == "connect")
 	{
 		handleConnect(css);
 		return 1;
 	}
+	else if(cmd == "select")
+	{
+		handleSelect(css);
+	}
+	else if(cmd == "list")
+	{
+		sm.listSpheros();
+	}
+	else if(cmd == "disconnect")
+	{
+		handleDisconnect(css);
+	}
+		//------------------------------ Others
 	else if(cmd == "changecolor")
 	{
 		handleCc(css);
@@ -225,18 +241,6 @@ int handleCommand(const string& command)
 	else if(cmd == "setit")
 	{
 		handleIT(css);
-	}
-	else if(cmd == "select")
-	{
-		handleSelect(css);
-	}
-	else if(cmd == "list")
-	{
-		//list();
-	}
-	else if(cmd == "disconnect")
-	{
-		//handleDisconnect(css);
 	}
 	else if(cmd == "sleep")
 	{
