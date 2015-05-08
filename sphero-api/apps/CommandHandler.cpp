@@ -13,9 +13,12 @@
 #include "../API-src/bluetooth/bluez_adaptor.h"
 #include "../API-src/Sphero.hpp"
 
+#include "spheromanager.h"
+
 using namespace std;
 
 /**/
+static SpheroManager sm;
 static Sphero* s;
 static size_t nbActif = 0;
 static vector<Sphero*> spheroVec;
@@ -24,22 +27,22 @@ static vector<Sphero*> spheroVec;
 
 void showHelp()
 {
-    cout << "=============================== HELP =================================" << endl;
-    cout << "help -- Shows this" << endl;
-    cout << "connect xx:xx:xx:xx:xx -- Connects the the Sphero at the given address" << endl;
-    cout << endl;
-    cout << "ping -- Does what it says" << endl;
-    cout << "sleep <duration> -- Puts the sphero to sleep for the given duration" << endl;
-    cout << endl;
-    cout << "changecolor <red> <green> <blue> <persist> -- Changes the Sphero color" << endl;
-    cout << "setIT <TO> -- Set inactivity timeout for the sphero" << endl;
-    cout << "roll <speed> <angle> -- Moves the sphero" << endl;
-    cout << "collision -- Enable collision detection feature" << endl;
-    cout << endl;
-    cout << "list -- Shows the list of connected sphero" << endl;
-    cout << "select <spheroId> -- Selects the Sphero to control" << endl;
-    cout << "disconnect <spheroId> -- Disconnects the given Sphero" << endl;
-    cout << "======================================================================" << endl;
+	cout << "=============================== HELP =================================" << endl;
+	cout << "help -- Shows this" << endl;
+	cout << "connect xx:xx:xx:xx:xx -- Connects the the Sphero at the given address" << endl;
+	cout << endl;
+	cout << "ping -- Does what it says" << endl;
+	cout << "sleep <duration> -- Puts the sphero to sleep for the given duration" << endl;
+	cout << endl;
+	cout << "changecolor <red> <green> <blue> <persist> -- Changes the Sphero color" << endl;
+	cout << "setIT <TO> -- Set inactivity timeout for the sphero" << endl;
+	cout << "roll <speed> <angle> -- Moves the sphero" << endl;
+	cout << "collision -- Enable collision detection feature" << endl;
+	cout << endl;
+	cout << "list -- Shows the list of connected sphero" << endl;
+	cout << "select <spheroId> -- Selects the Sphero to control" << endl;
+	cout << "disconnect <spheroId> -- Disconnects the given Sphero" << endl;
+	cout << "======================================================================" << endl;
 }
 
 /**
@@ -47,45 +50,27 @@ void showHelp()
  */
 static void ping()
 {
-    if(s == NULL)
-    {
-        cerr << "Please connect first" << endl;
-        return;
-    }
-    s->ping();
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+	s->ping();
 }
 
-static void list()
-{
-    unsigned int index = 0;
-    for(Sphero* sphero : spheroVec)
-    {
-        ++index;
-        if(sphero == s)
-        {
-            cout << "*";
-        }
-        else
-        {
-            cout << " ";
-        }
-
-        cout << "[" << i << "] " << endl;
-    }
-}
 
 /**
  * @brief handleCollision : Handles the collision detection activation
  */
 static void handleCollision()
 {
-    if(s == NULL)
-    {
-        cerr << "Please connect first" << endl;
-        return;
-    }
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
 
-    s->enableCollisionDetection(1,128,1,128, 15);
+	s->enableCollisionDetection(1,128,1,128, 15);
 }
 
 /**
@@ -93,49 +78,9 @@ static void handleCollision()
  */
 static void handleConnect(stringstream& css)
 {
-    string address;
-    css >> address;
-    if(address.length() ==0)
-    {
-        ifstream myfile ("lastConnection");
-        if (myfile.is_open())
-        {
-            getline(myfile,address);
-            myfile.close();
-        }
-
-        else
-        {
-            cerr << "Unable to load file"<<endl;
-            return;
-        }
-    }
-
-    Sphero* sph = new Sphero(address.c_str(), new bluez_adaptor());
-    sph->onConnect([](){
-        std::cout << "I'm connected!" << std::endl;
-    });
-    if(sph->connect())
-    {
-        size_t idx = nbActif++;
-        spheroVec.push_back(sph);
-        cout << "Registered Sphero : ID " << idx << endl;
-        s = sph;
-        ofstream myfile ("lastConnection", ios::out | ios::trunc);
-        if (myfile.is_open())
-        {
-            myfile <<address;
-            myfile.close();
-            cout << "Sphero address saved"<< endl;
-        }
-        else cout << "Error : Saving address was impossible :("<< endl;
-
-    }
-    else
-    {
-        delete sph;
-        cout << "Connexion error" << endl;
-    }
+	string address;
+	css >> address;
+	sm.connectSphero(address);
 }
 
 /**
@@ -143,18 +88,18 @@ static void handleConnect(stringstream& css)
  */
 static void handleSelect(stringstream& css)
 {
-    size_t idx;
-    css >> idx;
-    if(nbActif > idx)
-    {
-        s = spheroVec[idx];
-        cout << "Active Sphero : "<< idx << endl;
-    }
+	size_t idx;
+	css >> idx;
+	if(nbActif > idx)
+	{
+		s = spheroVec[idx];
+		cout << "Active Sphero : "<< idx << endl;
+	}
 
-    else
-    {
-        cout << "Error : invalid index" << endl;
-    }
+	else
+	{
+		cout << "Error : invalid index" << endl;
+	}
 }
 
 /**
@@ -162,17 +107,17 @@ static void handleSelect(stringstream& css)
  */
 static void handleSleep(stringstream& css)
 {
-    if(s == NULL)
-    {
-        cerr << "Please connect first" << endl;
-        return;
-    }
-    unsigned int time;
-    css >> time;
-    s->sleep((uint16_t) time);
-    s->disconnect();
-    sleep(time+3);
-    s->connect();
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+	unsigned int time;
+	css >> time;
+	s->sleep((uint16_t) time);
+	s->disconnect();
+	sleep(time+3);
+	s->connect();
 }
 
 /**
@@ -180,17 +125,17 @@ static void handleSleep(stringstream& css)
  */
 static void handleRoll(stringstream& css)
 {
-    if(s == NULL)
-    {
-        cerr << "Please connect first" << endl;
-        return;
-    }
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
 
-    unsigned int speed;
-    unsigned int angle;
-    css >> speed >> angle;
+	unsigned int speed;
+	unsigned int angle;
+	css >> speed >> angle;
 
-    s->roll((uint8_t) speed % 256, (uint16_t) angle % 0x10000, 1);
+	s->roll((uint8_t) speed % 256, (uint16_t) angle % 0x10000, 1);
 
 }
 
@@ -199,16 +144,16 @@ static void handleRoll(stringstream& css)
  */
 static void handleIT(stringstream& css)
 {
-    if(s == NULL)
-    {
-        cerr << "Please connect first" << endl;
-        return;
-    }
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
 
-    uint16_t inactivityTO;
-    css >> inactivityTO;
+	uint16_t inactivityTO;
+	css >> inactivityTO;
 
-    s->setInactivityTimeout(inactivityTO);
+	s->setInactivityTimeout(inactivityTO);
 
 }
 
@@ -217,30 +162,30 @@ static void handleIT(stringstream& css)
  */
 static void handleCc(stringstream& css)
 {
-    if(s == NULL)
-    {
-        cerr << "Please connect first" << endl;
-        return;
-    }
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
 
-    unsigned int r, g, b;
-    bool persist;
+	unsigned int r, g, b;
+	bool persist;
 
-    css >> r >> g >> b >> persist;
+	css >> r >> g >> b >> persist;
 #ifdef MAP
-    std::cout << "[R, G, B] = " << r << " " << g << " " << b << std::endl;
+	std::cout << "[R, G, B] = " << r << " " << g << " " << b << std::endl;
 #endif
-    s->setColor(
-                (uint8_t) r%256,
-                (uint8_t) g%256,
-                (uint8_t) b%256,
-                (persist==1)
-                );
+	s->setColor(
+				(uint8_t) r%256,
+				(uint8_t) g%256,
+				(uint8_t) b%256,
+				(persist==1)
+				);
 }
 
 void init()
 {
-    spheroVec = vector<Sphero*>();
+	spheroVec = vector<Sphero*>();
 }
 
 /**
@@ -250,57 +195,57 @@ void init()
  */
 int handleCommand(const string& command)
 {
-    stringstream css(command);
+	stringstream css(command);
 
-    string cmd;
-    css >> cmd;
-    transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
+	string cmd;
+	css >> cmd;
+	transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
 
-    if(cmd == "connect")
-    {
-        handleConnect(css);
-        return 1;
-    }
-    else if(cmd == "changecolor")
-    {
-        handleCc(css);
-    }
-    else if(cmd == "roll")
-    {
-        handleRoll(css);
-    }
-    else if(cmd == "collision")
-    {
-        handleCollision();
-    }
-    else if(cmd == "ping")
-    {
-        ping();
-    }
-    else if(cmd == "setit")
-    {
-        handleIT(css);
-    }
-    else if(cmd == "select")
-    {
-        handleSelect(css);
-    }
-    else if(cmd == "list")
-    {
-        list();
-    }
-    else if(cmd == "disconnect")
-    {
-        handleDisconnect(css);
-    }
-    else if(cmd == "sleep")
-    {
-        handleSleep(css);
-    }
-    else if(cmd == "exit")
-        return 0;
-    else
-        showHelp();
+	if(cmd == "connect")
+	{
+		handleConnect(css);
+		return 1;
+	}
+	else if(cmd == "changecolor")
+	{
+		handleCc(css);
+	}
+	else if(cmd == "roll")
+	{
+		handleRoll(css);
+	}
+	else if(cmd == "collision")
+	{
+		handleCollision();
+	}
+	else if(cmd == "ping")
+	{
+		ping();
+	}
+	else if(cmd == "setit")
+	{
+		handleIT(css);
+	}
+	else if(cmd == "select")
+	{
+		handleSelect(css);
+	}
+	else if(cmd == "list")
+	{
+		//list();
+	}
+	else if(cmd == "disconnect")
+	{
+		//handleDisconnect(css);
+	}
+	else if(cmd == "sleep")
+	{
+		handleSleep(css);
+	}
+	else if(cmd == "exit")
+		return 0;
+	else
+		showHelp();
 
-    return -1;
+	return -1;
 }
