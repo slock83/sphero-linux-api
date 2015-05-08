@@ -1,34 +1,32 @@
 /*************************************************************************
-                           ActionHandler  -  description
+	ActionHandler  - Generic template to handle diverse actions
                              -------------------
     début                : ven. 08 mai 2015
 *************************************************************************/
 
-//---------- Réalisation de la classe <ActionHandler> (fichier ActionHandler.tpp) --
-
-//---------------------------------------------------------------- INCLUDE
-
 //-------------------------------------------------------- Include système
+
 //------------------------------------------------------ Include personnel
+#include "ActionHandler.hpp"
 
-//------------------------------------------------------------- Constantes
+//------------------------------------------------ Constructors/Destructor
 
-//---------------------------------------------------- Variables de classe
+/**
+ * @brief ActionHandler : Constructor
+ */
+ActionHandler::ActionHandler():_listenerQueue()
+{}
 
-//----------------------------------------------------------- Types privés
+ActionHandler::~ActionHandler ( )
+{}
 
+//--------------------------------------------------------- Public methods
 
-//----------------------------------------------------------------- PUBLIC
-//-------------------------------------------------------- Fonctions amies
-
-//----------------------------------------------------- Méthodes publiques
 template<typename T>
 /**
- * @brief reportAction : Permet de tenir l'actionHandler au courant de 
- * 						 l'action survenue. Tous les listener sont ensuite
- * 						 notifiés.
- * @param action : 	Un pointeur sur la structure de donnée qui contient
- * 					les informations relatives à l'action.
+ * @brief reportAction : Reports the ocurred action to actionHandler.
+ *				All listeners are then notified.
+ * @param action : A pointer to the action informations data structure
  */
 void ActionHandler::reportAction(T* action)
 {
@@ -39,19 +37,21 @@ void ActionHandler::reportAction(T* action)
 	}
 }
 
+
 template<typename T>
 /**
- * @brief addActionListener : Permet d'enregistrer un listener d'action
- * @param : listener : le listener à ajouter
+ * @brief addActionListener : Registers a new listener
+ * @param : listener : The new listener which will be registered
  */
 void ActionHandler::addActionListener(listener<T> const listener)
 {
 	_listenerQueue.push(listener);
 }
 
+
 template<typename T>
 /**
- * @brief clearListener : désenregistre tous les listeners
+ * @brief clearListener : Unregisters all listeners
  */
 void clearListener()
 {
@@ -59,23 +59,4 @@ void clearListener()
 	std::swap(_listenerQueue, empty);
 
 }
-
-//------------------------------------------------- Surcharge d'opérateurs
-
-//-------------------------------------------- Constructeurs - destructeur
-ActionHandler::ActionHandler():_listenerQueue()
-{
-} 
-
-
-ActionHandler::~ActionHandler ( )
-{
-} 
-
-
-//------------------------------------------------------------------ PRIVE
-
-//----------------------------------------------------- Méthodes protégées
-
-//------------------------------------------------------- Méthodes privées
 

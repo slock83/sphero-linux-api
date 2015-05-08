@@ -1,84 +1,66 @@
 /******************************************************************************
-    ActionHandler  - Template générique de gestion des différentes actions 
+	ActionHandler  - Generic template to handle diverse actions
                              -------------------
-    					   started on  : 05/08/2015
+	début                : ven. 08 mai 2015
 ******************************************************************************/
 
-//--- Interface de la classe <ActionHandler> (fichier ActionHandler.hpp) ------
-#if ! defined ( ACTIONHANDLER_HPP )
+#ifndef ( ACTIONHANDLER_HPP )
 #define ACTIONHANDLER_HPP
 
-//--------------------------------------------------- Interfaces utilisées
+//-------------------------------------------------------- System includes
 #include <queue>
-//------------------------------------------------------------- Constantes 
 
 //------------------------------------------------------------------ Types 
 template<typename T>
 typedef void (listener<T>*)(T);
 
+
 /**
- * T : type de la structure de donnée qui sera communiquée à tous les listener
+ * T : Data structure type which will be communicated to all listeners
  */
 template<typename T>
 class ActionHandler 
 {
-//----------------------------------------------------------------- PUBLIC
+	public :
+		//------------------------------------------------- Operators overload
+			//No sense
+		ActionHandler& operator=(const ActionHandler&) = delete;
 
-public :
-//----------------------------------------------------- Méthodes publiques
-	/**
-	 * @brief reportAction : Permet de tenir l'actionHandler au courant de 
-	 * 						 l'action survenue. Tous les listener sont ensuite
-	 * 						 notifiés.
-	 * @param action : 	Un pointeur sur la structure de donnée qui contient
-	 * 					les informations relatives à l'action.
-	 */
-	void reportAction(T action);
+		//-------------------------------------------- Constructors/Destructor
+			//No sense
+		ActionHandler(const ActionHandler&) = delete;
 
-	/**
-	 * @brief addActionListener : Permet d'enregistrer un listener d'action
-	 * @param : listener : le listener à ajouter
-	 */
-	void addActionListener(listener<T> const listener);
+		/**
+		 * @brief ActionHandler : Constructor
+		 */
+		ActionHandler();
 
-	/**
-	 * @brief clearListener : désenregistre tous les listeners
-	 */
-	void clearListener();
+		virtual ~ActionHandler();
 
-//------------------------------------------------- Surcharge d'opérateurs
-    ActionHandler& operator=(const ActionHandler&) = delete;
+		//----------------------------------------------------- Public methods
+		/**
+		 * @brief reportAction : Permet de tenir l'actionHandler au courant de
+		 * 						 l'action survenue. Tous les listener sont ensuite
+		 * 						 notifiés.
+		 * @param action : 	Un pointeur sur la structure de donnée qui contient
+		 * 					les informations relatives à l'action.
+		 */
+		void reportAction(T action);
 
-//-------------------------------------------- Constructeurs - destructeur
-    ActionHandler(const ActionHandler&) = delete;
+		/**
+		 * @brief addActionListener : Permet d'enregistrer un listener d'action
+		 * @param : listener : le listener à ajouter
+		 */
+		void addActionListener(listener<T> const listener);
 
-    ActionHandler();
+		/**
+		 * @brief clearListener : désenregistre tous les listeners
+		 */
+		void clearListener();
 
-    virtual ~ActionHandler();
-
-//------------------------------------------------------------------ PRIVE 
-
-protected:
-//----------------------------------------------------- Méthodes protégées
-
-private:
-//------------------------------------------------------- Méthodes privées
-
-protected:
-//----------------------------------------------------- Attributs protégés
-
-private:
-//------------------------------------------------------- Attributs privés
-	std::queue<listener<T> const> _listenerQueue;
-//---------------------------------------------------------- Classes amies
-
-//-------------------------------------------------------- Classes privées
-
-//----------------------------------------------------------- Types privés
+	private:
+		std::queue<listener<T> const> _listenerQueue;
 
 };
 
-//----------------------------------------- Types dépendants de <ActionHandler>
-#include "ActionHandler.tpp"
 #endif // ACTIONHANDLER_HPP
-
