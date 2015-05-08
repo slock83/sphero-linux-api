@@ -1,68 +1,59 @@
 /*************************************************************************
-   SpheroCollisionPacket  - Représente un paquet asynchrone de collision 
+   SpheroCollisionPacket  - Represents an asynchronous collision packet
                              -------------------
     début                : jeu. 07 mai 2015
 *************************************************************************/
 
-//---------- Interface de la classe <SpheroCollisionPacket> (fichier SpheroCollisionPacket.hpp) ------
-#if ! defined ( SPHEROCOLLISIONPACKET_H )
+#ifndef ( SPHEROCOLLISIONPACKET_H )
 #define SPHEROCOLLISIONPACKET_H
 
-//--------------------------------------------------- Interfaces utilisées
+//--------------------------------------------------------- Local includes
 #include "../SpheroAsyncPacket.hpp"
 
-//------------------------------------------------------------- Constantes 
-
-//------------------------------------------------------------------ Types 
-
-//------------------------------------------------------------------------ 
-
-//------------------------------------------------------------------------ 
 
 class SpheroCollisionPacket : public SpheroAsyncPacket 
 {
-//----------------------------------------------------------------- PUBLIC
+	public:
+		//------------------------------------------------- Public methods
+		/**
+		 * @brief extractPacket : extracts the packet from a socket
+		 * @param fd : The socket file descriptor
+		 * @param sphero : The Sphero sending the packet
+		 * @param packet_ptr : A pointer to a SpheroPacket pointer
+		 * @return true if the packet was successfully extracted from the socket, false otherwise
+		 *
+		 * Contract: the socket has to be in blocking read
+		 */
+		static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
 
-public:
-//----------------------------------------------------- Méthodes publiques
-   	static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
-    virtual void packetAction();
+		/**
+		 * @brief packetAction : Performs the action associated to the packet
+		 *			on the Sphero instance
+		 */
+		virtual void packetAction();
 
-//------------------------------------------------- Surcharge d'opérateurs
-    SpheroCollisionPacket& operator=(
-			const SpheroCollisionPacket& unSpheroCollisionPacket) = delete;
+		//--------------------------------------------- Operators overload
+			//No sense
+		SpheroCollisionPacket& operator=(
+				const SpheroCollisionPacket& unSpheroCollisionPacket) = delete;
 
 
-//-------------------------------------------- Constructeurs - destructeur
-    SpheroCollisionPacket(
-			const SpheroCollisionPacket& unSpheroCollisionPacket) = delete;
+		//---------------------------------------- Constructors/Destructor
+			//No sense
+		SpheroCollisionPacket(
+				const SpheroCollisionPacket& unSpheroCollisionPacket) = delete;
 
-    virtual ~SpheroCollisionPacket ( );
+		virtual ~SpheroCollisionPacket();
 
-//------------------------------------------------------------------ PRIVE 
 
-protected:
-//----------------------------------------------------- Méthodes protégées
-    SpheroCollisionPacket(Sphero* sphero);
+	protected:
 
-private:
-//------------------------------------------------------- Méthodes privées
-
-protected:
-//----------------------------------------------------- Attributs protégés
-
-private:
-//------------------------------------------------------- Attributs privés
-
-//---------------------------------------------------------- Classes amies
-
-//-------------------------------------------------------- Classes privées
-
-//----------------------------------------------------------- Types privés
-
+		/**
+		 * @brief SpheroCollisionPacket : Constructor
+		 * @param sphero : The Sphero instance that sends the collision packet
+		 */
+		SpheroCollisionPacket(Sphero* sphero);
 };
-
-//-------------------------------- Types dépendants de <SpheroCollisionPacket>
 
 #endif // SPHEROCOLLISIONPACKET_H
 
