@@ -124,7 +124,6 @@ static void handleDisconnect(stringstream& css)
 static void interactiveMode()
 {
 	if(!isConnected()) return;
-
 	cout << "welcome to interactive mode" <<endl;
 	cout << "press q to quit" <<endl;
 	cout << "arrow key to move" <<endl;
