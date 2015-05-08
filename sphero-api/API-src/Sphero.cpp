@@ -45,17 +45,9 @@ void* Sphero::monitorStream(void* sphero_ptr)
     return NULL;
 }
 
-
-void Sphero::handleOnDisonnect()
-{
-	//_disconnect_handler.reportAction(nullptr);
-}
-
-
 void Sphero::handleOnCollision(spherocoord_t x, spherocoord_t y)
 {
-	for(callback_collision_t callback : _callback_collision_list)
-		callback(x, y);
+	_collision_handler.reportAction();
 }
 
 //------------------------------------------------ Constructors/Destructor
@@ -115,13 +107,14 @@ void Sphero::disconnect()
 #ifdef MAP
 	fprintf(stderr, "Logging out\n");
 #endif
+
 	if(_connected)
 	{
 		_connected = false;
 		pthread_cancel(monitor);
 		_bt_adapter->disconnect();
 		
-		handleOnDisonnect();
+		_disconnect_handler.reportAction();
 	}
 }
 
@@ -660,7 +653,7 @@ void Sphero::onConnect(callback_connect_t callback)
  */
 void Sphero::onDisconnect(callback_disconnect_t callback)
 {
-	_callback_disconnect_list.push_front(callback);
+	_disconnect_handler.addActionListener(callback);
 }
 
 
@@ -672,5 +665,5 @@ void Sphero::onDisconnect(callback_disconnect_t callback)
  */
 void Sphero::onCollision(callback_collision_t callback)
 {
-	_callback_collision_list.push_front(callback);
+	_collision_handler.addActionListener(callback);
 }

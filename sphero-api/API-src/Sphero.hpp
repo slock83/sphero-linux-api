@@ -20,6 +20,8 @@
 #include "packets/ClientCommandPacket.hpp"
 #include "ActionHandler.hpp"
 
+#include "packets/async/CollisionStuct.hpp"
+
 //------------------------------------------------------------------- Constants
 
 static uint8_t const ABORT_ROUTINE = 0x00;
@@ -53,9 +55,12 @@ typedef int16_t spherocoord_t;
 	/* Callback functions signatures definition */
 
 typedef ActionHandler<> connectHandler_t;
+typedef ActionHandler<> disconnectHandler_t;
+typedef ActionHandler<CollisionStruct> collisionHandler_t;
+
 typedef connectHandler_t::listener_t callback_connect_t;
-typedef std::function<void(void)> callback_disconnect_t;
-typedef std::function<void(spherocoord_t, spherocoord_t)> callback_collision_t;
+typedef disconnectHandler_t::listener_t callback_disconnect_t;
+typedef collisionHandler_t::listener_t callback_collision_t;
 
 
 //------------------------------------------------------------ Class definition
@@ -66,11 +71,11 @@ class Sphero
 
 		//----------------------------------------------------------- Operators
 			//No sense
-		Sphero & operator=(const Sphero&) = delete;
+		Sphero& operator=(const Sphero&) = delete;
 
 		//--------------------------------------------- Constructors/Destructor
 			//No sense
-		Sphero (const Sphero&) = delete;
+		Sphero(const Sphero&) = delete;
 
 		/**
 		 * @param btaddr : Device address (format : "XX:XX:XX:XX:XX:XX")
@@ -487,8 +492,8 @@ class Sphero
 
 			/* Callbacks lists (one for each declared event) */
 		connectHandler_t _connect_handler;
-		std::list<callback_disconnect_t> _callback_disconnect_list;
-		std::list<callback_collision_t> _callback_collision_list;
+		disconnectHandler_t _disconnect_handler;
+		collisionHandler_t _collision_handler;
 };
 
 #endif // SPHERO_HPP
