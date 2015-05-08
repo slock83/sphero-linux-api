@@ -9,7 +9,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-
+#include <termios.h>
 #include "../API-src/bluetooth/bluez_adaptor.h"
 #include "../API-src/Sphero.hpp"
 
@@ -20,6 +20,40 @@ static Sphero* s;
 static size_t nbActif = 0;
 static vector<Sphero*> spheroVec;
 /**/
+
+
+class BufferToggle
+{
+    private:
+        struct termios t;
+
+    public:
+
+        /*
+         * Disables buffered input
+         */
+
+        void off(void)
+        {
+            tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
+            t.c_lflag &= ~ICANON; //disable canonical mmode
+            t.c_lflag &= ~ECHO;//disable echoing
+            tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
+        }
+
+
+        /*
+         * Enables buffered input
+         */
+
+        void on(void)
+        {
+            tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
+            t.c_lflag |= ICANON;
+            t.c_lflag |= ECHO;
+            tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
+        }
+};
 
 void init()
 {
@@ -38,6 +72,7 @@ void showHelp()
 	cout << "sleep <duration> -- puts the sphero to sleep for the given duration" << endl;
 	cout << "select <spheroid> -- Selects the sphero to control" << endl;
 	cout << "collision -- enable collision detection feature" << endl;
+	cout << "interactive -- switch to interactive mode (WIP)"
     cout << "======================================================================" << endl;
 }//END showHelp
 
@@ -196,6 +231,58 @@ static void handleCc(stringstream& css)
 		);
 }//END handleCC
 
+static void interactiveMode()
+{
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+	cout << "welcome to interactive mode" <<endl;
+	cout << "press q to quit" <<endl;
+	cout << "arrow key to move" <<endl;
+	cout << "r or t to reorient" <<endl;
+	cout << "WARNING : early WIP !!!"<<endl;
+	BufferToggle bt;
+	bt.off();
+    int input;
+    uint16_t previousHeading = 0;
+    do
+    {
+    input = getchar();
+    if(input == 65 )
+    {
+    	s->roll(128,0);
+    }
+    else if(input == 66 )
+    {
+    	s->roll(128,180);
+    }
+    else if(input == 67 )
+    {
+    	s->roll(128, 90);
+    }
+    else if(input == 68 )
+    {
+    	s->roll(128,270);
+    }
+    else if(input == 114 )
+    {
+    	previousHeading++;
+    	s->setHeading(previousHeading);
+    }
+    else if(input == 116 )
+    {
+    	previousHeading--;
+    	s->setHeading(previousHeading);
+    }
+#ifdef MAP
+    cout << "You pressed key ID: " << input << endl;
+#endif
+    }while(input != 113);
+    bt.on();
+}
+
 int handleCommand(const string& command)
 {
 	stringstream css(command);
@@ -236,6 +323,10 @@ int handleCommand(const string& command)
 	else if(cmd == "sleep")
 	{
 		handleSleep(css);
+	}
+	else if(cmd == "interactive")
+	{
+		interactiveMode();
 	}
 	else if(cmd == "exit")
 		return 0;
