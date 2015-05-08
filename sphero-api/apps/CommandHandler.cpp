@@ -311,7 +311,7 @@ int handleCommand(const string& command)
 	{
 		if(isConnected()) {
 		CollisionStruct coll;
-		sm.getSphero()->reportCollision(&coll)
+		sm.getSphero()->reportCollision(&coll);
 		}
 	}
 	else if(cmd == "interactive")
