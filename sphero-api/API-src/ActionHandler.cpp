@@ -32,10 +32,10 @@ ActionHandler<T...>::~ActionHandler ( )
 template<typename ...T>
 void ActionHandler<T...>::reportAction(T... action)
 {
-	std::queue<listener<T> const>::iterator it;
+	typename listenerQueue_t::iterator it;
 	for(it = _listenerQueue.begin() ; it != _listenerQueue.end() ; it++)
 	{
-		*it(action);
+		*it(action...);
 	}
 }
 
@@ -57,7 +57,7 @@ void ActionHandler<T...>::addActionListener(listener_t listener)
 template<typename ...T>
 void ActionHandler<T...>::clearListener()
 {
-	std::queue<listener<T> const> empty;
+	listenerQueue_t empty;
 	std::swap(_listenerQueue, empty);
 
 }

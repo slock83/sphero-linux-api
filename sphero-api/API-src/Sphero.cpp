@@ -149,7 +149,7 @@ void Sphero::ping()
 	ClientCommandPacket packet = ClientCommandPacket(
 		DID::core,
 		CID::ping,
-		flag::notNeeded,
+		flags::notNeeded,
 		0x01,
 		NULL,
 		true,
@@ -495,7 +495,7 @@ void Sphero::setAccelerometerRange(uint8_t range)
 {
 	ClientCommandPacket packet(
 			DID::sphero,
-			CID::setAccelerometerRanger,
+			CID::setAccelerometerRange,
 			flags::notNeeded,
 			0x02,
 			&range, 
@@ -649,7 +649,7 @@ void Sphero::runMacro(uint8_t id);
  */
 void Sphero::onConnect(callback_connect_t callback)
 {
-	_callback_connect_list.push_front(callback);
+	_connect_handler.addActionListener(callback);
 }
 
 

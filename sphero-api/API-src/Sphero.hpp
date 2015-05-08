@@ -51,7 +51,9 @@ class sphero_listener;
 typedef int16_t spherocoord_t;
 
 	/* Callback functions signatures definition */
-typedef std::function<void(void)> callback_connect_t;
+
+typedef ActionHandler<> connectHandler_t;
+typedef connectHandler_t::listener_t callback_connect_t;
 typedef std::function<void(void)> callback_disconnect_t;
 typedef std::function<void(spherocoord_t, spherocoord_t)> callback_collision_t;
 
@@ -484,7 +486,7 @@ class Sphero
 		const std::string _address;
 
 			/* Callbacks lists (one for each declared event) */
-		ActionHandler<> _connect_handler;
+		connectHandler_t _connect_handler;
 		std::list<callback_disconnect_t> _callback_disconnect_list;
 		std::list<callback_collision_t> _callback_collision_list;
 };
