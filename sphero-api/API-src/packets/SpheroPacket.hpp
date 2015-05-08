@@ -10,7 +10,7 @@
 
 //--------------------------------------------------- Interfaces utilisées
 #include <unordered_map>
-#include "Sphero.hpp"
+#include "../Sphero.hpp"
 
 //------------------------------------------------------------- Constantes 
 static uint8_t const START_OF_PACKET_FLAG = 0xFF;

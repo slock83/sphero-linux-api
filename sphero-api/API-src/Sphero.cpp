@@ -45,18 +45,9 @@ void* Sphero::monitorStream(void* sphero_ptr)
 	}
 }
 
-
-void Sphero::handleOnConnect()
-{
-	for(callback_connect_t callback : _callback_connect_list)
-		callback();
-}
-
-
 void Sphero::handleOnDisonnect()
 {
-	for(callback_disconnect_t callback : _callback_disconnect_list)
-		callback();
+	//_disconnect_handler.reportAction(nullptr);
 }
 
 
@@ -114,7 +105,7 @@ bool Sphero::connect()
 
 		_connected = true;
 		
-		handleOnConnect();
+		_connect_handler.reportAction();
 
 		return true;
 	}
