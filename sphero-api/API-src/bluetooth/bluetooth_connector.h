@@ -1,5 +1,5 @@
 /*************************************************************************
-                           bluetooth_connector  -  description
+	bluetooth_connector  -  Bluetooth connection utilities
                              -------------------
     début                : lun. 16 mars 2015
 *************************************************************************/

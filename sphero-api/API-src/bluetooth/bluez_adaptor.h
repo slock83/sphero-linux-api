@@ -1,15 +1,13 @@
 /*************************************************************************
-                           bluez_adaptor  -  description
+	bluez_adaptor  -  Bluez stack adaptor for Sphero
                              -------------------
     début                : mar. 17 mars 2015
 *************************************************************************/
 
-//---------- Interface de la classe <bluez_adaptor> (fichier bluez_adaptor.h) ------
-#if ! defined ( BLUEZ_ADAPTOR_H )
+#ifndef ( BLUEZ_ADAPTOR_H )
 #define BLUEZ_ADAPTOR_H
 
-//-------------------------------------------------------------- Includes
-
+//------------------------------------------------------- System includes
 #include <cstdio>
 #include <unistd.h>
 #include <pthread.h>
@@ -18,69 +16,49 @@
 #include <bluetooth/rfcomm.h>
 
 #include "bluetooth_connector.h"
-//------------------------------------------------------------- Constantes 
 
-//------------------------------------------------------------------ Types 
-
-//------------------------------------------------------------------------ 
-//
-//------------------------------------------------------------------------ 
 
 class bluez_adaptor : public bluetooth_connector
 {
-//----------------------------------------------------------------- PUBLIC
-public:
-//----------------------------------------------------- Méthodes publiques
-	
-	/**
-	 * Établie la connexion
-	 */
-	virtual int connection( const char* address);
+	public:
 
-	/**
-	 * Ferme la connexion
-	 */
-	virtual int disconnect(void);
-
-	virtual bool isConnected();
-
-//------------------------------------------------- Surcharge d'opérateurs
-	//N'a pas de sens
-    bluez_adaptor & operator = ( const bluez_adaptor & unbluez_adaptor ) = delete;
+		//-------------------------------------------- Operators overload
+			//N'a pas de sens
+		bluez_adaptor & operator = ( const bluez_adaptor & unbluez_adaptor ) = delete;
 
 
-//-------------------------------------------- Constructeurs - destructeur
-    bluez_adaptor ( const bluez_adaptor & unbluez_adaptor ) = delete;
+		//--------------------------------------- Constructors/Destructor
+		bluez_adaptor ( const bluez_adaptor & unbluez_adaptor ) = delete;
 
-    bluez_adaptor ();
+		bluez_adaptor ();
 
-    virtual ~bluez_adaptor ( );
+		virtual ~bluez_adaptor ( );
 
-//------------------------------------------------------------------ PRIVE 
+		//------------------------------------------------ Public methods
 
-protected:
-//----------------------------------------------------- Méthodes protégées
+		/**
+		 * @brief connection : Establishes the connection
+		 * @param address : Thedevice address (format : 'XX:XX:XX:XX:XX')
+		 * @return The socket ID, or -1 if an error occurred
+		 */
+		virtual int connection( const char* address);
 
-private:
-//------------------------------------------------------- Méthodes privées
+		/**
+		 * @brief disconnect : Closes the connections
+		 * @return An error code
+		 */
+		virtual int disconnect(void);
 
-protected:
-//----------------------------------------------------- Attributs protégés
+		/**
+		 * @brief isConnected : Checks the connection status
+		 * @return true if the connection is currently established
+		 */
+		virtual bool isConnected();
 
-private:
-//------------------------------------------------------- Attributs privés
-	int _bt_socket;	
-	bool _connected;
+	private:
 
-//---------------------------------------------------------- Classes amies
-
-//-------------------------------------------------------- Classes privées
-
-//----------------------------------------------------------- Types privés
-
+		int _bt_socket;
+		bool _connected;
 };
 
-//----------------------------------------- Types dépendants de <bluez_adaptor>
-
 #endif // BLUEZ_ADAPTOR_H
-

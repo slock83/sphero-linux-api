@@ -1,36 +1,54 @@
 /*************************************************************************
-                           bluez_adaptor  -  description
+	bluez_adaptor  -  Bluez stack adaptor for Sphero
                              -------------------
     début                : mar. 17 mars 2015
 *************************************************************************/
 
-//------ Réalisation de la classe <bluez_adaptor> (fichier bluez_adaptor.cpp) --
-
-//---------------------------------------------------------------- INCLUDE
-
-//-------------------------------------------------------- Include système
+//-------------------------------------------------------- System includes
 #include <iostream>
 #include <unistd.h>
 #include <sys/select.h>
 #include <fcntl.h>
 
 using namespace std;
-//------------------------------------------------------ Include personnel
+
+//--------------------------------------------------------- Local includes
 #include "bluez_adaptor.h"
 
 
-//------------------------------------------------------------- Constantes
+//-------------------------------------------------------------- Constants
 static const size_t MAX_CONNECT_ATTEMPT_BUSY = 3;
 
-//---------------------------------------------------- Variables de classe
-
-//----------------------------------------------------------- Types privés
+//------------------------------------------------ Constructors/Destructor
 
 
-//----------------------------------------------------------------- PUBLIC
-//-------------------------------------------------------- Fonctions amies
+bluez_adaptor::bluez_adaptor():
+	bluetooth_connector(), _bt_socket(0), _connected(false)
+{
+#ifdef MAP
+	cout << "Appel au constructeur de <bluez_adaptor>" << endl;
+#endif
+} //----- Fin de bluez_adaptor
 
-//----------------------------------------------------- Méthodes publiques
+
+bluez_adaptor::~bluez_adaptor()
+{
+#ifdef MAP
+	cout << "Appel au destructeur de <bluez_adaptor>" << endl;
+#endif
+	if(_connected)
+	{
+		disconnect();
+	}
+}
+
+//--------------------------------------------------------- Public methods
+
+/**
+ * @brief connection : Establishes the connection
+ * @param address : Thedevice address (format : 'XX:XX:XX:XX:XX')
+ * @return The socket ID, or -1 if an error occurred
+ */
 int bluez_adaptor::connection(const char* address)
 {
 	int errval = 0;
@@ -57,7 +75,7 @@ int bluez_adaptor::connection(const char* address)
 	dest_addr.rc_family = AF_BLUETOOTH; 
 	dest_addr.rc_channel = (uint8_t) 1;
 
-	//Création du socket de communication
+		//Creating the communication socket
 	_bt_socket = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);	
 
 	while(continuer)
@@ -84,52 +102,23 @@ int bluez_adaptor::connection(const char* address)
 	return _bt_socket;
 }
 
+
+/**
+ * @brief disconnect : Closes the connections
+ * @return An error code
+ */
+int bluez_adaptor::disconnect(void)
+{
+	_connected = false;
+	return close(_bt_socket);
+}
+
+
+/**
+ * @brief isConnected : Checks the connection status
+ * @return true if the connection is currently established
+ */
 bool bluez_adaptor::isConnected()
 {
 	return _connected;
 }
-
-int bluez_adaptor::disconnect(void)
-{
-	_connected = false;	
-	return close(_bt_socket);
-}
-
-//------------------------------------------------- Surcharge d'opérateurs
-
-
-//-------------------------------------------- Constructeurs - destructeur
-
-
-bluez_adaptor::bluez_adaptor ():
-	bluetooth_connector(),
-	_bt_socket(0),
-	_connected(false)
-{
-#ifdef MAP
-    cout << "Appel au constructeur de <bluez_adaptor>" << endl;
-#endif
-} //----- Fin de bluez_adaptor
-
-
-bluez_adaptor::~bluez_adaptor ( )
-// Algorithme :
-//
-{
-#ifdef MAP
-    cout << "Appel au destructeur de <bluez_adaptor>" << endl;
-#endif
-	if(_connected)
-	{
-		disconnect();
-	}
-} //----- Fin de ~bluez_adaptor
-
-
-//------------------------------------------------------------------ PRIVE
-
-//----------------------------------------------------- Méthodes protégées
-
-//------------------------------------------------------- Méthodes privées
-
-
