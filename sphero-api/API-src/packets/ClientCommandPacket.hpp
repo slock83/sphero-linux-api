@@ -5,7 +5,7 @@
     début                : sam. 14 mars 2015
 *************************************************************************/
 
-#ifndef ( CLIENTCOMMANDPACKET_H )
+#ifndef CLIENTCOMMANDPACKET_H
 #define CLIENTCOMMANDPACKET_H
 
 

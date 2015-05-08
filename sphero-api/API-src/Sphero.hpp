@@ -18,31 +18,31 @@
 //-------------------------------------------------------------- Local includes
 #include "bluetooth/bluetooth_connector.h"
 #include "packets/ClientCommandPacket.hpp"
+#include "ActionHandler.hpp"
 
 //------------------------------------------------------------------- Constants
 
-#define ABORT_ROUTINE 0x00
-#define START_ROUTINE 0x01
-#define CHECK_ANGLE 0x02
-#define SLEEP_AFTER_FINISH 0x04
-#define KEEP_CONTROL_SYSTEM 0x08
+static uint8_t const ABORT_ROUTINE = 0x00;
+static uint8_t const START_ROUTINE = 0x01;
+static uint8_t const CHECK_ANGLE = 0x02;
+static uint8_t const SLEEP_AFTER_FINISH = 0x04;
+static uint8_t const KEEP_CONTROL_SYSTEM = 0x08;
 
+static uint8_t const ACC_2G = 0x00;
+static uint8_t const ACC_4G = 0x01;
+static uint8_t const ACC_8G = 0x02;
+static uint8_t const ACC16G = 0x03;
 
-#define ACC_2G 0x00
-#define ACC_4G 0x01
-#define ACC_8G 0x02
-#define ACC16G 0x03
+static uint8_t const FLOATING_Y_AXIS = 0x01;
 
-#define FLOATING_Y_AXIS 0x01
+static uint8_t const OPT_PREVENT_SLEEP = 0x01;
+static uint8_t const OPT_EN_VDRIVE = 0x02;
+static uint8_t const OPT_DIS_CHARGER_SL = 0x04;
+static uint8_t const OPT_FORCE_TAIL_LED = 0x08;
+static uint8_t const OPT_EN_MOTION_TO = 0x10;
+static uint8_t const OPT_EN_RETAIL_DEMO = 0x20;
 
-#define OPT_PREVENT_SLEEP 0x01
-#define OPT_EN_VDRIVE 0x02
-#define OPT_DIS_CHARGER_SL 0x04
-#define OPT_FORCE_TAIL_LED 0x08
-#define OPT_EN_MOTION_TO 0x10
-#define OPT_EN_RETAIL_DEMO 0x20
-
-#define TOPT_EN_STOP_ON_DISC 0x01
+static uint8_t const TOPT_EN_STOP_ON_DISC = 0x01;
 
 //----------------------------------------------------------------------- Types
 class ClientCommandPacket;
@@ -489,7 +489,8 @@ class Sphero
 		const std::string _address;
 
 			/* Callbacks lists (one for each declared event) */
-		std::list<callback_connect_t> _callback_connect_list;
+
+		ActionHandler<> _connect_handler;
 		std::list<callback_disconnect_t> _callback_disconnect_list;
 		std::list<callback_collision_t> _callback_collision_list;
 };

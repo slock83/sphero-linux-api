@@ -10,21 +10,23 @@
 
 //--------------------------------------------------- Interfaces utilisées
 #include <queue>
+#include <functional>
 //------------------------------------------------------------- Constantes 
 
 //------------------------------------------------------------------ Types 
-template<typename T>
-typedef void (listener<T>*)(T);
 
 /**
  * T : type de la structure de donnée qui sera communiquée à tous les listener
  */
-template<typename T>
+template<typename ...T>
 class ActionHandler 
 {
 //----------------------------------------------------------------- PUBLIC
 
 public :
+//--------------------------------------------------------- Types internes 
+	using listener_t = std::function<void(T...)>;
+
 //----------------------------------------------------- Méthodes publiques
 	/**
 	 * @brief reportAction : Permet de tenir l'actionHandler au courant de 
@@ -33,13 +35,13 @@ public :
 	 * @param action : 	Un pointeur sur la structure de donnée qui contient
 	 * 					les informations relatives à l'action.
 	 */
-	void reportAction(T action);
+	void reportAction(T... action);
 
 	/**
 	 * @brief addActionListener : Permet d'enregistrer un listener d'action
 	 * @param : listener : le listener à ajouter
 	 */
-	void addActionListener(listener<T> const listener);
+	void addActionListener(listener_t listener);
 
 	/**
 	 * @brief clearListener : désenregistre tous les listeners
@@ -56,6 +58,7 @@ public :
 
     virtual ~ActionHandler();
 
+
 //------------------------------------------------------------------ PRIVE 
 
 protected:
@@ -68,13 +71,14 @@ protected:
 //----------------------------------------------------- Attributs protégés
 
 private:
+//----------------------------------------------------------- Types privés
+	using listenerQueue_t = std::queue<listener_t>;
 //------------------------------------------------------- Attributs privés
-	std::queue<listener<T> const> _listenerQueue;
+	listenerQueue_t _listenerQueue;
 //---------------------------------------------------------- Classes amies
 
 //-------------------------------------------------------- Classes privées
 
-//----------------------------------------------------------- Types privés
 
 };
 

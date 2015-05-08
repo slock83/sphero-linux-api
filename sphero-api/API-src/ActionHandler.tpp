@@ -4,7 +4,7 @@
     début                : ven. 08 mai 2015
 *************************************************************************/
 
-//---------- Réalisation de la classe <ActionHandler> (fichier ActionHandler.tpp) --
+//----- Réalisation de la classe <ActionHandler> (fichier ActionHandler.tpp) --
 
 //---------------------------------------------------------------- INCLUDE
 
@@ -22,7 +22,6 @@
 //-------------------------------------------------------- Fonctions amies
 
 //----------------------------------------------------- Méthodes publiques
-template<typename T>
 /**
  * @brief reportAction : Permet de tenir l'actionHandler au courant de 
  * 						 l'action survenue. Tous les listener sont ensuite
@@ -30,45 +29,47 @@ template<typename T>
  * @param action : 	Un pointeur sur la structure de donnée qui contient
  * 					les informations relatives à l'action.
  */
-void ActionHandler::reportAction(T* action)
+template<typename ...T>
+void ActionHandler<T...>::reportAction(T... action)
 {
-	std::queue<listener<T> const>::iterator it;
+	typename listenerQueue_t::iterator it;
 	for(it = _listenerQueue.begin() ; it != _listenerQueue.end() ; it++)
 	{
-		*it(action);
+		*it(action...);
 	}
 }
 
-template<typename T>
+template<typename ...T>
 /**
  * @brief addActionListener : Permet d'enregistrer un listener d'action
  * @param : listener : le listener à ajouter
  */
-void ActionHandler::addActionListener(listener<T> const listener)
+void ActionHandler<T...>::addActionListener(listener_t listener)
 {
 	_listenerQueue.push(listener);
 }
 
-template<typename T>
+template<typename ...T>
 /**
  * @brief clearListener : désenregistre tous les listeners
  */
-void clearListener()
+void ActionHandler<T...>::clearListener()
 {
-	std::queue<listener<T> const> empty;
+	listenerQueue_t empty;
 	std::swap(_listenerQueue, empty);
-
 }
 
 //------------------------------------------------- Surcharge d'opérateurs
 
 //-------------------------------------------- Constructeurs - destructeur
-ActionHandler::ActionHandler():_listenerQueue()
+template<typename ...T>
+ActionHandler<T...>::ActionHandler():_listenerQueue()
 {
 } 
 
 
-ActionHandler::~ActionHandler ( )
+template<typename ...T>
+ActionHandler<T...>::~ActionHandler ( )
 {
 } 
 
