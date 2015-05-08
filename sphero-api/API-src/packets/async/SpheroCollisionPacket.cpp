@@ -62,7 +62,7 @@ bool SpheroCollisionPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket*
 	{
 		return false;
 	}
-	if(!Toolbox::checksum(packet_data+2, packet_data[18]))
+	if(!packet_toolbox::checksum(packet_data+2, packet_data[18]))
 	{
 		return false;
 	}	

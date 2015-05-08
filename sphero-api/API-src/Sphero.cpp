@@ -47,13 +47,8 @@ void* Sphero::monitorStream(void* sphero_ptr)
 
 void Sphero::handleOnCollision(CollisionStruct* infos)
 {
-<<<<<<< HEAD
-	_collision_handler.reportAction();
-}//END handleOnCollision
-=======
 	_collision_handler.reportAction(infos);
 }
->>>>>>> branch 'master' of https://github.com/slock83/sphero-linux-api.git
 
 //------------------------------------------------ Constructors/Destructor
 
