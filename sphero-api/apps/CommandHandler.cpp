@@ -78,7 +78,9 @@ static void handleConnect(stringstream& css)
 	}
 
 	Sphero* sph = new Sphero(address.c_str(), new bluez_adaptor());
-	sph->onConnect();
+	sph->onConnect([](){
+				std::cout << "Me voilà connecté, braves gens !" << std::endl;
+			});
 	if(sph->connect())
 	{
 		size_t idx = nbActif++;
