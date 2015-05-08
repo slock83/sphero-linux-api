@@ -29,16 +29,15 @@ class SpheroAsyncPacket : public SpheroPacket
 {
 	public:
 		//-------------------------------------------- Operators overload
-
+			//No sense
 		SpheroAsyncPacket & operator = ( const SpheroAsyncPacket & unSpheroAsyncPacket ) = delete;
 
 
 		//--------------------------------------- Constructors/Destructor
-
+			//No sense
 		SpheroAsyncPacket ( const SpheroAsyncPacket & unSpheroAsyncPacket ) = delete;
 
 		virtual ~SpheroAsyncPacket();
-
 
 		//------------------------------------------------ Public methods
 
@@ -52,7 +51,8 @@ class SpheroAsyncPacket : public SpheroPacket
 		static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
 
 		/**
-		 * @brief packetAction : Defines the packet behavior on reception
+		 * @brief packetAction : Performs the action associated to the packet
+		 *			on the Sphero instance
 		 */
 		virtual void packetAction() = 0;
 

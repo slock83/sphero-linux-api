@@ -37,7 +37,8 @@ class SpheroAnswerPacket : public SpheroPacket
 		static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
 
 		/**
-		 * @brief packetAction : Defines the packet behavior on reception
+		 * @brief packetAction : Performs the action associated to the packet
+		 *			on the Sphero instance
 		 */
 		virtual void packetAction() = 0;
 

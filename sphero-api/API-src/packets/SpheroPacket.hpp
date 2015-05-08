@@ -1,21 +1,23 @@
 /*************************************************************************
-    SpheroPacket  -  description
+	SpheroPacket  -  Abstract class. Defines the behavior of
+												packets received by Sphero
                              -------------------
     début                : mar. 28 avril 2015
 *************************************************************************/
 
-//---------- Interface de la classe <SpheroPacket> (fichier SpheroPacket.hpp) ------
-#if ! defined ( SPHEROPACKET_H )
+#ifndef ( SPHEROPACKET_H )
 #define SPHEROPACKET_H
 
-//--------------------------------------------------- Interfaces utilisées
+//-------------------------------------------------------- System includes
 #include <unordered_map>
+
+//--------------------------------------------------------- Local includes
 #include "Sphero.hpp"
 
-//------------------------------------------------------------- Constantes 
-static uint8_t const START_OF_PACKET_FLAG = 0xFF;
-static uint8_t const ASYNC_FLAG  = 0xFE;
-static uint8_t const ANSWER_FLAG = 0xFF;
+//-------------------------------------------------------------- Constants
+#define START_OF_PACKET_FLAG 0xFF;
+#define ASYNC_FLAG  0xFE;
+#define ANSWER_FLAG 0xFF;
 
 //------------------------------------------------------------------ Types 
 class SpheroPacket;
@@ -24,60 +26,53 @@ typedef bool (*packetExtractor)(int socketd, Sphero* sphero, SpheroPacket** pack
 typedef std::unordered_map<uint8_t, packetExtractor> extractorMap_t;
 typedef std::pair<uint8_t, packetExtractor> extractorMapEntry_t;
 
-//------------------------------------------------------------------------ 
-// Rôle de la classe <SpheroPacket>
-//
-// Classe abstraite
-// Définir les comportements des paquets reçus par sphero
-//------------------------------------------------------------------------ 
 
 class SpheroPacket
 {
-//----------------------------------------------------------------- PUBLIC
+	public:
+		//--------------------------------------------- Operators overload
+			//No sense
+		SpheroPacket& operator=(const SpheroPacket&) = delete;
 
-public:
-//----------------------------------------------------- Méthodes publiques
-	
-    // Extrait les informations du descripteur de fichier
-    // afin de construire un paquet bien formé.
-   	static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
+		//---------------------------------------- Constructors/Destructor
+			//No sense
+		SpheroPacket(const SpheroPacket&) = delete;
 
-    // Effectue l'action associée au paquet sur l'instance
-    // du Sphero passée en paramètre.
-    virtual void packetAction() = 0;
+		virtual ~SpheroPacket();
 
-//------------------------------------------------- Surcharge d'opérateurs
-    SpheroPacket& operator=(const SpheroPacket&) = delete;
+		//------------------------------------------------ Public methods
 
-//-------------------------------------------- Constructeurs - destructeur
+		/**
+		 * @brief extractPacket : extracts informations from the file descriptor to build a well made packet
+		 * @param fd : The socket file descriptor
+		 * @param sphero : The Sphero sending the packet
+		 * @param packet_ptr : A pointer to a SpheroPacket pointer
+		 * @return true if the packet was successfully extracted from the socket, false otherwise
+		 *
+		 * Contract: the socket has to be in blocking read
+		 */
+		static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
 
-    SpheroPacket(const SpheroPacket&) = delete;
+		/**
+		 * @brief packetAction : Performs the action associated to the packet
+		 *			on the Sphero instance
+		 */
+		virtual void packetAction() = 0;
 
-    virtual ~SpheroPacket();
-//------------------------------------------------------------------ PRIVE 
+	protected:
 
-protected:
-//----------------------------------------------------- Méthodes protégées
-    SpheroPacket(Sphero* sphero);
-private:
-//------------------------------------------------------- Méthodes privées
+		/**
+		 * @brief SpheroPacket::SpheroPacket
+		 * @param sphero : The Sphero instance to which the packet is linked
+		 */
+		SpheroPacket(Sphero* sphero);
 
-protected:
-//----------------------------------------------------- Attributs protégés
-	Sphero* _sphero;
+		//------------------------------------------ Protected attributes
+		Sphero* _sphero;
 
-private:
-//------------------------------------------------------- Attributs privés
-	static extractorMap_t _extractorMap;
-//---------------------------------------------------------- Classes amies
-
-//-------------------------------------------------------- Classes privées
-
-//----------------------------------------------------------- Types privés
-
+	private:
+		static extractorMap_t _extractorMap;
 };
-
-//----------------------------------------- Types dépendants de <SpheroPacket>
 
 #endif // SPHEROPACKET_H
 
