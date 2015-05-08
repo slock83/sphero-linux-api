@@ -1,74 +1,59 @@
 /*************************************************************************
-    SpheroPacket  -  description
+   SpheroCollisionPacket  - Représente un paquet asynchrone de collision 
                              -------------------
-    début                : mar. 28 avril 2015
+    début                : jeu. 07 mai 2015
 *************************************************************************/
 
-//---------- Interface de la classe <SpheroPacket> (fichier SpheroPacket.hpp) ------
-#if ! defined ( SPHEROPACKET_H )
-#define SPHEROPACKET_H
+//---------- Interface de la classe <SpheroCollisionPacket> (fichier SpheroCollisionPacket.hpp) ------
+#if ! defined ( SPHEROCOLLISIONPACKET_H )
+#define SPHEROCOLLISIONPACKET_H
 
 //--------------------------------------------------- Interfaces utilisées
-#include <unordered_map>
-#include "../Sphero.hpp"
+#include "../SpheroAsyncPacket.hpp"
 
 //------------------------------------------------------------- Constantes 
-static uint8_t const START_OF_PACKET_FLAG = 0xFF;
-static uint8_t const ASYNC_FLAG  = 0xFE;
-static uint8_t const ANSWER_FLAG = 0xFF;
 
 //------------------------------------------------------------------ Types 
-class SpheroPacket;
-
-typedef bool (*packetExtractor)(int socketd, Sphero* sphero, SpheroPacket** packet_ptr);
-typedef std::unordered_map<uint8_t, packetExtractor> extractorMap_t;
-typedef std::pair<uint8_t, packetExtractor> extractorMapEntry_t;
 
 //------------------------------------------------------------------------ 
-// Rôle de la classe <SpheroPacket>
-//
-// Classe abstraite
-// Définir les comportements des paquets reçus par sphero
+
 //------------------------------------------------------------------------ 
 
-class SpheroPacket
+class SpheroCollisionPacket : public SpheroAsyncPacket 
 {
 //----------------------------------------------------------------- PUBLIC
 
 public:
 //----------------------------------------------------- Méthodes publiques
-	
-    // Extrait les informations du descripteur de fichier
-    // afin de construire un paquet bien formé.
    	static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
-
-    // Effectue l'action associée au paquet sur l'instance
-    // du Sphero passée en paramètre.
-    virtual void packetAction() = 0;
+    virtual void packetAction();
 
 //------------------------------------------------- Surcharge d'opérateurs
-    SpheroPacket& operator=(const SpheroPacket&) = delete;
+    SpheroCollisionPacket& operator=(
+			const SpheroCollisionPacket& unSpheroCollisionPacket) = delete;
+
 
 //-------------------------------------------- Constructeurs - destructeur
+    SpheroCollisionPacket(
+			const SpheroCollisionPacket& unSpheroCollisionPacket) = delete;
 
-    SpheroPacket(const SpheroPacket&) = delete;
+    virtual ~SpheroCollisionPacket ( );
 
-    virtual ~SpheroPacket();
 //------------------------------------------------------------------ PRIVE 
 
 protected:
 //----------------------------------------------------- Méthodes protégées
-    SpheroPacket(Sphero* sphero);
+    SpheroCollisionPacket(Sphero* sphero);
+
 private:
 //------------------------------------------------------- Méthodes privées
 
 protected:
 //----------------------------------------------------- Attributs protégés
-	Sphero* _sphero;
 
 private:
 //------------------------------------------------------- Attributs privés
-	static extractorMap_t _extractorMap;
+
 //---------------------------------------------------------- Classes amies
 
 //-------------------------------------------------------- Classes privées
@@ -77,7 +62,7 @@ private:
 
 };
 
-//----------------------------------------- Types dépendants de <SpheroPacket>
+//-------------------------------- Types dépendants de <SpheroCollisionPacket>
 
-#endif // SPHEROPACKET_H
+#endif // SPHEROCOLLISIONPACKET_H
 

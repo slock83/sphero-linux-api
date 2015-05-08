@@ -1,28 +1,29 @@
 /*************************************************************************
-   ClientCommandPacket  
+	 ClientCommandPacket  -  The packet creator used for every
+						   command sent by the client to the Sphero
                              -------------------
     début                : sam. 14 mars 2015
 *************************************************************************/
 
-// Interface de la classe <ClientCommandPacket> (fichier ClientCommandPacket.h)
-#if ! defined ( CLIENTCOMMANDPACKET_H )
+#ifndef ( CLIENTCOMMANDPACKET_H )
 #define CLIENTCOMMANDPACKET_H
 
+
+//--------------------------------------------------------- System includes
 #include <cstdint>
 #include <string>
 
-//--------------------------------------------------- Interfaces utilisées
-//------------------------------------------------------------------ Types 
+//------------------------------------------------------------------- Types
 typedef uint8_t byte;
 
-//------------------------------------------------------------------ Constantes
+//--------------------------------------------------------------- Constants
 const byte ANS_FLAG = 0x01;
 const byte RST_FLAG = 0x02;
 const byte INIT_SOP1 = 0xFF;
-//SOP2 is initialized with RST and ANS set to false
+	//SOP2 is initialized with RST and ANS set to false
 const byte INIT_SOP2 = 0xFC;
 
-//------------------------------------------------------------------------ 
+//-------------------------------------------------------------------------
 /*
  * Packets are sent from client to sphero in the following format
  * | SOP1 | SOP2 | DID | CID | SEQ | DLEN | <data> | CHK
@@ -50,80 +51,78 @@ const byte INIT_SOP2 = 0xFC;
  *
 */ 
 //
-//------------------------------------------------------------------------ 
+//-------------------------------------------------------------------------
 
 class ClientCommandPacket
 {
 
-public:
+	public:
 
-	ClientCommandPacket(
-			byte did,
-			byte cid,
-			byte seq,
-			byte dlen,
-			byte* data,
-			bool acknowledge = false,
-			bool rstTO = false
-		);
+		//----------------------------------------- Constructors/Destructor
+		/**
+		 * @brief ClientCommandPacket : Constructor
+		 * @param did : Device ID -- The virtual device this packet is intended for
+		 * @param cid : Command ID -- The command code
+		 * @param seq : SEQ : Sequence Number -- This client field is echoed in the response for all
+		 *       synchronous commands (and ignored by Sphero when SOP2 has bit 0 clear)
+		 * @param dlen : Data Length -- The number of bytes following through the end of the packet
+		 * @param data : Data -- Optional data to accompany the Command
+		 * @param acknowledge : if true, client send reply after acting
+		 * @param rstTO : if true, reset client inactivity timeout
+		 */
+		ClientCommandPacket(
+				byte did,
+				byte cid,
+				byte seq,
+				byte dlen,
+				byte* data,
+				bool acknowledge = false,
+				bool rstTO = false
+			);
 
-	virtual ~ClientCommandPacket();
-	uint8_t* toByteArray();
+		virtual ~ClientCommandPacket();
 
-	size_t getSize();
+		//-------------------------------------------------- Public methods
+		/**
+		 * @brief toByteArray : transforms the packet data into a single array
+		 * @return the array containing the final packet structure
+		 */
+		uint8_t* toByteArray();
 
-protected:
+		/**
+		 * @return The final packet size
+		 */
+		size_t getSize();
 
-private:
+	private:
+		/* Start of Packet 1 */
+		byte _sop1 ;
 
-protected:
+		/* Start of packet 2 */
+		byte _sop2;
 
-private:
-	/**
-	 * Start of Packet 1
-	 */
-	byte _sop1 ;
+		/* Virtual device id */
+		byte _did;
 
-	/**
-	 * Start of packet 2
-	 */
-	byte _sop2;
+		/* Command id */
+		byte _cid;
 
-	/**
-	 * Virtual device id
-	 */
-	byte _did;
+		/* Sequence identifier (client field) */
+		byte _seq;
 
-	/**
-	 * Command id
-	 */
-	byte _cid;
+		/* Data length  */
+		byte _dlen;
 
-	/**
-	 * Sequence identifier (client field)
-	 */
-	byte _seq;
+		/* Optional data to accompany the command */
+		byte* _data;
 
-	/**
-	 * Data length
-	 */
-	byte _dlen;
+		/* Checksum */
+		byte _chk;
 
-	/**
-	 * Optional data to accompany the command
-	 */
-	byte* _data;
-
-	/**
-	 * Checksum
-	 */
-	byte _chk;
-
-	uint8_t *array;
+		/* The packet data array */
+		uint8_t *array;
 
 };
-
-//----------------------------------------- Types dépendants de <ClientCommandPacket>
 
 #endif // CLIENTCOMMANDPACKET_H
 
