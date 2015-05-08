@@ -49,8 +49,7 @@ const byte INIT_SOP2 = 0xFC;
  * CHK : Checksum -- The modulo 256 sum of all the bytes from the DID through 
  *       the end of the data payload, bit inverted (1's complement)
  *
-*/ 
-//
+*/
 //-------------------------------------------------------------------------
 
 class ClientCommandPacket

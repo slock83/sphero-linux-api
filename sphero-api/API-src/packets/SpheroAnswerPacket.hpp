@@ -33,6 +33,8 @@ class SpheroAnswerPacket : public SpheroPacket
 		 * @param sphero : The Sphero sending the packet
 		 * @param packet_ptr : A pointer to a SpheroPacket pointer
 		 * @return true if the packet was successfully extracted from the socket, false otherwise
+		 *
+		 * Contract: the socket has to be in blocking read
 		 */
 		static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
 
