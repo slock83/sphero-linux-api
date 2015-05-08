@@ -4,8 +4,6 @@
 			started                : 07/03/2015
  ************************************************************************************************************************/
 
-/////////////////////////////////////////////////////////////////  INCLUDE
-
 //-------------------------------------------------------- System includes
 
 #include <endian.h>
@@ -18,8 +16,6 @@
 #include "packets/SpheroPacket.hpp"
 #include "packets/Constants.hpp"
 
-
-///////////////////////////////////////////////////////////////////  PRIVE
 
 //-------------------------------------------------------- Private methods
 
@@ -46,6 +42,7 @@ void* Sphero::monitorStream(void* sphero_ptr)
 	}
 }
 
+
 void Sphero::handleOnDisonnect()
 {
 	//_disconnect_handler.reportAction(nullptr);
@@ -58,10 +55,6 @@ void Sphero::handleOnCollision(spherocoord_t x, spherocoord_t y)
 		callback(x, y);
 }
 
-
-//////////////////////////////////////////////////////////////////  PUBLIC
-
-
 //------------------------------------------------ Constructors/Destructor
 
 
@@ -70,9 +63,7 @@ void Sphero::handleOnCollision(spherocoord_t x, spherocoord_t y)
  * @param btcon : A pointer to the bluetooth connector
  */
 Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
-	_connected(false),
-	_bt_adapter(btcon),
-	_address(btaddr)
+	_connected(false), _bt_adapter(btcon), _address(btaddr)
 {}
 
 
@@ -175,8 +166,7 @@ void Sphero::ping()
  *
  * packet spec : 02h 	20h 	<any> 	05h 	<value> 	<value> 	<value> 	<bool>
  */
-void Sphero::setColor(uint8_t red, uint8_t green,
-		uint8_t blue, bool persist)
+void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
 {
 	uint8_t data_payload[4];
 	data_payload[0] = red;
@@ -331,8 +321,8 @@ void Sphero::setRotationRate(uint8_t angspeed)
 *
 * Packet spec : 02h 	09h 	<any> 	05h 	<byte> 	<byte> 	<byte> 	<byte>
 */
-void Sphero::setSelfLevel(uint8_t options,
-		uint8_t angle_limit, uint8_t timeout, uint8_t trueTime)
+void Sphero::setSelfLevel(uint8_t options, uint8_t angle_limit,
+						  uint8_t timeout, uint8_t trueTime)
 {
 	uint8_t data_payload[4];
 	data_payload[0] = options;
@@ -375,13 +365,8 @@ void Sphero::setSelfLevel(uint8_t options,
  *
  * Packet spec : 02h 	12h 	<any> 	07h 	<val> 	<val> 	<val> 	<val> 	<val> 	<val>
  */
-void Sphero::enableCollisionDetection(
-		uint8_t Xt,
-		uint8_t Xspd, 
-		uint8_t Yt, 
-		uint8_t Yspd, 
-		uint8_t Dead
-	)
+void Sphero::enableCollisionDetection(uint8_t Xt, uint8_t Xspd,
+		uint8_t Yt,  uint8_t Yspd,  uint8_t Dead)
 {
 	uint8_t data_payload[6];
 	data_payload[0] = 0x01;
@@ -390,6 +375,7 @@ void Sphero::enableCollisionDetection(
 	data_payload[3] = Yt;
 	data_payload[4] = Yspd;
 	data_payload[5] = Dead;
+
 	ClientCommandPacket packet(
 			DID::sphero,
 			CID::configureCollisionDetection,
@@ -452,8 +438,7 @@ bool Sphero::isConnected()
  * Packet spec : 02h 	13h 	<any> 	02h 	<8 bit val> 	<16 bit signed val>
  *																	<16 bit signed val> 	<16 bit signed val>
  */
-void Sphero::configureLocator(uint8_t flags, uint16_t X,
-		uint16_t Y, uint16_t yaw)
+void Sphero::configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t yaw)
 {
 	uint8_t XA = (uint8_t)((X & 0xFF00) >> 8);
 	uint8_t XB = (uint8_t)(X & 0x00FF);
@@ -469,6 +454,7 @@ void Sphero::configureLocator(uint8_t flags, uint16_t X,
 	data_payload[4] = YB;
 	data_payload[5] = yawA;
 	data_payload[6] = yawB;
+
 	ClientCommandPacket packet(
 			DID::sphero,
 			CID::configureLocator,

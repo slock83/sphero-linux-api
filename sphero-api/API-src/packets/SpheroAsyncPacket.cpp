@@ -1,20 +1,20 @@
 /*************************************************************************
-                           SpheroAsyncPacket  -  description
+	SpheroAsyncPacket - Defines asynchronous packets behavior received by Sphero
                              -------------------
     début                : mar. 17 mars 2015
 *************************************************************************/
 
 
-//-------------------------------------------------------- Include système
+//-------------------------------------------------------- System includes
 #include <iostream>
 #include <sys/socket.h>
 #include <fcntl.h>
 
-//------------------------------------------------------ Include personnel
+//--------------------------------------------------------- Local includes
 #include "SpheroAsyncPacket.hpp"
 #include "async/SpheroCollisionPacket.hpp"
 
-//---------------------------------------------------- Variables de classe
+//-------------------------------------------------------- Class variables
 extractorMap_t SpheroAsyncPacket::_extractorMap = {
 	{COLLISION_DETECTED, SpheroCollisionPacket::extractPacket}
 };
@@ -40,8 +40,9 @@ SpheroAsyncPacket::~SpheroAsyncPacket()
  */
 bool SpheroAsyncPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr)
 {
+
 #ifdef MAP
-	fprintf(stdout, "Réception d'un paquet asynchrone\n");
+	fprintf(stdout, "Asynchronous packet reception\n");
 #endif
 	uint8_t idCode;
 	int rcvVal = 0;

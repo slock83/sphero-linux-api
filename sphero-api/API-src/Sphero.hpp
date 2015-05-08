@@ -50,11 +50,10 @@ class sphero_listener;
 
 typedef int16_t spherocoord_t;
 
-	/** Callback functions signatures definition */
+	/* Callback functions signatures definition */
 typedef std::function<void(void)> callback_connect_t;
 typedef std::function<void(void)> callback_disconnect_t;
-typedef std::function
-	<void(spherocoord_t, spherocoord_t)> callback_collision_t;
+typedef std::function<void(spherocoord_t, spherocoord_t)> callback_collision_t;
 
 
 //------------------------------------------------------------ Class definition
@@ -63,11 +62,11 @@ class Sphero
 {
 	public:
 
-//------------------------------------------------------------------- Operators
+		//----------------------------------------------------------- Operators
 			//No sense
 		Sphero & operator=(const Sphero&) = delete;
 
-//----------------------------------------------------- Constructors/Destructor
+		//--------------------------------------------- Constructors/Destructor
 			//No sense
 		Sphero (const Sphero&) = delete;
 
@@ -79,7 +78,7 @@ class Sphero
 
 		virtual ~Sphero();
 
-//-------------------------------------------------------------- Public methods
+		//------------------------------------------------------ Public methods
 
 		/**
 		 * @brief connect : Initializes the bluetooth connection to the sphero 
@@ -420,7 +419,7 @@ class Sphero
 		void reportCollision();
 
 
-//---------------------------------------------------------------------- Events
+		//-------------------------------------------------------------- Events
 
 		/**
 		 * @brief onConnect : Event thrown on Sphero connection
@@ -450,7 +449,7 @@ class Sphero
 
 
 	protected:
-//----------------------------------------------------------- Protected methods
+		//--------------------------------------------------- Protected methods
 		static void* monitorStream(void* sphero_ptr);
 
 		void handleOnConnect();
@@ -458,7 +457,7 @@ class Sphero
 		void handleOnCollision(spherocoord_t x, spherocoord_t y);
 
 	private:
-//---------------------------------------------------------- Private attributes
+		//-------------------------------------------------- Private attributes
 
 		static const size_t MAX_CONNECT_ATTEMPT = 5;
 		bool _connected;
@@ -489,7 +488,6 @@ class Sphero
 		const std::string _address;
 
 			/* Callbacks lists (one for each declared event) */
-
 		ActionHandler<> _connect_handler;
 		std::list<callback_disconnect_t> _callback_disconnect_list;
 		std::list<callback_collision_t> _callback_collision_list;

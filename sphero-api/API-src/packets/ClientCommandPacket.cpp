@@ -17,6 +17,7 @@ using namespace std;
 #include "Toolbox.hpp"
 
 //------------------------------------------------- Constructors/Destructor
+
 /**
  * @brief ClientCommandPacket : Constructor
  * @param did : Device ID -- The virtual device this packet is intended for
@@ -28,21 +29,10 @@ using namespace std;
  * @param acknowledge : if true, client send reply after acting
  * @param rstTO : if true, reset client inactivity timeout
  */
-ClientCommandPacket::ClientCommandPacket(
-										byte did,
-										byte cid,
-										byte seq,
-										byte dlen,
-										byte* data,
-										bool acknowledge,
-										bool rstTO):
-			_sop1(INIT_SOP1),
-			_sop2(INIT_SOP2),
-			_did(did),
-			_cid(cid),
-			_seq(seq),
-			_dlen(dlen),
-			_data(data)
+ClientCommandPacket::ClientCommandPacket(byte did, byte cid, byte seq, byte dlen,
+										 byte* data, bool acknowledge, bool rstTO):
+			_sop1(INIT_SOP1), _sop2(INIT_SOP2), _did(did), _cid(cid),
+			_seq(seq), _dlen(dlen), _data(data)
 {
 	if(acknowledge)
 	{

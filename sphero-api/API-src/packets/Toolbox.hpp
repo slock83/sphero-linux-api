@@ -4,7 +4,6 @@
     début                : mar. 28 avril 2015
 *************************************************************************/
 
-//---------- Boite à outils <Toolbox> (fichier Toolbox.hpp) ------
 #ifndef ( TOOLBOX_HPP )
 #define TOOLBOX_HPP
 

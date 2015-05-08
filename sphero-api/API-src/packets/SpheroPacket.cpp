@@ -48,10 +48,7 @@ SpheroPacket::~SpheroPacket ( )
  *
  * Contract: the socket has to be in blocking read
  */
-bool SpheroPacket::extractPacket(
-		int fd,
-		Sphero* sphero,
-		SpheroPacket** packet_ptr)
+bool SpheroPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr)
 {
 	uint8_t buf;
 	int rcvVal = 0;

@@ -1,16 +1,13 @@
 /*************************************************************************
-    Constants  -  description
+	Constants  -  Usefull constants for packet configuration
                              -------------------
     début                : ven. 8 mai 2015
 *************************************************************************/
 
-//---------- Constantes <Constants> (fichier Constants.hpp) ------
-#if ! defined ( CONSTANTS_HPP )
+#ifndef ( CONSTANTS_HPP )
 #define CONSTANTS_HPP
 
-//--------------------------------------------------- Interfaces utilisées
-
-//------------------------------------------------------------- Constantes
+//------------------------------------------------------------- Constants
 namespace DID
 {
 	const uint8_t core = 0x00;
@@ -109,9 +106,5 @@ namespace flags
 	//for use when SEQ (or else) is any
 	const uint8_t notNeeded = 0x00;
 }
-//------------------------------------------------------------------ Types
-
-//------------------------------------------------------------- Procédures
-
 
 #endif //CONSTANTS_HPP
