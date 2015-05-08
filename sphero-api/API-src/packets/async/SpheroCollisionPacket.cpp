@@ -10,11 +10,13 @@
 	using namespace std;
 #endif
 #include <sys/socket.h>
+#include <endian.h>
 
 
 //--------------------------------------------------------- Local includes
 #include "SpheroCollisionPacket.hpp"
 #include "../Toolbox.hpp"
+#include "CollisionStruct.hpp"
 
 
 //-------------------------------------------------------------- Constants
@@ -27,8 +29,11 @@ static size_t const PACKET_SIZE = 19;
  * @brief SpheroCollisionPacket : Constructor
  * @param sphero : The Sphero instance that sends the collision packet
  */
-SpheroCollisionPacket::SpheroCollisionPacket(Sphero* sphero):
-		SpheroAsyncPacket(sphero)
+SpheroCollisionPacket::SpheroCollisionPacket(
+		Sphero* sphero, 
+		CollisionStruct* collisionInfos 
+	):	SpheroAsyncPacket(sphero),
+		_collisionInfos(collisionInfos)
 {}
 
 
@@ -37,6 +42,7 @@ SpheroCollisionPacket::~SpheroCollisionPacket ( )
 #ifdef MAP
 	std::cout << "<SpheroCollisionPacket> destructor called" << std::endl;
 #endif
+	delete _collisionInfos;
 }
 
 
@@ -66,7 +72,22 @@ bool SpheroCollisionPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket*
 	{
 		return false;
 	}	
+	if(packet_data[0] != 0 || packet_data[1] != 0x10)
+	{
+		return false;
+	}
+	if(packet_data[5] > 3)
+	{
+		return false;
+	}
 	
+	CollisionStruct* infos = new CollisionStruct();
+	uint16_t* 16b_ptr = (uint16_t*) packet_data[2];
+	infos->impact_component_x = be16toh(*16b_ptr++);	
+	infos->impact_component_y = be16toh(*16b_ptr++);	
+	infos->impact_component_z = be16toh(*16b_ptr);	
+
+
 	return false;
 }
 
@@ -76,5 +97,5 @@ bool SpheroCollisionPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket*
  */
 void SpheroCollisionPacket::packetAction()
 {
-	_sphero->reportCollision();
+	_sphero->reportCollision(_collisionInfos);
 }

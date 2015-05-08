@@ -57,7 +57,9 @@ class SpheroCollisionPacket : public SpheroAsyncPacket
 		 * @brief SpheroCollisionPacket : Constructor
 		 * @param sphero : The Sphero instance that sends the collision packet
 		 */
-		SpheroCollisionPacket(Sphero* sphero);
+		SpheroCollisionPacket(Sphero* sphero, CollisionStruct* collisionInfos);
+
+		CollisionStruct* _collisionInfos;
 };
 
 #endif // SPHEROCOLLISIONPACKET_H
