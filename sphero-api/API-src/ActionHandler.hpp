@@ -71,4 +71,6 @@ class ActionHandler
 		listenerList_t _listenerList;
 };
 
+#include "ActionHandler.tpp"
+
 #endif // ACTIONHANDLER_HPP
