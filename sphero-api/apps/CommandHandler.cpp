@@ -73,35 +73,35 @@ static void handleConnect(stringstream& css)
 
 		  else
 			  {
-			  cerr << "impossible de charger le fichier"<<endl;
+			  cerr << "unable to load file"<<endl;
 			  return;
 			  }
 	}
 
 	Sphero* sph = new Sphero(address.c_str(), new bluez_adaptor());
 	sph->onConnect([](){
-				std::cout << "Me voilà connecté, braves gens !" << std::endl;
+				std::cout << "I am connected, master" << std::endl;
 			});
 	if(sph->connect())
 	{
 		size_t idx = nbActif++;
 		spheroVec.push_back(sph);
-		cout << "Sphero enregistré : identifiant " << idx << endl;
+		cout << "Sphero registered, ID : " << idx << endl;
 		s = sph;
 		ofstream myfile ("lastConnection", ios::out | ios::trunc);
 		  if (myfile.is_open())
 		  {
 		    myfile <<address;
 		    myfile.close();
-		    cout << "addresse du Sphero sauvegardée"<< endl;
+		    cout << "Sphero address saved ! next time, just type \"connect\" :)"<< endl;
 		  }
-		  else cout << "Erreur : impossible de sauvegarder l'addresse du Sphero :("<< endl;
+		  else cout << "Error : can't save the address :("<< endl;
 
 	}
 	else
 	{
 		delete sph;
-		cout << "Erreur de connexion" << endl;
+		cout << "Connection error" << endl;
 	}
 }
 
@@ -112,12 +112,12 @@ static void handleSelect(stringstream& css)
 	if(nbActif > idx)
 	{
 		s = spheroVec[idx];
-		cout << "Sphero actif : "<< idx << endl;
+		cout << "Active sphero : "<< idx << endl;
 	}
 
 	else
 	{
-		cout << "Erreur d'indice" << endl;
+		cout << "ID not recognized" << endl;
 	}
 }
 
