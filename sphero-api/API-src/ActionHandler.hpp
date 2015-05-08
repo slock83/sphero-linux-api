@@ -71,6 +71,4 @@ class ActionHandler
 		listenerQueue_t _listenerQueue;
 };
 
-#include "ActionHandler.tpp"
-
 #endif // ACTIONHANDLER_HPP
