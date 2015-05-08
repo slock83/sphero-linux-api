@@ -1,5 +1,5 @@
 /*************************************************************************
-   SpheroCollisionPacket  - Represents an asynchronous collision packet
+   CollisionStruct  - 
                              -------------------
 	started                : 07/05/2015
 *************************************************************************/
@@ -7,12 +7,13 @@
 #ifndef COLLISIONSTRUCT_HPP
 #define COLLISIONSTRUCT_HPP
 
-//--------------------------------------------------------- Local includes
+#include <cstdint>
 
 //------------------------------------------------------- Class definition
 
 /**
- * @brief CollisionStruct : TODO
+ * @brief CollisionStruct : Structure with sphero informations when
+ * 							collision detected
  *
  **/
 struct CollisionStruct
@@ -25,6 +26,17 @@ struct CollisionStruct
 
 	//---------------------------------------------- Public attributes
 
+	/**
+	 * @brief CollisionStruct : convert axis raw data to enun axis_t
+	 *
+	 * @param rawAxis : raw information from sphero
+	 *
+	 * @return TODO 
+	 *
+	 **/
+	
+	axis_t setAxis(uint8_t rawAxis);
+	
 	uint16_t impact_component_x;
 	uint16_t impact_component_y;
 	uint16_t impact_component_z;
