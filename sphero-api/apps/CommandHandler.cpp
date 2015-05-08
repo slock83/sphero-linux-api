@@ -280,8 +280,7 @@ static void handleBackLED(stringstream& css)
 {
 	if(!isConnected()) return;
 
-	unsigned int r, g, b;
-	bool persist;
+	unsigned int i;
 
 	css >> i;
 #ifdef MAP
