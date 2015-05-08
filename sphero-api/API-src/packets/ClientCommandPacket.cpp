@@ -51,7 +51,7 @@ ClientCommandPacket::ClientCommandPacket(byte did, byte cid, byte seq, byte dlen
 	packet_data[2] = _seq;
 	packet_data[3] = _dlen;
 	
-	for(size_t i = 0; i < _dlen - 1; packet_data[i + 4] = _data[i], i++)
+    for(byte i = 0; i < _dlen - 1; packet_data[i + 4] = _data[i], i++)
 	{}
 	
 	_chk = packet_toolbox::checksum(packet_data, 4 + _dlen - 1);
