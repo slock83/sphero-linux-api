@@ -90,6 +90,7 @@ namespace flags
 {
 	const uint8_t normalMode = 0x00;
 	const uint8_t hackerMode = 0x01;
+	const uint8_t notNeeded = 0x00;
 }
 //------------------------------------------------------------------ Types
 
