@@ -16,6 +16,7 @@
 
 #include "Sphero.hpp"
 #include "packets/SpheroPacket.hpp"
+#include "packets/Constants.hpp"
 
 
 ///////////////////////////////////////////////////////////////////  PRIVE
@@ -162,9 +163,9 @@ void Sphero::sendPacket(ClientCommandPacket& packet)
 void Sphero::ping()
 {
 	ClientCommandPacket packet = ClientCommandPacket(
-		0x00,
-		0x01,
-		0x00,
+		DID::core,
+		CID::ping,
+		flag::notNeeded,
 		0x01,
 		NULL,
 		true,
@@ -195,9 +196,9 @@ void Sphero::setColor(uint8_t red, uint8_t green,
 	else
 		data_payload[3] = 0;
 	ClientCommandPacket packet (
-			0x02, 
-			0x20, 
-			0x00, 
+			DID::sphero,
+			CID::setRGBLEDOutput,
+			flags::notNeeded,
 			0x05,
 			data_payload, 
 			waitConfirm, 
@@ -217,9 +218,9 @@ void Sphero::setColor(uint8_t red, uint8_t green,
 void Sphero::setBackLedOutput(uint8_t power)
 {
 	ClientCommandPacket packet(
-			0x02, 
-			0x21, 
-			0x00, 
+			DID::sphero,
+			CID::setBackLEDOutput,
+			flags::notNeeded,
 			0x02,
 			&power, 
 			waitConfirm, 
@@ -243,9 +244,9 @@ void Sphero::setHeading(uint16_t heading)
 	data[1] = ptr[0];
 
 	ClientCommandPacket packet(
-			0x02, 
-			0x01, 
-			0x00, 
+			DID::sphero,
+			CID::setHeading,
+			flags::notNeeded,
 			0x03,
 			data, 
 			waitConfirm, 
@@ -267,9 +268,9 @@ void Sphero::setStabilization(bool on)
 	uint8_t state;
 	state = on ? 1 : 0;
 	ClientCommandPacket packet (
-			0x02, 
-			0x02, 
-			0x00, 
+			DID::sphero,
+			CID::setStabilization,
+			flags::notNeeded,
 			0x02,
 			&state, 
 			waitConfirm, 
@@ -289,9 +290,9 @@ void Sphero::setStabilization(bool on)
 void Sphero::setRotationRate(uint8_t angspeed)
 {
 	ClientCommandPacket packet(
-			0x02, 
-			0x03, 
-			0x00, 
+			DID::sphero,
+			CID::setRotationRate,
+			flags::notNeeded,
 			0x02,
 			&angspeed, 
 			waitConfirm, 
@@ -348,9 +349,9 @@ void Sphero::setSelfLevel(uint8_t options,
 	data_payload[2] = timeout;
 	data_payload[3] = trueTime;
 	ClientCommandPacket packet(
-			0x02, 
-			0x09, 
-			0x00, 
+			DID::sphero,
+			CID::selfLevel,
+			flags::notNeeded,
 			0x05,
 			data_payload, 
 			waitConfirm, 
@@ -399,9 +400,9 @@ void Sphero::enableCollisionDetection(
 	data_payload[4] = Yspd;
 	data_payload[5] = Dead;
 	ClientCommandPacket packet(
-			0x02, 
-			0x12, 
-			0x00, 
+			DID::sphero,
+			CID::configureCollisionDetection,
+			flags::notNeeded,
 			0x07,
 			data_payload, 
 			waitConfirm, 
@@ -423,8 +424,14 @@ void Sphero::disableCollisionDetection()
 	data_payload[3] = 0;
 	data_payload[4] = 0;
 	data_payload[5] = 0;
-	ClientCommandPacket packet(0x02, 0x12, 0x00, 0x07,
-			data_payload, waitConfirm, resetTimer);
+	ClientCommandPacket packet(
+			DID::sphero,
+			CID::configureCollisionDetection,
+			flags::notNeeded,
+			0x07,
+			data_payload,
+			waitConfirm,
+			resetTimer);
 	sendPacket(packet);
 }
 
@@ -471,12 +478,18 @@ void Sphero::configureLocator(uint8_t flags, uint16_t X,
 	data_payload[4] = YB;
 	data_payload[5] = yawA;
 	data_payload[6] = yawB;
-	ClientCommandPacket packet(0x02, 0x13, 0x00, 0x08,
-			data_payload, waitConfirm, resetTimer);
+	ClientCommandPacket packet(
+			DID::sphero,
+			CID::configureLocator,
+			flags::notNeeded,
+			0x08,
+			data_payload,
+			waitConfirm,
+			resetTimer);
 	sendPacket(packet);
 }
 
-//getLocator : will have to discuss this...
+//getLocator : we'll have to discuss this...
 //getRGDLed : same
 
 
@@ -498,9 +511,9 @@ void Sphero::configureLocator(uint8_t flags, uint16_t X,
 void Sphero::setAccelerometerRange(uint8_t range)
 {
 	ClientCommandPacket packet(
-			0x02, 
-			0x14, 
-			0x00, 
+			DID::sphero,
+			CID::setAccelerometerRanger,
+			flags::notNeeded,
 			0x02,
 			&range, 
 			waitConfirm, 
@@ -530,9 +543,9 @@ void Sphero::roll(uint8_t speed, uint16_t heading, uint8_t state)
 	data_payload[2] = lsb;
 	data_payload[3] = state;
 	ClientCommandPacket packet(
-			0x02, 
-			0x30, 
-			0x00, 
+			DID::sphero,
+			CID::roll,
+			flags::notNeeded,
 			0x05,
 			data_payload, 
 			waitConfirm, 
@@ -560,9 +573,9 @@ void Sphero::setInactivityTimeout(uint16_t timeout)
 	timeout = htobe16(timeout);
 	uint8_t* data = (uint8_t*) &timeout;
 	ClientCommandPacket packet(
-			0x00,
-			0x25,
-			0x00,
+			DID::core,
+			CID::setInactivityTimeout,
+			flags::notNeeded,
 			0x03,
 			data,
 			waitConfirm,
@@ -606,9 +619,9 @@ void Sphero::sleep(uint16_t time, uint8_t macro, uint16_t orbbasic)
 	data_payload[3] = msbOrb;
 	data_payload[4] = lsbOrb;
 	ClientCommandPacket packet(
-			0x00, 
-			0x22, 
-			0x00, 
+			DID::core,
+			CID::sleep,
+			flags::notNeeded,
 			0x06,
 			data_payload, 
 			waitConfirm, 
@@ -632,7 +645,8 @@ void Sphero::setTmpOptFlags(uint32_t flags);
 //getTmpOptFlags : we'll see
 
 void Sphero::setDeviceMode(uint8_t value = 0);
-//01h will set to user hack mode
+//01h will set to user hack mode,
+// will implement when we will know the usage of this mode
 
 //getDeviceMode
 
