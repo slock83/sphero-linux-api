@@ -413,15 +413,6 @@ class Sphero
 		 */
 		void setInactivityTimeout(uint16_t timeout);
 		
-
-		//TODO Quentin : implémenter les différentes struct
-		/**
-		 * @brief reportCollision : Notify sphero that a collision occured.
-		 *			All collisionListeners will be notified
-		 */
-		void reportCollision();
-
-
 		//-------------------------------------------------------------- Events
 
 		/**
@@ -450,14 +441,13 @@ class Sphero
 		 */
 		void onCollision(callback_collision_t callback);
 
+		void reportCollision(CollisionStruct* infos);
+		void handleOnConnect();
+		void handleOnDisonnect();
 
 	protected:
 		//--------------------------------------------------- Protected methods
 		static void* monitorStream(void* sphero_ptr);
-
-		void handleOnConnect();
-		void handleOnDisonnect();
-		void handleOnCollision(CollisionStruct* infos);
 
 	private:
 		//-------------------------------------------------- Private attributes

@@ -45,7 +45,7 @@ void* Sphero::monitorStream(void* sphero_ptr)
     return NULL;
 }//END monitorStream
 
-void Sphero::handleOnCollision(CollisionStruct* infos)
+void Sphero::reportCollision(CollisionStruct* infos)
 {
 	_collision_handler.reportAction(infos);
 }
@@ -540,17 +540,6 @@ void Sphero::setInactivityTimeout(uint16_t timeout)
 	sendPacket(packet);
 }//END setInactivityTimeout
 
-
-/**
- * @brief reportCollision : Notify sphero that a collision occured.
- *			All collisionListeners will be notified
- */
-void Sphero::reportCollision()
-{
-
-	//TODO : fix this
-	//handleOnCollision(_position_x, _position_y);
-}//END reportCollision
 
 
 /**

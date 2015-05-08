@@ -82,21 +82,21 @@ bool SpheroCollisionPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket*
 	}
 	
 	CollisionStruct* infos = new CollisionStruct();
-	uint16_t* 16b_ptr = (uint16_t*) &packet_data[2];
-	infos->impact_component_x = be16toh(*16b_ptr++);	
-	infos->impact_component_y = be16toh(*16b_ptr++);	
-	infos->impact_component_z = be16toh(*16b_ptr);	
+	uint16_t* uint16_ptr = (uint16_t*) &packet_data[2];
+	infos->impact_component_x = be16toh(*uint16_ptr++);	
+	infos->impact_component_y = be16toh(*uint16_ptr++);	
+	infos->impact_component_z = be16toh(*uint16_ptr);	
 	
 	infos->setAxis(packet_data[8]);
 
-	16b_ptr = (uint16_t*) &packet_data[9];
-	infos->magnitude_component_x = be16toh(*16b_ptr++); 
-	infos->magnitude_component_y = be16toh(*16b_ptr);
+	uint16_ptr = (uint16_t*) &packet_data[9];
+	infos->magnitude_component_x = be16toh(*uint16_ptr++); 
+	infos->magnitude_component_y = be16toh(*uint16_ptr);
 
 	infos->speed = packet_data[13];
 	
-	uint32_t* 32b_ptr = (uint32_t*) &packet_data[14];
-	infos->timestamp = be32toh(*32b_ptr);
+	uint32_t* uint32_ptr = (uint32_t*) &packet_data[14];
+	infos->timestamp = be32toh(*uint32_ptr);
 
 	*packet_ptr = new SpheroCollisionPacket(sphero, infos);
 
