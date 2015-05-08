@@ -8,21 +8,17 @@
 
 #include "Toolbox.hpp"
 
-uint8_t packet_toolbox::checksum(uint8_t did,
-		uint8_t cid,
-		uint8_t seq,
-		uint8_t dlen,
-		uint8_t* data)
+/**
+ * @brief checksum : Calcul une checksum
+ * @param packet_data : Les données du packet sur lesquelles calculer
+ * 						la checksum
+ * @param len : la taille du tableau packet_data
+ */
+uint8_t packet_toolbox::checksum(uint8_t* packet_data, size_t len)
 {
-	uint8_t checksum;
+	uint8_t checksum = 0;
 
-	checksum = did;
-	checksum += cid;
-	checksum += seq;
-	checksum += dlen;
-
-	//dlen - 1 car dlen compte aussi la taille de la checksum
-	for(size_t i = 0 ; i + 1 < dlen ; checksum += data[i++] )
+	for(size_t i = 0 ; i < len ; checksum += packet_data[i++])
 	{ }
 
 	//Inversion de la somme obtenue
