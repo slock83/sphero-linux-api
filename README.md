@@ -10,10 +10,10 @@ User Hack mode reference : https://s3.amazonaws.com/docs.gosphero.com/api/Sphero
 ### How To build :
 ####1. Dependencies : 
 
-  > dependencies are : bluez, libbluetooth, and libbluetooth-dev (and of course, classic compilation tools : g++, make, gcc, clib, git, ...)
+  > dependencies are : bluez, libbluetooth, libbluetooth-dev, and libreadline6-dev (and of course, classic compilation tools : g++, make, gcc, clib, git, ...)
 
   ```sh
-  $ sudo apt-get install bluez libbluetooth libbluetooth-dev git
+  $ sudo apt-get install bluez libbluetooth libbluetooth-dev git libreadline6-dev
   ```
 
 ####2. Retrieving the source code : 
