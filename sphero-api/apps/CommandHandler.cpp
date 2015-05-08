@@ -14,72 +14,75 @@
 #include "../API-src/Sphero.hpp"
 #include "Keys.hpp"
 
+#include "spheromanager.h"
+
 using namespace std;
 
 /**/
-static Sphero* s;
-static size_t nbActif = 0;
-static vector<Sphero*> spheroVec;
+static SpheroManager sm;
 /**/
 
 class BufferToggle
 {
-private:
-	struct termios t;
+	private:
+		struct termios t;
 
-public:
+	public:
 
-	/*
-	 * Disables buffered input
-	 */
+		/*
+		 * Disables buffered input
+		 */
 
-	void off(void)
-	{
-		tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
-		t.c_lflag &= ~ICANON; //disable canonical mmode
-		t.c_lflag &= ~ECHO; //disable echoing
-		tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
-	}
+		void off(void)
+		{
+			tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
+			t.c_lflag &= ~ICANON; //disable canonical mmode
+			t.c_lflag &= ~ECHO;//disable echoing
+			tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
+		}
 
-	/*
-	 * Enables buffered input
-	 */
 
-	void on(void)
-	{
-		tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
-		t.c_lflag |= ICANON;
-		t.c_lflag |= ECHO;
-		tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
-	}
+		/*
+		 * Enables buffered input
+		 */
+
+		void on(void)
+		{
+			tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
+			t.c_lflag |= ICANON;
+			t.c_lflag |= ECHO;
+			tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
+		}
 };
-
-void init()
-{
-	spheroVec = vector<Sphero*>();
-} //END init
 
 void showHelp()
 {
 	cout << "=============================== HELP =================================" << endl;
 	cout << "help -- Shows this" << endl;
 	cout << "connect xx:xx:xx:xx:xx -- Connects the the Sphero at the given address" << endl;
+	cout << endl;
+	cout << "ping -- Does what it says" << endl;
+	cout << "sleep <duration> -- Puts the sphero to sleep for the given duration" << endl;
+	cout << endl;
 	cout << "changecolor <red> <green> <blue> <persist> -- Changes the Sphero color" << endl;
-	cout << "setIT <TO> -- set inactivity timeout for the sphero" << endl;
-	cout << "roll <speed> <angle> -- moves the sphero" << endl;
-	cout << "ping -- does what it says" << endl;
-	cout << "sleep <duration> -- puts the sphero to sleep for the given duration" << endl;
-	cout << "select <spheroid> -- Selects the sphero to control" << endl;
-	cout << "collision -- enable collision detection feature" << endl;
-	cout << "interactive -- switch to interactive mode (WIP)" << endl;
-	cout
-			<< "======================================================================"
-			<< endl;
-} //END showHelp
+	cout << "setIT <TO> -- Set inactivity timeout for the sphero" << endl;
+	cout << "roll <speed> <angle> -- Moves the sphero" << endl;
+	cout << "collision -- Enable collision detection feature" << endl;
+	cout << endl;
+	cout << "list -- Shows the list of connected sphero" << endl;
+	cout << "select <spheroId> -- Selects the Sphero to control" << endl;
+	cout << "disconnect <spheroId> -- Disconnects the given Sphero" << endl;
+	cout << "======================================================================" << endl;
+}
 
+//------------------------------------------------- SpheroManager related
+
+/**
+ * @brief isConnected : Checks if a Sphero is connected
+ */
 static bool isConnected()
 {
-	if (s == NULL)
+	if(sm.getSphero() == NULL)
 	{
 		cerr << "Please connect first" << endl;
 		return false;
@@ -87,192 +90,210 @@ static bool isConnected()
 	return true;
 }
 
+
+/**
+ * @brief handleConnect : Handles the connexion command
+ */
 static void handleConnect(stringstream& css)
 {
 	string address;
 	css >> address;
-	if (address.length() == 0)
-	{
-		ifstream myfile("lastConnection");
-		if (myfile.is_open())
-		{
-			getline(myfile, address);
-			myfile.close();
-		}
+	sm.connectSphero(address);
+}
 
-		else
-		{
-			cerr << "unable to load file" << endl;
-			return;
-		}
-	}
-
-	Sphero* sph = new Sphero(address.c_str(), new bluez_adaptor());
-	sph->onConnect([]()
-	{
-		std::cout << "Here I come, honourable people !" << std::endl;
-	});
-	if (sph->connect())
-	{
-		size_t idx = nbActif++;
-		spheroVec.push_back(sph);
-		cout << "Sphero registered, ID : " << idx << endl;
-		s = sph;
-		ofstream myfile("lastConnection", ios::out | ios::trunc);
-		if (myfile.is_open())
-		{
-			myfile << address;
-			myfile.close();
-			cout << "Sphero address saved ! next time, just type \"connect\" :)"
-					<< endl;
-		}
-		else
-			cout << "Error : can't save the address :(" << endl;
-
-	}
-	else
-	{
-		delete sph;
-		cout << "Connection error" << endl;
-	}
-} //END handleConnect
-
+/**
+ * @brief handleSelect : Handles the selection command
+ */
 static void handleSelect(stringstream& css)
 {
 	size_t idx;
 	css >> idx;
-	if (nbActif > idx)
-	{
-		s = spheroVec[idx];
-		cout << "Active sphero : " << idx << endl;
-	}
+	sm.selectSphero(idx);
+}
 
-	else
-	{
-		cout << "ID not recognized" << endl;
-	}
-} //END handleSelect
-
-static void ping()
+/**
+ * @brief handleDisconnect : Handles the disconnect command
+ */
+static void handleDisconnect(stringstream& css)
 {
-	if (!isConnected())
-		return;
-	s->ping();
-} //END ping
+	size_t idx;
+	css >> idx;
+	sm.disconnectSphero(idx);
+}
 
-static void handleCollision()
-{
-	if (!isConnected())
-		return;
-
-	s->enableCollisionDetection(1, 128, 1, 128, 15);
-} //END handleCollision
-
-static void handleSleep(stringstream& css)
-{
-	if (!isConnected())
-		return;
-
-	unsigned int time;
-	css >> time;
-	s->sleep((uint16_t) time);
-	s->disconnect();
-	sleep(time + 3);
-	s->connect();
-} //END handleSleep
-
-static void handleDirect(stringstream& css)
-{
-	if (!isConnected())
-		return;
-
-	unsigned int speed;
-	unsigned int angle;
-	css >> speed >> angle;
-
-	s->roll((uint8_t) speed % 256, (uint16_t) angle % 0x10000, 1);
-
-} //END handleDirect
-
-static void handleIT(stringstream& css)
-{
-	if (!isConnected())
-		return;
-
-	uint16_t inactivityTO;
-	css >> inactivityTO;
-
-	s->setInactivityTimeout(inactivityTO);
-
-} //END handleIT
-
-static void handleCc(stringstream& css)
-{
-	if (!isConnected())
-		return;
-
-	unsigned int r, g, b;
-	bool persist;
-
-	css >> r >> g >> b >> persist;
-#ifdef MAP
-	std::cout << "[R, G, B] = " << r << " " <<
-	g << " " << b << std::endl;
-#endif
-	s->setColor((uint8_t) r % 256, (uint8_t) g % 256, (uint8_t) b % 256,
-			(persist == 1));
-} //END handleCC
-
+/**
+ * @brief interactiveMode : Activates the interactive Sphero directing mode
+ */
 static void interactiveMode()
 {
-	if (!isConnected())
-		return;
+	if(!isConnected()) return;
 
-	cout << "welcome to interactive mode" << endl;
-	cout << "press q to quit" << endl;
-	cout << "arrow key to move" << endl;
-	cout << "r or t to reorient" << endl;
-	cout << "WARNING : early WIP !!!" << endl;
+	cout << "welcome to interactive mode" <<endl;
+	cout << "press q to quit" <<endl;
+	cout << "arrow key to move" <<endl;
+	cout << "r or t to reorient" <<endl;
+	cout << "WARNING : early WIP !!!"<<endl;
 	BufferToggle bt;
 	bt.off();
 	int input;
 	uint16_t previousHeading = 0;
 	do
 	{
-		input = getchar();
-		if (input == KEY_UP)
-		{
-			s->roll(128, 0);
-		}
-		else if (input == KEY_DOWN)
-		{
-			s->roll(128, 180);
-		}
-		else if (input == KEY_RIGHT)
-		{
-			s->roll(128, 90);
-		}
-		else if (input == KEY_LEFT)
-		{
-			s->roll(128, 270);
-		}
-		else if (input == KEY_R)
-		{
-			previousHeading++;
-			s->setHeading(previousHeading);
-		}
-		else if (input == KEY_T)
-		{
-			previousHeading--;
-			s->setHeading(previousHeading);
-		}
+	input = getchar();
+	if(input == KEY_UP )
+	{
+		sm.getSphero()->roll(128,0);
+	}
+	else if(input == KEY_DOWN )
+	{
+		sm.getSphero()->roll(128,180);
+	}
+	else if(input == KEY_RIGHT )
+	{
+		sm.getSphero()->roll(128, 90);
+	}
+	else if(input == KEY_LEFT )
+	{
+		sm.getSphero()->roll(128,270);
+	}
+	else if(input == KEY_R )
+	{
+		previousHeading++;
+		sm.getSphero()->setHeading(previousHeading);
+	}
+	else if(input == KEY_T )
+	{
+		previousHeading--;
+		sm.getSphero()->setHeading(previousHeading);
+	}
 #ifdef MAP
-		cout << "You pressed key ID: " << input << endl;
+	cout << "You pressed key ID: " << input << endl;
 #endif
-	} while (input != KEY_Q);
+	}while(input != KEY_Q);
 	bt.on();
 }
 
+//--------------------------------------------------------- Others
+
+/**
+ * @brief ping : Ping command...
+ */
+static void ping()
+{
+	if(!isConnected())
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+	sm.getSphero()->ping();
+}
+
+
+/**
+ * @brief handleCollision : Handles the collision detection activation
+ */
+static void handleCollision()
+{
+	if(!isConnected())
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+
+	sm.getSphero()->enableCollisionDetection(1,128,1,128, 15);
+}
+
+
+/**
+ * @brief handleSleep : Handles the sleep command
+ */
+static void handleSleep(stringstream& css)
+{
+	if(!isConnected())
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+	unsigned int time;
+	css >> time;
+	sm.getSphero()->sleep((uint16_t) time);
+	sm.getSphero()->disconnect();
+	sleep(time+3);
+	sm.getSphero()->connect();
+}
+
+/**
+ * @brief handleDirect : handles the roll command
+ */
+static void handleRoll(stringstream& css)
+{
+	if(!isConnected())
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+
+	unsigned int speed;
+	unsigned int angle;
+	css >> speed >> angle;
+
+	sm.getSphero()->roll((uint8_t) speed % 256, (uint16_t) angle % 0x10000, 1);
+
+}
+
+/**
+ * @brief handleIT : Handles the set inactivity timeout command
+ */
+static void handleIT(stringstream& css)
+{
+	if(!isConnected())
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+
+	uint16_t inactivityTO;
+	css >> inactivityTO;
+
+	sm.getSphero()->setInactivityTimeout(inactivityTO);
+
+}
+
+/**
+ * @brief handleCc : Handles the changeColor command
+ */
+static void handleCc(stringstream& css)
+{
+	if(!isConnected())
+	{
+		cerr << "Please connect first" << endl;
+		return;
+	}
+
+	unsigned int r, g, b;
+	bool persist;
+
+	css >> r >> g >> b >> persist;
+#ifdef MAP
+	std::cout << "[R, G, B] = " << r << " " << g << " " << b << std::endl;
+#endif
+	sm.getSphero()->setColor(
+				(uint8_t) r%256,
+				(uint8_t) g%256,
+				(uint8_t) b%256,
+				(persist==1)
+				);
+}
+
+void init()
+{
+}
+
+/**
+ * @brief handleCommand : Treats the command given in parameter
+ * @param command : The command line
+ * @return 0 for an exit command, 1 for a new connexion, -1 otherwise
+ */
 int handleCommand(const string& command)
 {
 	stringstream css(command);
@@ -281,52 +302,62 @@ int handleCommand(const string& command)
 	css >> cmd;
 	transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
 
-	if (cmd == "connect")
+		//------------------------------ SpheroManager related
+	if(cmd == "connect")
 	{
 		handleConnect(css);
 		return 1;
 	}
-	else if (cmd == "changecolor")
-	{
-		handleCc(css);
-	}
-	else if (cmd == "roll")
-	{
-		handleDirect(css);
-	}
-	else if (cmd == "collision")
-	{
-		handleCollision();
-	}
-	else if (cmd == "ping")
-	{
-		ping();
-	}
-	else if (cmd == "setit")
-	{
-		handleIT(css);
-	}
-	else if (cmd == "select")
+	else if(cmd == "select")
 	{
 		handleSelect(css);
 	}
-	else if (cmd == "sleep")
+	else if(cmd == "list")
 	{
-		handleSleep(css);
+		sm.listSpheros();
 	}
-	else if (cmd == "coll")
+	else if(cmd == "disconnect")
+	{
+		handleDisconnect(css);
+	}
+	else if(cmd == "coll")
 	{
 		CollisionStruct coll;
-		s->reportCollision(&coll);
+		sm.getSphero()->reportCollision(&coll);
 	}
-	else if (cmd == "interactive")
+	else if(cmd == "interactive")
 	{
 		interactiveMode();
 	}
-	else if (cmd == "exit")
+		//------------------------------ Others
+	else if(cmd == "changecolor")
+	{
+		handleCc(css);
+	}
+	else if(cmd == "roll")
+	{
+		handleRoll(css);
+	}
+	else if(cmd == "collision")
+	{
+		handleCollision();
+	}
+	else if(cmd == "ping")
+	{
+		ping();
+	}
+	else if(cmd == "setit")
+	{
+		handleIT(css);
+	}
+	else if(cmd == "sleep")
+	{
+		handleSleep(css);
+	}
+	else if(cmd == "exit")
 		return 0;
 	else
 		showHelp();
 
 	return -1;
-} //END handleCommand
+}
