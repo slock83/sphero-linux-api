@@ -15,9 +15,9 @@
 #include "../Sphero.hpp"
 
 //-------------------------------------------------------------- Constants
-#define START_OF_PACKET_FLAG 0xFF;
-#define ASYNC_FLAG  0xFE;
-#define ANSWER_FLAG 0xFF;
+static uint8_t const START_OF_PACKET_FLAG = 0xFF;
+static uint8_t const ASYNC_FLAG = 0xFE;
+static uint8_t const ANSWER_FLAG = 0xFF;
 
 //------------------------------------------------------------------ Types 
 class SpheroPacket;
