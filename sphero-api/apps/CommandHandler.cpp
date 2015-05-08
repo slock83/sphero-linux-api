@@ -190,11 +190,7 @@ static void interactiveMode()
  */
 static void ping()
 {
-	if(!isConnected())
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
 	sm.getSphero()->ping();
 }
 
@@ -204,11 +200,7 @@ static void ping()
  */
 static void handleCollision()
 {
-	if(!isConnected())
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
 
 	sm.getSphero()->enableCollisionDetection(1,128,1,128, 15);
 }
@@ -219,11 +211,8 @@ static void handleCollision()
  */
 static void handleSleep(stringstream& css)
 {
-	if(!isConnected())
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
+
 	unsigned int time;
 	css >> time;
 	sm.getSphero()->sleep((uint16_t) time);
@@ -237,11 +226,7 @@ static void handleSleep(stringstream& css)
  */
 static void handleRoll(stringstream& css)
 {
-	if(!isConnected())
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
 
 	unsigned int speed;
 	unsigned int angle;
@@ -256,11 +241,7 @@ static void handleRoll(stringstream& css)
  */
 static void handleIT(stringstream& css)
 {
-	if(!isConnected())
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
 
 	uint16_t inactivityTO;
 	css >> inactivityTO;
@@ -274,11 +255,7 @@ static void handleIT(stringstream& css)
  */
 static void handleCc(stringstream& css)
 {
-	if(!isConnected())
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
 
 	unsigned int r, g, b;
 	bool persist;
@@ -332,8 +309,10 @@ int handleCommand(const string& command)
 	}
 	else if(cmd == "coll")
 	{
+		if(isConnected()) {
 		CollisionStruct coll;
-		sm.getSphero()->reportCollision(&coll);
+		sm.getSphero()->reportCollision(&coll)
+		}
 	}
 	else if(cmd == "interactive")
 	{
