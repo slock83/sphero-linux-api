@@ -1,5 +1,5 @@
 /*************************************************************************************************************************
-			Sphero  -  Wrapper implementing all sphero-linked features (like packet creation, emissionreception)
+			Sphero  -  Wrapper implementing all sphero-linked features (like packet creation, emission, reception)
 							 -------------------
 			started                : 07/03/2015
  ************************************************************************************************************************/
