@@ -4,85 +4,64 @@
     début                : lun. 16 mars 2015
 *************************************************************************/
 
-//---------- Interface de la classe <bluetooth_connector> (fichier bluetooth_connector.h) ------
-#if ! defined ( BLUETOOTHCONNECTOR_H )
+#ifndef ( BLUETOOTHCONNECTOR_H )
 #define BLUETOOTHCONNECTOR_H
 
-//--------------------------------------------------- Interfaces utilisées
+//-------------------------------------------------------- System includes
 #include <cstdio>
-//------------------------------------------------------------- Constantes 
 
-//------------------------------------------------------------------ Types 
-
-//------------------------------------------------------------------------ 
 
 class bluetooth_connector 
 {
-//----------------------------------------------------------------- PUBLIC
+	public:
 
-public:
-//----------------------------------------------------- Méthodes publiques
+		//--------------------------------------------- Operators overload
+			//No sense
+		bluetooth_connector & operator =
+			( const bluetooth_connector & unbluetooth_connector ) = delete;
 
-	/*
-	 * Établie la connexion
-	 * address <-> BT Address : 'XX:XX:XX:XX:XX:XX'
-	 * Renvoie un identifiant de socket ou -1 si erreur
-	 */
-	virtual int connection(const char* address) = 0;
 
-	/*
-	 * Permet l'envoi d'un flux de données au destinataire
-	virtual ssize_t send_data(size_t data_length, uint8_t const * data) = 0;
-	 */
+		//---------------------------------------- Constructors/Destructor
+			//No sense
+		bluetooth_connector (const bluetooth_connector & unbluetooth_connector) = delete;
 
-	/*
-	 * Ferme la connexion
-	 */
-	virtual int disconnect(void) = 0;
+		/**
+		 * @brief bluetooth_connector : Constructor. Creates a new bluetoooth connector
+		 */
+		bluetooth_connector ()
+		{}
 
-	/*
-	 * Informe de l'état de la connexion
-	 */
-	virtual bool isConnected(void) = 0;
-	
-//------------------------------------------------- Surcharge d'opérateurs
-	//N'a pas de sens
-    bluetooth_connector & operator = 
-		( const bluetooth_connector & unbluetooth_connector ) = delete;
 
-//-------------------------------------------- Constructeurs - destructeur
-	//N'a pas de sens
-    bluetooth_connector (const bluetooth_connector & unbluetooth_connector) = delete;
+		virtual ~bluetooth_connector ( )
+		{}
 
-	bluetooth_connector ()
-	{}
-	
-    virtual ~bluetooth_connector ( )
-	{
-	}
 
-//------------------------------------------------------------------ PRIVE 
+		//------------------------------------------------- Public methods
 
-protected:
-//----------------------------------------------------- Méthodes protégées
+		/**
+		 * @brief connection : Establishes the connection
+		 * @param address : The bluetooth address (format : 'XX:XX:XX:XX:XX:XX')
+		 * @return A socket ID, or -1 if an error occurred
+		 */
+		virtual int connection(const char* address) = 0;
 
-private:
-//------------------------------------------------------- Méthodes privées
+		/*
+		 * Permet l'envoi d'un flux de données au destinataire
+		virtual ssize_t send_data(size_t data_length, uint8_t const * data) = 0;
+		 */
 
-protected:
-//----------------------------------------------------- Attributs protégés
+		/**
+		 * @brief disconnect : Closes the actual connection
+		 * @return The error code
+		 */
+		virtual int disconnect(void) = 0;
 
-private:
-//------------------------------------------------------- Attributs privés
-//---------------------------------------------------------- Classes amies
-
-//-------------------------------------------------------- Classes privées
-
-//----------------------------------------------------------- Types privés
-
+		/**
+		 * @brief isConnected : Getter for the connection state
+		 * @return true if the connector is connected
+		 */
+		virtual bool isConnected(void) = 0;
 };
-
-//----------------------------------------- Types dépendants de <bluetooth_connector>
 
 #endif // BLUETOOTHCONNECTOR_H
 
