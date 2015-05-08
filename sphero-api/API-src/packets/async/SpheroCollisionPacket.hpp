@@ -4,7 +4,7 @@
 	started                : 07/05/2015
 *************************************************************************/
 
-#ifndef ( SPHEROCOLLISIONPACKET_H )
+#ifndef SPHEROCOLLISIONPACKET_H
 #define SPHEROCOLLISIONPACKET_H
 
 //--------------------------------------------------------- Local includes

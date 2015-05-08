@@ -5,7 +5,7 @@
 	started                : 28/04/2015
 *************************************************************************/
 
-#ifndef ( SPHEROPACKET_H )
+#ifndef SPHEROPACKET_H
 #define SPHEROPACKET_H
 
 //-------------------------------------------------------- System includes

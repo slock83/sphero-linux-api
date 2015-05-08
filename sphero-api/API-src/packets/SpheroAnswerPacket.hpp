@@ -5,7 +5,7 @@
     début                : mar. 28 avril 2015
 *************************************************************************/
 
-#ifndef ( SPHEROANSWERPACKET_H )
+#ifndef SPHEROANSWERPACKET_H
 #define SPHEROANSWERPACKET_H
 
 //--------------------------------------------------------- Local includes

@@ -4,7 +4,7 @@
     début                : ven. 8 mai 2015
 *************************************************************************/
 
-#ifndef ( CONSTANTS_HPP )
+#ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
 //------------------------------------------------------------- Constants

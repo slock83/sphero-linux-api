@@ -4,7 +4,7 @@
     début                : mar. 28 avril 2015
 *************************************************************************/
 
-#ifndef ( SPHEROASYNCPACKET_H )
+#ifndef SPHEROASYNCPACKET_H
 #define SPHEROASYNCPACKET_H
 
 //--------------------------------------------------------- Local includes

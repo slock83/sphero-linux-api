@@ -4,7 +4,7 @@
 	started                : 16/03/2015
 *************************************************************************/
 
-#ifndef ( BLUETOOTHCONNECTOR_H )
+#ifndef BLUETOOTHCONNECTOR_H
 #define BLUETOOTHCONNECTOR_H
 
 //-------------------------------------------------------- System includes

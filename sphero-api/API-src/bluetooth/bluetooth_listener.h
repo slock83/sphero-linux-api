@@ -4,7 +4,7 @@
 	started                : 17/03/2015
 *************************************************************************/
 
-#ifndef ( BLUETOOTH_LISTENER_H )
+#ifndef BLUETOOTH_LISTENER_H
 #define BLUETOOTH_LISTENER_H
 
 //-------------------------------------------------------- System includes

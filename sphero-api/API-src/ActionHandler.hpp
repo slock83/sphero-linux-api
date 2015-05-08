@@ -4,7 +4,7 @@
 	started                : 08/05/2015
 ******************************************************************************/
 
-#ifndef ( ACTIONHANDLER_HPP )
+#ifndef ACTIONHANDLER_HPP
 #define ACTIONHANDLER_HPP
 
 //-------------------------------------------------------- System includes
