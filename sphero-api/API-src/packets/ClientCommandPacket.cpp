@@ -54,7 +54,19 @@ ClientCommandPacket::ClientCommandPacket(
 		_sop2 ^= RST_FLAG;
 	}
 
-	_chk = packet_toolbox::checksum(did, cid, seq, dlen, data);
+	uint8_t* packet_data = new uint8_t[4 + _dlen - 1];
+	
+	packet_data[0] = _did;
+	packet_data[1] = _cid;
+	packet_data[2] = _seq;
+	packet_data[3] = _dlen;
+	
+	for(size_t i = 0; i < _dlen - 1; packet_data[i + 4] = _data[i], i++)
+	{}
+	
+	_chk = packet_toolbox::checksum(packet_data, 4 + _dlen - 1);
+	
+	delete packet_data;
 
 #ifdef MAP
 	std::cout << "Checksum :" << (unsigned int) _chk << std::endl;

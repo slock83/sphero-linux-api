@@ -19,11 +19,13 @@
 //------------------------------------------------------------- Procédures
 namespace packet_toolbox
 {
-    uint8_t checksum(uint8_t did,
-        uint8_t cid,
-        uint8_t seq,
-        uint8_t dlen,
-        uint8_t* data);
+	/**
+	 * @brief checksum : Calcul une checksum
+	 * @param packet_data : Les données du packet sur lesquelles calculer
+	 * 						la checksum
+	 * @param len : la taille du tableau packet_data
+	 */
+    uint8_t checksum(uint8_t* packet_data, size_t len);
 }
 
 #endif //TOOLBOX_HPP
