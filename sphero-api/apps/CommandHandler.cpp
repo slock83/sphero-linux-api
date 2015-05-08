@@ -32,33 +32,17 @@ class BufferToggle
 		/*
 		 * Disables buffered input
 		 */
-
 		void off(void)
 		{
 			tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
 			t.c_lflag &= ~ICANON; //disable canonical mmode
-<<<<<<< HEAD
 			t.c_lflag &= ~ECHO; //disable echoing
-=======
-			t.c_lflag &= ~ECHO;//disable echoing
->>>>>>> branch 'master' of https://github.com/slock83/sphero-linux-api.git
 			tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
 		}
 
-<<<<<<< HEAD
 		/*
 		 * Enables buffered input
 		 */
-=======
->>>>>>> branch 'master' of https://github.com/slock83/sphero-linux-api.git
-
-<<<<<<< HEAD
-=======
-		/*
-		 * Enables buffered input
-		 */
-
->>>>>>> branch 'master' of https://github.com/slock83/sphero-linux-api.git
 		void on(void)
 		{
 			tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
