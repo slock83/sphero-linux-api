@@ -12,6 +12,7 @@
 #include <termios.h>
 #include "../API-src/bluetooth/bluez_adaptor.h"
 #include "../API-src/Sphero.hpp"
+#include "Keys.hpp"
 
 using namespace std;
 
@@ -72,7 +73,7 @@ void showHelp()
 	cout << "sleep <duration> -- puts the sphero to sleep for the given duration" << endl;
 	cout << "select <spheroid> -- Selects the sphero to control" << endl;
 	cout << "collision -- enable collision detection feature" << endl;
-	cout << "interactive -- switch to interactive mode (WIP)"
+	cout << "interactive -- switch to interactive mode (WIP)"<<endl;
     cout << "======================================================================" << endl;
 }//END showHelp
 
@@ -250,28 +251,28 @@ static void interactiveMode()
     do
     {
     input = getchar();
-    if(input == 65 )
+    if(input == KEY_UP )
     {
     	s->roll(128,0);
     }
-    else if(input == 66 )
+    else if(input == KEY_DOWN )
     {
     	s->roll(128,180);
     }
-    else if(input == 67 )
+    else if(input == KEY_RIGHT )
     {
     	s->roll(128, 90);
     }
-    else if(input == 68 )
+    else if(input == KEY_LEFT )
     {
     	s->roll(128,270);
     }
-    else if(input == 114 )
+    else if(input == KEY_R )
     {
     	previousHeading++;
     	s->setHeading(previousHeading);
     }
-    else if(input == 116 )
+    else if(input == KEY_T )
     {
     	previousHeading--;
     	s->setHeading(previousHeading);
@@ -279,7 +280,7 @@ static void interactiveMode()
 #ifdef MAP
     cout << "You pressed key ID: " << input << endl;
 #endif
-    }while(input != 113);
+    }while(input != KEY_Q);
     bt.on();
 }
 
