@@ -77,6 +77,16 @@ void showHelp()
     cout << "======================================================================" << endl;
 }//END showHelp
 
+static bool isConnected()
+{
+	if(s == NULL)
+	{
+		cerr << "Please connect first" << endl;
+		return false;
+	}
+	return true;
+}
+
 static void handleConnect(stringstream& css)
 {
 	string address;
@@ -142,21 +152,13 @@ static void handleSelect(stringstream& css)
 
 static void ping()
 {
-	if(s == NULL)
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
 	s->ping();
 }//END ping
 
 static void handleCollision()
 {
-	if(s == NULL)
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
 
 	s->enableCollisionDetection(1,128,1,128, 15);
 }//END handleCollision
@@ -164,11 +166,8 @@ static void handleCollision()
 
 static void handleSleep(stringstream& css)
 {
-	if(s == NULL)
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
+
 	unsigned int time;
 	css >> time;
 	s->sleep((uint16_t) time);
@@ -179,11 +178,7 @@ static void handleSleep(stringstream& css)
 
 static void handleDirect(stringstream& css)
 {
-	if(s == NULL)
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
 	
 	unsigned int speed;
 	unsigned int angle;
@@ -195,11 +190,7 @@ static void handleDirect(stringstream& css)
 
 static void handleIT(stringstream& css)
 {
-	if(s == NULL)
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
 	
 	uint16_t inactivityTO;
 	css >> inactivityTO;
@@ -210,11 +201,7 @@ static void handleIT(stringstream& css)
 
 static void handleCc(stringstream& css)
 {
-	if(s == NULL)
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
 	
 	unsigned int r, g, b;
 	bool persist;
@@ -234,11 +221,8 @@ static void handleCc(stringstream& css)
 
 static void interactiveMode()
 {
-	if(s == NULL)
-	{
-		cerr << "Please connect first" << endl;
-		return;
-	}
+	if(!isConnected()) return;
+
 	cout << "welcome to interactive mode" <<endl;
 	cout << "press q to quit" <<endl;
 	cout << "arrow key to move" <<endl;
