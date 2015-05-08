@@ -20,7 +20,7 @@
 #include "packets/ClientCommandPacket.hpp"
 #include "ActionHandler.hpp"
 
-#include "packets/async/CollisionStuct.hpp"
+#include "packets/async/CollisionStruct.hpp"
 
 //------------------------------------------------------------------- Constants
 
@@ -56,7 +56,7 @@ typedef int16_t spherocoord_t;
 
 typedef ActionHandler<> connectHandler_t;
 typedef ActionHandler<> disconnectHandler_t;
-typedef ActionHandler<CollisionStruct> collisionHandler_t;
+typedef ActionHandler<CollisionStruct*> collisionHandler_t;
 
 typedef connectHandler_t::listener_t callback_connect_t;
 typedef disconnectHandler_t::listener_t callback_disconnect_t;

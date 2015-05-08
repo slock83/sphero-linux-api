@@ -45,9 +45,9 @@ void* Sphero::monitorStream(void* sphero_ptr)
     return NULL;
 }
 
-void Sphero::handleOnCollision(spherocoord_t x, spherocoord_t y)
+void Sphero::handleOnCollision(CollisionStruct* infos)
 {
-	_collision_handler.reportAction();
+	_collision_handler.reportAction(infos);
 }
 
 //------------------------------------------------ Constructors/Destructor
