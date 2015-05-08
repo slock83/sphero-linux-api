@@ -1,4 +1,11 @@
-#include "CommandHandler.h"
+/*************************************************************************
+	CommandHandler  -  Sphero control applicaiton -- comand interpreter
+							 -------------------
+	started                : 08/05/2015
+*************************************************************************/
+
+
+//-------------------------------------------------------- System includes
 
 #include <stddef.h>
 #include <unistd.h>
@@ -10,13 +17,17 @@
 #include <string>
 #include <vector>
 #include <termios.h>
+
 #include "../API-src/bluetooth/bluez_adaptor.h"
 #include "../API-src/Sphero.hpp"
-#include "Keys.hpp"
-
-#include "spheromanager.h"
 
 using namespace std;
+
+//--------------------------------------------------------- Local includes
+#include "CommandHandler.h"
+#include "Keys.hpp"
+#include "spheromanager.h"
+
 
 /**/
 static SpheroManager sm;
@@ -51,6 +62,7 @@ class BufferToggle
 			tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
 		}
 };
+
 
 void showHelp()
 {
