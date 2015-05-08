@@ -8,20 +8,20 @@ using namespace std;
 int main(void)
 {
 
-    cout << "\033]0;Sphero-cmd\007";
-    cout.flush();
+	cout << "\033]0;Sphero-cmd\007";
+	cout.flush();
 
-    init();
+	init();
 
-    string command("");
-    showHelp();
-    do
-    {
-        cout << "Sphero > ";
-        getline(cin, command);
-    }
-    while(handleCommand(command));
+	string command("");
+	showHelp();
+	do
+	{
+		cout << "Sphero > ";
+		getline(cin, command);
+	}
+	while(handleCommand(command));
 
 
-    return 0;
-}//END main
+	return 0;
+}
