@@ -2,7 +2,6 @@
                            ActionHandler  -  description
                              -------------------
     début                : ven. 08 mai 2015
-    copyright            : (C) 2015 par B3253 - L. Forget - F. Meyer
 *************************************************************************/
 
 //---------- Réalisation de la classe <ActionHandler> (fichier ActionHandler.tpp) --
