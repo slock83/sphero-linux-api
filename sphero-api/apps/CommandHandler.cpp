@@ -22,7 +22,7 @@ static vector<Sphero*> spheroVec;
 /**/
 
 
-static void showHelp()
+void showHelp()
 {
 	cout << "=============================== HELP =================================" << endl;
 	cout << "help -- Shows this" << endl;
@@ -34,6 +34,7 @@ static void showHelp()
 	cout << "sleep <duration> -- puts the sphero to sleep for the given duration" << endl;
 	cout << "select <spheroid> -- Sélectionne le sphéro à controller" << endl;
 	cout << "collision -- enable collision detection feature" << endl;
+    cout << "======================================================================" << endl;
 }
 
 static void ping()

@@ -16,6 +16,7 @@ int main(void)
 	string command("");
 	do
 	{
+        showHelp();
 		cout << "Sphero > ";
 		getline(cin, command);
 	}
