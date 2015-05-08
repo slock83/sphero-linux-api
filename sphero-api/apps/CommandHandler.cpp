@@ -23,6 +23,7 @@ static vector<Sphero*> spheroVec;
 
 void init()
 {
+	srand(time(NULL));
 	spheroVec = vector<Sphero*>();
 }//END init
 
@@ -64,6 +65,15 @@ static void handleConnect(stringstream& css)
 	Sphero* sph = new Sphero(address.c_str(), new bluez_adaptor());
 	sph->onConnect([](){
 				std::cout << "Here I come, honourable people !" << std::endl;
+			});
+	sph->onCollision([sph](CollisionStruct* infos){
+					uint8_t red 	= (rand() + infos->timestamp) % 256;	
+					uint8_t green 	= (rand() - (infos->timestamp / 13) ) % 256;
+					uint8_t blue 	= (rand() + infos->impact_component_y) % 256;
+
+					std::cout << "Collision : je change de couleur !"  << std::endl;
+
+					sph->setColor(red, green, blue);
 			});
 	if(sph->connect())
 	{
@@ -236,6 +246,11 @@ int handleCommand(const string& command)
 	else if(cmd == "sleep")
 	{
 		handleSleep(css);
+	}
+	else if(cmd == "coll")
+	{
+		CollisionStruct coll;
+		s->reportCollision(&coll);
 	}
 	else if(cmd == "exit")
 		return 0;
