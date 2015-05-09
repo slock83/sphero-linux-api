@@ -628,6 +628,16 @@ void Sphero::onDisconnect(callback_disconnect_t callback)
 	_disconnect_handler.addActionListener(callback);
 }//END onDisconnect
 
+/**
+ * @brief onPreSleep : Event thrown 10 sec. before sphero sleeps
+ * @param callback : The callback function to assign to this event
+ *			Return type : void
+ *			Parameters : none (void)
+ */
+void Sphero::onPreSleep(callback_preSleep_t callback)
+{
+	_preSleep_handler.addActionListener(callback);
+} //END onPreSleep
 
 /**
  * @brief onCollision : Event thrown when the Sphero detects a collision

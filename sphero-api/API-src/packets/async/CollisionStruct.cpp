@@ -17,5 +17,10 @@
 
 CollisionStruct::axis_t CollisionStruct::setAxis(uint8_t rawAxis)
 {
-	return threshold_axis = (rawAxis == 0) ? axis_t::XAXIS : axis_t::YAXIS;
+	if(rawAxis == 0)
+		return threshold_axis = axis_t::XAXIS;
+	else if(rawAxis == 1)
+		return threshold_axis = axis_t::YAXIS;
+	
+	return threshold_axis = axis_t::BADAXIS;
 }

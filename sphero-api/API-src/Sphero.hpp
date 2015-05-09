@@ -56,11 +56,13 @@ typedef int16_t spherocoord_t;
 
 typedef ActionHandler<> connectHandler_t;
 typedef ActionHandler<> disconnectHandler_t;
+typedef ActionHandler<> preSleepHandler_t;
 typedef ActionHandler<CollisionStruct*> collisionHandler_t;
 
 typedef connectHandler_t::listener_t callback_connect_t;
 typedef disconnectHandler_t::listener_t callback_disconnect_t;
 typedef collisionHandler_t::listener_t callback_collision_t;
+typedef preSleepHandler_t::listener_t callback_preSleep_t;
 
 
 //------------------------------------------------------------ Class definition
@@ -431,6 +433,14 @@ class Sphero
 		 *			Parameters : none (void)
 		 */
 		void onDisconnect(callback_disconnect_t callback);
+		
+		/**
+		 * @brief onPreSleep : Event thrown 10 sec. before sphero sleeps
+		 * @param callback : The callback function to assign to this event
+		 *			Return type : void
+		 *			Parameters : none (void)
+		 */
+		void onPreSleep(callback_preSleep_t callback);
 
 
 		/**
@@ -442,8 +452,6 @@ class Sphero
 		void onCollision(callback_collision_t callback);
 
 		void reportCollision(CollisionStruct* infos);
-		void handleOnConnect();
-		void handleOnDisonnect();
 
 	protected:
 		//--------------------------------------------------- Protected methods
@@ -484,6 +492,7 @@ class Sphero
 		connectHandler_t _connect_handler;
 		disconnectHandler_t _disconnect_handler;
 		collisionHandler_t _collision_handler;
+		preSleepHandler_t _preSleep_handler;
 };
 
 #endif // SPHERO_HPP

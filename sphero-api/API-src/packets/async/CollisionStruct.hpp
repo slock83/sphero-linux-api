@@ -21,7 +21,7 @@ struct CollisionStruct
 	//---------------------------------------------------------- Types
 	enum axis_t
 	{
-		XAXIS, YAXIS
+		XAXIS, YAXIS, BADAXIS
 	};
 
 	//---------------------------------------------- Public attributes
@@ -32,7 +32,8 @@ struct CollisionStruct
 	 *
 	 * @param rawAxis : raw information from sphero
 	 *
-	 * @return XAXIS if rawAxis is 0, else YAXIS
+	 * @return XAXIS if rawAxis is 0, else if rawAxis is 1 return YAXIS
+	 * 		   Anything else return BADAXIS
 	 *
 	 **/
 	
