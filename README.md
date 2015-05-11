@@ -5,7 +5,21 @@ The API is (for now) built only over the bluez bluetooth stack, making it compat
 
 Sphero reference doc: http://docs-beta.gosphero.com/reference/ 
 
+! to remove before switching to public ! these are normally private documents from orbotix and should not be available (if they are public, it isn't stated anywhere ... and it wasn't that easy to "stumble" upon them)
+
 User Hack mode reference : https://s3.amazonaws.com/docs.gosphero.com/api/Sphero_Shell_Commands_1.0.pdf
+
+Sphero collision detection : https://s3.amazonaws.com/docs.gosphero.com/api/Collision%20detection.pdf
+
+locator reference : https://s3.amazonaws.com/docs.gosphero.com/api/Sphero%20Locator%201.1.pdf
+
+full api reference : https://s3.amazonaws.com/docs.gosphero.com/api/Sphero_API_1.20.pdf
+
+full macro reference : https://s3.amazonaws.com/docs.gosphero.com/api/Sphero_Macros.pdf
+
+orbBasic refenrence, with plenty examples : https://s3.amazonaws.com/docs.gosphero.com/api/Sphero_orbBasic.pdf
+
+
 
 ### How To build :
 ####1. Dependencies : 
