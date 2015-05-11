@@ -204,6 +204,7 @@ static void interactiveMode()
 	gettimeofday(&now, NULL);
 	elapsedTime = (now.tv_sec - lastInput.tv_sec) * 1000.0;      // sec to ms
 	elapsedTime += (now.tv_usec - lastInput.tv_usec) / 1000.0;
+	cout << elapsedTime << endl;
 	if(elapsedTime >= 8) sm.getSphero()->roll((uint8_t) 0 % 256, (uint16_t) lastAng % 0x10000, 1);
 	}while(input != KEY_Q);
 	bt.on();
