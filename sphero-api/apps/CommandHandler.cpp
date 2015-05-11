@@ -182,6 +182,7 @@ static void interactiveMode()
 #ifdef MAP
 	cout << "You pressed key ID: " << input << endl;
 #endif
+	usleep(20000);
 	}while(input != KEY_Q);
 	bt.on();
 }
