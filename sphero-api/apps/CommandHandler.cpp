@@ -16,6 +16,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <sys/time.h>
 #include <termios.h>
 
 #include "../API-src/bluetooth/bluez_adaptor.h"
@@ -151,6 +152,11 @@ static void interactiveMode()
 	int input;
 	unsigned int previousHeading = 0;
 	unsigned int lastAng =0;
+    timeval lastInput, now;
+    double elapsedTime;
+
+    // start timer
+    gettimeofday(&lastInput, NULL);
 	do
 	{
 	input = getchar();
@@ -158,45 +164,47 @@ static void interactiveMode()
 	{
 		sm.getSphero()->roll((uint8_t)_SPEED % 256,(uint16_t) 0 % 0x10000,1);
 		lastAng =0;
-		usleep(10000);
+		gettimeofday(&lastInput, NULL);
 	}
 	else if(input == KEY_DOWN )
 	{
 		sm.getSphero()->roll((uint8_t)_SPEED % 256,(uint16_t) 180 % 0x10000,1);
 		lastAng = 180;
-		usleep(10000);
+		gettimeofday(&lastInput, NULL);
 	}
 	else if(input == KEY_RIGHT )
 	{
 		sm.getSphero()->roll((uint8_t)_SPEED % 256,(uint16_t) 90 % 0x10000,1);
 		lastAng = 90;
-		usleep(10000);
+		gettimeofday(&lastInput, NULL);
 	}
 	else if(input == KEY_LEFT )
 	{
 		sm.getSphero()->roll((uint8_t) _SPEED % 256, (uint16_t) 270 % 0x10000, 1);
 		lastAng = 270;
-		usleep(10000);
+		gettimeofday(&lastInput, NULL);
 	}
 	else if(input == KEY_R )
 	{
 		previousHeading+=2;
 		if (previousHeading >=360) previousHeading = 0;
 		sm.getSphero()->setHeading((uint16_t)previousHeading% 0x10000);
-		usleep(10000);
+		gettimeofday(&lastInput, NULL);
 	}
 	else if(input == KEY_T )
 	{
 		previousHeading-=2;
 		if (previousHeading <0) previousHeading = 359;
 		sm.getSphero()->setHeading((uint16_t)previousHeading% 0x10000);
-		usleep(10000);
+		gettimeofday(&lastInput, NULL);
 	}
 #ifdef MAP
 	cout << "You pressed key ID: " << input << endl;
 #endif
-	sm.getSphero()->roll((uint8_t) 0 % 256, (uint16_t) lastAng % 0x10000, 1);
-
+	gettimeofday(&now, NULL);
+	elapsedTime = (now.tv_sec - lastInput.tv_sec) * 1000.0;      // sec to ms
+	elapsedTime += (now.tv_usec - lastInput.tv_usec) / 1000.0;
+	if(elapsedTime >= 8) sm.getSphero()->roll((uint8_t) 0 % 256, (uint16_t) lastAng % 0x10000, 1);
 	}while(input != KEY_Q);
 	bt.on();
 }
