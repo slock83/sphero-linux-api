@@ -28,6 +28,8 @@ using namespace std;
 #include "Keys.hpp"
 #include "spheromanager.h"
 
+#define _SPEED 128
+
 
 /**/
 static SpheroManager sm;
@@ -147,35 +149,35 @@ static void interactiveMode()
 	BufferToggle bt;
 	bt.off();
 	int input;
-	uint16_t previousHeading = 0;
+	int previousHeading = 0;
 	do
 	{
 	input = getchar();
 	if(input == KEY_UP )
 	{
-		sm.getSphero()->roll(128,0);
+		sm.getSphero()->roll((uint8_t)_SPEED,(uint16_t)0);
 	}
 	else if(input == KEY_DOWN )
 	{
-		sm.getSphero()->roll(128,180);
+		sm.getSphero()->roll((uint8_t)_SPEED,(uint816_t)180);
 	}
 	else if(input == KEY_RIGHT )
 	{
-		sm.getSphero()->roll(128, 90);
+		sm.getSphero()->roll((uint8_t)_SPEED,(uint16_t) 90);
 	}
 	else if(input == KEY_LEFT )
 	{
-		sm.getSphero()->roll(128,270);
+		sm.getSphero()->roll((uint8_t)_SPEED,(uint16_t)270);
 	}
 	else if(input == KEY_R )
 	{
-		previousHeading++;
-		sm.getSphero()->setHeading(previousHeading);
+		previousHeading+=2;
+		sm.getSphero()->setHeading((uint16_t)previousHeading);
 	}
 	else if(input == KEY_T )
 	{
-		previousHeading--;
-		sm.getSphero()->setHeading(previousHeading);
+		previousHeading-=2;
+		sm.getSphero()->setHeading((uint16_t)previousHeading);
 	}
 #ifdef MAP
 	cout << "You pressed key ID: " << input << endl;
