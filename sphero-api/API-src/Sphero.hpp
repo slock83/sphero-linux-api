@@ -292,7 +292,7 @@ class Sphero
 		 *			control system to either obey the roll vector or ignore it 
 		 *			and apply optimal braking to zero speed
 		 */
-		void roll(uint8_t speed, uint16_t heading, uint8_t state = 0);
+		void roll(uint8_t speed, uint16_t heading, uint8_t state = 1);
 
 
 		//setRawMotorValue : not needed ?
