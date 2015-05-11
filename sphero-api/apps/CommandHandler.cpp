@@ -155,19 +155,19 @@ static void interactiveMode()
 	input = getchar();
 	if(input == KEY_UP )
 	{
-		sm.getSphero()->roll((uint8_t)_SPEED,(uint16_t)0);
+		sm.getSphero()->roll((uint8_t)_SPEED % 256,(uint16_t) 0 % 0x10000,1);
 	}
 	else if(input == KEY_DOWN )
 	{
-		sm.getSphero()->roll((uint8_t)_SPEED,(uint816_t)180);
+		sm.getSphero()->roll((uint8_t)_SPEED % 256,(uint16_t) 180 % 0x10000,1);
 	}
 	else if(input == KEY_RIGHT )
 	{
-		sm.getSphero()->roll((uint8_t)_SPEED,(uint16_t) 90);
+		sm.getSphero()->roll((uint8_t)_SPEED % 256,(uint16_t) 90 % 0x10000,1);
 	}
 	else if(input == KEY_LEFT )
 	{
-		sm.getSphero()->roll((uint8_t)_SPEED,(uint16_t)270);
+		sm.getSphero()->roll((uint8_t) _SPEED % 256, (uint16_t) 270 % 0x10000, 1);
 	}
 	else if(input == KEY_R )
 	{
