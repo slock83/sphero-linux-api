@@ -67,28 +67,28 @@ bool SpheroCollisionPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket*
 	if(recv(fd, &packet_data, sizeof(packet_data), 0) != sizeof(packet_data))
 	{
 #ifdef MAP
-		fprintf(stderr, "Erreur réception du packet\n");
+		fprintf(stderr, "Packet reception failed\n");
 #endif
 		return false;
 	}
 	if(packet_toolbox::checksum(packet_data, 19) != packet_data[19])
 	{
 #ifdef MAP
-		fprintf(stderr, "Erreur de checksum\n");
+		fprintf(stderr, "Checksum error\n");
 #endif
 		return false;
 	}	
 	if(packet_data[1] != 0 || packet_data[2] != 0x11)
 	{
 #ifdef MAP
-		fprintf(stderr, "Erreur de taille message\n");
+		fprintf(stderr, "Message size error\n");
 #endif
 		return false;
 	}
 	if(packet_data[8] > 3)
 	{
 #ifdef MAP
-		fprintf(stderr, "Erreur valeur axe\n");
+		fprintf(stderr, "Axis value error\n");
 #endif
 		return false;
 	}
