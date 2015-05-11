@@ -154,7 +154,7 @@ static void interactiveMode()
 	BufferToggle bt;
 	bt.off();
 	int input;
-	unsigned int previousHeading = 0;
+	int previousHeading = 0;
 	unsigned int lastAng =0;
     timeval lastInput, now;
     double elapsedTime;
