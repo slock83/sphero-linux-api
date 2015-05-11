@@ -149,40 +149,48 @@ static void interactiveMode()
 	BufferToggle bt;
 	bt.off();
 	int input;
-	int previousHeading = 0;
+	unsigned int previousHeading = 0;
+	unsigned int lastAng =0;
 	do
 	{
 	input = getchar();
 	if(input == KEY_UP )
 	{
 		sm.getSphero()->roll((uint8_t)_SPEED % 256,(uint16_t) 0 % 0x10000,1);
+		lastAng =0;
 	}
 	else if(input == KEY_DOWN )
 	{
 		sm.getSphero()->roll((uint8_t)_SPEED % 256,(uint16_t) 180 % 0x10000,1);
+		lastAng = 180;
 	}
 	else if(input == KEY_RIGHT )
 	{
 		sm.getSphero()->roll((uint8_t)_SPEED % 256,(uint16_t) 90 % 0x10000,1);
+		lastAng = 90;
 	}
 	else if(input == KEY_LEFT )
 	{
 		sm.getSphero()->roll((uint8_t) _SPEED % 256, (uint16_t) 270 % 0x10000, 1);
+		lastAng = 270;
 	}
 	else if(input == KEY_R )
 	{
 		previousHeading+=2;
-		sm.getSphero()->setHeading((uint16_t)previousHeading);
+		if (previousHeading >=360) previousHeading = 0;
+		sm.getSphero()->setHeading((uint16_t)previousHeading% 0x10000);
 	}
 	else if(input == KEY_T )
 	{
 		previousHeading-=2;
-		sm.getSphero()->setHeading((uint16_t)previousHeading);
+		if (previousHeading <0) previousHeading = 359;
+		sm.getSphero()->setHeading((uint16_t)previousHeading% 0x10000);
 	}
 #ifdef MAP
 	cout << "You pressed key ID: " << input << endl;
 #endif
-	usleep(20000);
+	sm.getSphero()->roll((uint8_t) 0 % 256, (uint16_t) lastAng % 0x10000, 1);
+	usleep(10000);
 	}while(input != KEY_Q);
 	bt.on();
 }
