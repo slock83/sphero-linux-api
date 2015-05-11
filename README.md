@@ -29,6 +29,8 @@ orbBasic refenrence, with plenty examples : https://s3.amazonaws.com/docs.gosphe
   ```sh
   $ sudo apt-get install bluez libbluetooth libbluetooth-dev git libreadline6-dev
   ```
+  
+  > some distros may have libbluetooth called libbluetooth3 and libreadline6 called libreadline, use your favorite package manager to figure out dependancies you can't install using the provided command, these are quite usual packages so they should be available for you
 
 ####2. Retrieving the source code : 
 
@@ -71,8 +73,13 @@ still in the apps folder, do
 | ----- | ----- | ----- |
 help | Shows the application help |
 connect | Connects to a sphero via bluetoth | connect xx:xx:xx:xx:xx |
-changeColor | changes the led color | changeColor red green blue colorPersists |
+list | Lists all available sphero | list |
+select | Select which sphero you want to drive | select id |
+changeColor | Changes the led color | changeColor red green blue colorPersists |
+backled | Changes the back LED intensity | backled intensity |
 roll | Makes the sphero roll at the specified speed and angle | roll speed angle |
 ping | Sends a ping to the sphero to witch it should answer ASAP | ping |
 sleep | Puts the sphero to sleep for the given amount of time, it will then wake up and we will try to connect back to him | sleep duration |
+interactive | Switch to interactive driving mode | interactive |
+setit | Change inactivity timeout | setit duration |
 exit | Closes the application | exit |
