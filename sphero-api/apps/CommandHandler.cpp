@@ -40,6 +40,7 @@ class BufferToggle
 {
 	private:
 		struct termios t;
+		struct termios o;
 
 	public:
 
@@ -49,20 +50,23 @@ class BufferToggle
 		void off(void)
 		{
 			tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
+			o = t;
 			t.c_lflag &= ~ICANON; //disable canonical mmode
 			t.c_lflag &= ~ECHO; //disable echoing
+			t.c_lflag &= ~ISIG;
+			t.c_cc[VMIN] = 0;
+			t.c_cc[VTIME] = 0;
 			tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
+
 		}
 
 		/*
 		 * Enables buffered input
+		 * MUST be run AFTER off
 		 */
 		void on(void)
 		{
-			tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
-			t.c_lflag |= ICANON;
-			t.c_lflag |= ECHO;
-			tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
+			tcsetattr(STDIN_FILENO, TCSANOW, &o); //Apply the new settings
 		}
 };
 
@@ -205,7 +209,7 @@ static void interactiveMode()
 	elapsedTime = (now.tv_sec - lastInput.tv_sec) * 1000.0;      // sec to ms
 	elapsedTime += (now.tv_usec - lastInput.tv_usec) / 1000.0;
 	cout << elapsedTime << endl;
-	if(elapsedTime >= 8) sm.getSphero()->roll((uint8_t) 0 % 256, (uint16_t) lastAng % 0x10000, 1);
+	if(elapsedTime >= 80) sm.getSphero()->roll((uint8_t) 0 % 256, (uint16_t) lastAng % 0x10000, 1);
 	}while(input != KEY_Q);
 	bt.on();
 }
