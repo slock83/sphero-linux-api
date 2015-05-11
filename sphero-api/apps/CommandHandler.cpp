@@ -210,7 +210,7 @@ static void interactiveMode()
 	elapsedTime += (now.tv_usec - lastInput.tv_usec) / 1000.0;
 	//cout << elapsedTime << endl;
 	if(elapsedTime >= 120) sm.getSphero()->roll((uint8_t) 0 % 256, (uint16_t) lastAng % 0x10000, 1);
-	usleep(8000)
+	usleep(8000);
 	}while(input != KEY_Q);
 	bt.on();
 }
