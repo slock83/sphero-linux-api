@@ -40,7 +40,7 @@ void SpheroManager::listSpheros()
 {
 	for(int i = 0; i < spheroNames.size(); ++i)
 	{
-		cout << (spheroVec[i] == s) ? "*" : " ";
+		cout << ((spheroVec[i] == s) ? "*" : " ");
 		cout << "[" << i << "] " << spheroNames[i] << endl;
 	}
 }
@@ -72,11 +72,21 @@ void SpheroManager::connectSphero(string address)
 	sph->onConnect([](){
 				std::cout << "Here I come, honourable people !" << std::endl;
 			});
+
+	sph->onCollision([sph](CollisionStruct* infos){
+						uint8_t red 	= (rand() + infos->timestamp) % 256;
+						uint8_t green 	= (rand() - (infos->timestamp / 13) ) % 256;
+						uint8_t blue 	= (rand() + infos->impact_component_y) % 256;
+
+						sph->setColor(red, green, blue);
+				});
+
 	if(sph->connect())
 	{
 		size_t idx = nbActif++;
 		spheroVec.push_back(sph);
-		cout << "Sphero registered, ID : " << idx << endl;
+		spheroNames.push_back("Sphero"+idx);
+
 		s = sph;
 		ofstream myfile ("lastConnection", ios::out | ios::trunc);
 		  if (myfile.is_open())
@@ -128,7 +138,7 @@ void SpheroManager::disconnectSphero(unsigned int spheroIndex)
 		}
 		spheroVec[spheroIndex]->disconnect();
 		delete spheroVec[spheroIndex];
-		cout << "Sphero : " << spheroNames[spheroIndex] << "has been removed." << endl;
+		cout << "Sphero : " << spheroNames[spheroIndex] << " has been removed." << endl;
 		nbActif--;
 		spheroVec.erase(spheroVec.begin() + spheroIndex);
 		spheroNames.erase(spheroNames.begin() + spheroIndex);

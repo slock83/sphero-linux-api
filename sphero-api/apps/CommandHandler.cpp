@@ -85,6 +85,7 @@ void showHelp()
 	cout << "setIT <TO> -- Set inactivity timeout for the sphero" << endl;
 	cout << "roll <speed> <angle> -- Moves the sphero" << endl;
 	cout << "collision -- Enable collision detection feature" << endl;
+	cout << "coll -- Simulates a collision" << endl;
 	cout << endl;
 	cout << "list -- Shows the list of connected sphero" << endl;
 	cout << "select <spheroId> -- Selects the Sphero to control" << endl;
@@ -156,11 +157,11 @@ static void interactiveMode()
 	int input;
 	int previousHeading = 0;
 	unsigned int lastAng =0;
-    timeval lastInput, now;
-    double elapsedTime;
+	timeval lastInput, now;
+	double elapsedTime;
 
-    // start timer
-    gettimeofday(&lastInput, NULL);
+	// start timer
+	gettimeofday(&lastInput, NULL);
 	do
 	{
 	input = getchar();
@@ -359,8 +360,8 @@ int handleCommand(const string& command)
 	else if(cmd == "coll")
 	{
 		if(isConnected()) {
-		CollisionStruct coll;
-		sm.getSphero()->reportCollision(&coll);
+			CollisionStruct coll;
+			sm.getSphero()->reportCollision(&coll);
 		}
 	}
 	else if(cmd == "interactive")
@@ -397,6 +398,10 @@ int handleCommand(const string& command)
 		handleSleep(css);
 	}
 	else if(cmd == "exit")
+			//To avoid memLeaks
+		while(sm.getNbSpheros() > 0)
+			sm.disconnectSphero(0);
+
 		return 0;
 	else
 		showHelp();

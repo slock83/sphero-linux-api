@@ -88,8 +88,6 @@ int main(void)
 
 	while((buf = readline("\nSphero >> ")) != NULL)
 	{
-		if (strcmp(buf,"quit")==0)
-			break;
 
 		if (buf[0]!=0)
 			add_history(buf);
