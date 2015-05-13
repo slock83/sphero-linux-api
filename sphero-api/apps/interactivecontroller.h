@@ -1,6 +1,7 @@
 #ifndef INTERACTIVECONTROLLER_H
 #define INTERACTIVECONTROLLER_H
 
+#include "../API-src/Sphero.hpp"
 
 class InteractiveController
 {

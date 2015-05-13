@@ -26,11 +26,9 @@ using namespace std;
 
 //--------------------------------------------------------- Local includes
 #include "CommandHandler.h"
-#include "Keys.hpp"
 #include "spheromanager.h"
 #include "interactivecontroller.h"
 
-#define _SPEED 128
 
 
 /**/
