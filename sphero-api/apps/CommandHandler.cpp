@@ -28,47 +28,17 @@ using namespace std;
 #include "CommandHandler.h"
 #include "Keys.hpp"
 #include "spheromanager.h"
+#include "interactivecontroller.h"
 
 #define _SPEED 128
 
 
 /**/
 static SpheroManager sm;
+static InteractiveController ic;
 /**/
 
-class BufferToggle
-{
-	private:
-		struct termios t;
-		struct termios o;
 
-	public:
-
-		/*
-		 * Disables buffered input
-		 */
-		void off(void)
-		{
-			tcgetattr(STDIN_FILENO, &t); //get the current terminal I/O structure
-			o = t;
-			t.c_lflag &= ~ICANON; //disable canonical mmode
-			t.c_lflag &= ~ECHO; //disable echoing
-			t.c_lflag &= ~ISIG;
-			t.c_cc[VMIN] = 0;
-			t.c_cc[VTIME] = 0;
-			tcsetattr(STDIN_FILENO, TCSANOW, &t); //Apply the new settings
-
-		}
-
-		/*
-		 * Enables buffered input
-		 * MUST be run AFTER off
-		 */
-		void on(void)
-		{
-			tcsetattr(STDIN_FILENO, TCSANOW, &o); //Apply the new settings
-		}
-};
 
 
 void showHelp()
@@ -141,81 +111,6 @@ static void handleDisconnect(stringstream& css)
 	sm.disconnectSphero(idx);
 }
 
-/**
- * @brief interactiveMode : Activates the interactive Sphero directing mode
- */
-static void interactiveMode()
-{
-	if(!isConnected()) return;
-	cout << "welcome to interactive mode" <<endl;
-	cout << "press q to quit" <<endl;
-	cout << "arrow key to move" <<endl;
-	cout << "r or t to reorient" <<endl;
-	cout << "WARNING : early WIP !!!"<<endl;
-	BufferToggle bt;
-	bt.off();
-	int input;
-	int previousHeading = 0;
-	unsigned int lastAng =0;
-	timeval lastInput, now;
-	double elapsedTime;
-
-	// start timer
-	gettimeofday(&lastInput, NULL);
-	do
-	{
-	input = getchar();
-	if(input == KEY_UP )
-	{
-		sm.getSphero()->roll((uint8_t)_SPEED % 256,(uint16_t) 0 % 0x10000,1);
-		lastAng =0;
-		gettimeofday(&lastInput, NULL);
-	}
-	else if(input == KEY_DOWN )
-	{
-		sm.getSphero()->roll((uint8_t)_SPEED % 256,(uint16_t) 180 % 0x10000,1);
-		lastAng = 180;
-		gettimeofday(&lastInput, NULL);
-	}
-	else if(input == KEY_RIGHT )
-	{
-		sm.getSphero()->roll((uint8_t)_SPEED % 256,(uint16_t) 90 % 0x10000,1);
-		lastAng = 90;
-		gettimeofday(&lastInput, NULL);
-	}
-	else if(input == KEY_LEFT )
-	{
-		sm.getSphero()->roll((uint8_t) _SPEED % 256, (uint16_t) 270 % 0x10000, 1);
-		lastAng = 270;
-		gettimeofday(&lastInput, NULL);
-	}
-	else if(input == KEY_R )
-	{
-		previousHeading+=2;
-		if (previousHeading >=360) previousHeading = 0;
-		sm.getSphero()->setHeading((uint16_t)previousHeading% 0x10000);
-		gettimeofday(&lastInput, NULL);
-	}
-	else if(input == KEY_T )
-	{
-		previousHeading-=2;
-		if (previousHeading <0) previousHeading = 359;
-		sm.getSphero()->setHeading((uint16_t)previousHeading% 0x10000);
-		gettimeofday(&lastInput, NULL);
-	}
-#ifdef MAP
-	cout << "You pressed key ID: " << input << endl;
-#endif
-	gettimeofday(&now, NULL);
-	elapsedTime = (now.tv_sec - lastInput.tv_sec) * 1000.0;      // sec to ms
-	elapsedTime += (now.tv_usec - lastInput.tv_usec) / 1000.0;
-	//cout << elapsedTime << endl;
-	if(elapsedTime >= 120) sm.getSphero()->roll((uint8_t) 0 % 256, (uint16_t) lastAng % 0x10000, 1);
-	usleep(8000);
-	}while(input != KEY_Q);
-	bt.on();
-}
-
 //--------------------------------------------------------- Others
 
 /**
@@ -235,7 +130,7 @@ static void handleCollision()
 {
 	if(!isConnected()) return;
 
-	sm.getSphero()->enableCollisionDetection(1,128,1,128, 15);
+	sm.getSphero()->enableCollisionDetection(80,0,80,0, 15);
 }
 
 
@@ -366,7 +261,7 @@ int handleCommand(const string& command)
 	}
 	else if(cmd == "interactive")
 	{
-		interactiveMode();
+		ic.startInteractiveMode(sm.getSphero());
 	}
 		//------------------------------ Others
 	else if(cmd == "changecolor")
@@ -398,11 +293,15 @@ int handleCommand(const string& command)
 		handleSleep(css);
 	}
 	else if(cmd == "exit")
+	{
 			//To avoid memLeaks
 		while(sm.getNbSpheros() > 0)
+		{
 			sm.disconnectSphero(0);
+		}
 
 		return 0;
+	}
 	else
 		showHelp();
 
