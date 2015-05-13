@@ -24,10 +24,10 @@ orbBasic refenrence, with plenty examples : https://s3.amazonaws.com/docs.gosphe
 ### How To build :
 ####1. Dependencies : 
 
-  > dependencies are : bluez, libbluetooth, libbluetooth-dev, and libreadline6-dev (and of course, classic compilation tools : g++, make, gcc, clib, git, ...)
+  > dependencies are : bluez, libbluetooth, libbluetooth-dev, and libreadline6-dev libncurses5 libncurses5-dev (and of course, classic compilation tools : g++, make, gcc, clib, git, ...)
 
   ```sh
-  $ sudo apt-get install bluez libbluetooth libbluetooth-dev git libreadline6-dev
+  $ sudo apt-get install bluez libbluetooth libbluetooth-dev git libreadline6-dev libncurses5 libncurses5-dev
   ```
   
   > some distros may have libbluetooth called libbluetooth3 and libreadline6 called libreadline, use your favorite package manager to figure out dependancies you can't install using the provided command, these are quite usual packages so they should be available for you
