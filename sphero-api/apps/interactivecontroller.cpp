@@ -12,6 +12,8 @@
 #include <unistd.h>
 #include <stddef.h>
 
+#include "ncurses.h"
+
 #include "../API-src/Sphero.hpp"
 
 using namespace std;
@@ -48,6 +50,7 @@ void InteractiveController::startInteractiveMode(Sphero *s)
 	if(!isConnected()) return;
 
 
+
 	cout << "************************************" << endl;
 	cout << "*    welcome to interactive mode   *" <<endl;
 	classicHelp();
@@ -63,7 +66,6 @@ void InteractiveController::startInteractiveMode(Sphero *s)
 	gettimeofday(&lastInput, NULL);
 	do
 	{
-		input = getchar();
 
 		switch (commandMode)
 		{
@@ -88,7 +90,7 @@ void InteractiveController::startInteractiveMode(Sphero *s)
 		if(elapsedTime >= 120)
 			s->roll((uint8_t) 0 % 256, (uint16_t) lastAngle % 0x10000);
 		usleep(8000);
-	}while(input != global::KEY_QUIT);
+	}while(input != global::_KEY_QUIT);
 
 	bt.on();
 }
@@ -109,27 +111,27 @@ bool InteractiveController::isConnected()
 
 void InteractiveController::handleKeysClassic(int input, timeval &lastInput)
 {
-	if(input == classic::KEY_FORWARD )
+	if(input == classic::_KEY_FORWARD )
 	{
 		s->roll((uint8_t)_SPEED % 256,(uint16_t) 0 % 0x10000,1);
 		lastAngle = 0;
 	}
-	else if(input == classic::KEY_BACKWARD )
+	else if(input == classic::_KEY_BACKWARD )
 	{
 		s->roll((uint8_t)_SPEED % 256,(uint16_t) 180 % 0x10000,1);
 		lastAngle = 180;
 	}
-	else if(input == classic::KEY_RIGHT )
+	else if(input == classic::_KEY_RIGHT )
 	{
 		s->roll((uint8_t)_SPEED % 256,(uint16_t) 90 % 0x10000,1);
 		lastAngle = 90;
 	}
-	else if(input == classic::KEY_LEFT )
+	else if(input == classic::_KEY_LEFT )
 	{
 		s->roll((uint8_t) _SPEED % 256, (uint16_t) 270 % 0x10000, 1);
 		lastAngle = 270;
 	}
-	else if(input == classic::KEY_BACKLIGHT )
+	else if(input == classic::_KEY_BACKLIGHT )
 	{
 		if(isBackLedEnabled)
 			s->setBackLedOutput(0);
@@ -138,7 +140,7 @@ void InteractiveController::handleKeysClassic(int input, timeval &lastInput)
 
 		isBackLedEnabled = !isBackLedEnabled;
 	}
-	else if(input == classic::KEY_MODE_CALIBRATE)
+	else if(input == classic::_KEY_MODE_CALIBRATE)
 	{
 		changeMode(mode::CALIBRATE);
 
@@ -158,15 +160,15 @@ void InteractiveController::handleKeysClassic(int input, timeval &lastInput)
 
 void InteractiveController::handleKeysCalibrate(int input, timeval& lastInput)
 {
-	if(input == calibrate::KEY_LEFT_2)
+	if(input == calibrate::_KEY_LEFT_2)
 		lastAngle += 2;
-	else if(input == calibrate::KEY_LEFT_10)
+	else if(input == calibrate::_KEY_LEFT_10)
 		lastAngle += 10;
-	else if(input == calibrate::KEY_RIGHT_2)
+	else if(input == calibrate::_KEY_RIGHT_2)
 		lastAngle -= 2;
-	else if(input == calibrate::KEY_RIGHT_10)
+	else if(input == calibrate::_KEY_RIGHT_10)
 		lastAngle -= 10;
-	else if(input == calibrate::KEY_VALIDATE)
+	else if(input == calibrate::_KEY_VALIDATE)
 	{
 		s->setHeading(0);
 		changeMode(mode::CLASSIC);
@@ -177,7 +179,7 @@ void InteractiveController::handleKeysCalibrate(int input, timeval& lastInput)
 		gettimeofday(&lastInput, NULL);
 		return;
 	}
-	else if(input == calibrate::KEY_RETURN)
+	else if(input == calibrate::_KEY_RETURN)
 	{
 		changeMode(mode::CLASSIC);
 		s->setBackLedOutput(0);

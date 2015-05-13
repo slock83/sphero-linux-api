@@ -4,53 +4,53 @@
 	start                :08/05/2015
 *************************************************************************/
 
-#ifndef KEYS_HPP
-#define KEYS_HPP
+#ifndef _KEYS_HPP
+#define _KEYS_HPP
 
 //------------------------------------------------------------- Constants
-namespace keys
+namespace keysLegacy
 {
-	const int KEY_UP = 0x41;
-	const int KEY_DOWN = 0x42;
-	const int KEY_RIGHT = 0x43;
-	const int KEY_LEFT = 0x44;
+	const int _KEY_UP = 0x41;
+	const int _KEY_DOWN = 0x42;
+	const int _KEY_RIGHT = 0x43;
+	const int _KEY_LEFT = 0x44;
 
-	const int KEY_B = 0x62;
-	const int KEY_C = 0x63;
-	const int KEY_E = 0x65;
-	const int KEY_Q = 0x71;
-	const int KEY_R = 0x72;
-	const int KEY_T = 0x74;
-	const int KEY_V = 0x76;
-	const int KEY_Y = 0x79;
+	const int _KEY_B = 0x62;
+	const int _KEY_C = 0x63;
+	const int _KEY_E = 0x65;
+	const int _KEY_Q = 0x71;
+	const int _KEY_R = 0x72;
+	const int _KEY_T = 0x74;
+	const int _KEY_V = 0x76;
+	const int _KEY_Y = 0x79;
 }
 
 namespace global
 {
-	const int KEY_QUIT = keys::KEY_Q;
+	const int _KEY_QUIT = keysLegacy::_KEY_Q;
 }
 
 namespace classic
 {
-	const int KEY_FORWARD = keys::KEY_UP;
-	const int KEY_BACKWARD = keys::KEY_DOWN;
-	const int KEY_LEFT = keys::KEY_LEFT;
-	const int KEY_RIGHT = keys::KEY_RIGHT;
+	const int _KEY_FORWARD = keysLegacy::_KEY_UP;
+	const int _KEY_BACKWARD = keysLegacy::_KEY_DOWN;
+	const int _KEY_LEFT = keysLegacy::_KEY_LEFT;
+	const int _KEY_RIGHT = keysLegacy::_KEY_RIGHT;
 
-	const int KEY_BACKLIGHT = keys::KEY_B;
+	const int _KEY_BACKLIGHT = keysLegacy::_KEY_B;
 
-	const int KEY_MODE_CALIBRATE = keys::KEY_C;
+	const int _KEY_MODE_CALIBRATE = keysLegacy::_KEY_C;
 }
 
 namespace calibrate
 {
-	const int KEY_LEFT_2 = keys::KEY_R;
-	const int KEY_LEFT_10 = keys::KEY_E;
-	const int KEY_RIGHT_2 = keys::KEY_T;
-	const int KEY_RIGHT_10 = keys::KEY_Y;
+	const int _KEY_LEFT_2 = keysLegacy::_KEY_R;
+	const int _KEY_LEFT_10 = keysLegacy::_KEY_E;
+	const int _KEY_RIGHT_2 = keysLegacy::_KEY_T;
+	const int _KEY_RIGHT_10 = keysLegacy::_KEY_Y;
 
-	const int KEY_VALIDATE = keys::KEY_V;
-	const int KEY_RETURN = keys::KEY_B;
+	const int _KEY_VALIDATE = keysLegacy::_KEY_V;
+	const int _KEY_RETURN = keysLegacy::_KEY_B;
 }
 
 enum mode
@@ -59,4 +59,4 @@ enum mode
 	CALIBRATE
 };
 
-#endif //KEYS_HPP
+#endif //_KEYS_HPP
