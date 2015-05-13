@@ -12,6 +12,9 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#include <iostream>
+#include <bitset>
+using namespace std;
 //--------------------------------------------------------- Local includes
 
 #include "Sphero.hpp"
@@ -43,7 +46,7 @@ void* Sphero::monitorStream(void* sphero_ptr)
 		}
 	}
 
-    return NULL;
+	return NULL;
 }//END monitorStream
 
 void Sphero::reportCollision(CollisionStruct* infos)
@@ -81,8 +84,8 @@ bool Sphero::connect()
 	disconnect();
 
 	size_t i = 0;
-	while((_bt_socket = _bt_adapter->connection(_address.c_str())) == -1 && 
-			i++ < MAX_CONNECT_ATTEMPT)
+	while((_bt_socket = _bt_adapter->connection(_address.c_str())) == -1 &&
+		  i++ < MAX_CONNECT_ATTEMPT)
 	{
 	}
 
@@ -114,7 +117,7 @@ void Sphero::disconnect()
 		_connected = false;
 		pthread_cancel(monitor);
 		_bt_adapter->disconnect();
-		
+
 		_disconnect_handler.reportAction();
 	}
 }//END disconnect
@@ -143,15 +146,15 @@ void Sphero::sendPacket(ClientCommandPacket& packet)
 void Sphero::ping()
 {
 	ClientCommandPacket packet = ClientCommandPacket(
-		DID::core,
-		CID::ping,
-		flags::notNeeded,
-		0x01,
-		NULL,
-		true,
-		true
-	);
-	sendPacket(packet);	
+				DID::core,
+				CID::ping,
+				flags::notNeeded,
+				0x01,
+				NULL,
+				true,
+				true
+				);
+	sendPacket(packet);
 }//END ping
 
 
@@ -174,14 +177,14 @@ void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
 		data_payload[3] = 0;
 
 	ClientCommandPacket packet (
-			DID::sphero,
-			CID::setRGBLEDOutput,
-			flags::notNeeded,
-			0x05,
-			data_payload, 
-			waitConfirm, 
-			resetTimer
-		);
+				DID::sphero,
+				CID::setRGBLEDOutput,
+				flags::notNeeded,
+				0x05,
+				data_payload,
+				waitConfirm,
+				resetTimer
+				);
 	sendPacket(packet);
 }//END setColor
 
@@ -194,14 +197,14 @@ void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
 void Sphero::setBackLedOutput(uint8_t power)
 {
 	ClientCommandPacket packet(
-			DID::sphero,
-			CID::setBackLEDOutput,
-			flags::notNeeded,
-			0x02,
-			&power, 
-			waitConfirm, 
-			resetTimer
-		);
+				DID::sphero,
+				CID::setBackLEDOutput,
+				flags::notNeeded,
+				0x02,
+				&power,
+				waitConfirm,
+				resetTimer
+				);
 	sendPacket(packet);
 }//END setBackLedOutput
 
@@ -209,6 +212,7 @@ void Sphero::setBackLedOutput(uint8_t power)
 /**
  * @brief setHeading : Change the heading angle
  * @param heading : the new angle, in ° (range from 0 to 359)
+ *	WARNING : Only use with 0. Effect: set the actual heading angle to 0
  */
 void Sphero::setHeading(uint16_t heading)
 {
@@ -218,14 +222,14 @@ void Sphero::setHeading(uint16_t heading)
 	data[1] = ptr[0];
 
 	ClientCommandPacket packet(
-			DID::sphero,
-			CID::setHeading,
-			flags::notNeeded,
-			0x03,
-			data, 
-			waitConfirm, 
-			resetTimer
-		); 
+				DID::sphero,
+				CID::setHeading,
+				flags::notNeeded,
+				0x03,
+				data,
+				waitConfirm,
+				resetTimer
+				);
 
 	sendPacket(packet);
 }//END setHeading
@@ -241,14 +245,14 @@ void Sphero::setStabilization(bool on)
 	state = on ? 1 : 0;
 
 	ClientCommandPacket packet (
-			DID::sphero,
-			CID::setStabilization,
-			flags::notNeeded,
-			0x02,
-			&state, 
-			waitConfirm, 
-			resetTimer
-		); 
+				DID::sphero,
+				CID::setStabilization,
+				flags::notNeeded,
+				0x02,
+				&state,
+				waitConfirm,
+				resetTimer
+				);
 	sendPacket(packet);
 }//END setStabilization
 
@@ -261,14 +265,14 @@ void Sphero::setStabilization(bool on)
 void Sphero::setRotationRate(uint8_t angspeed)
 {
 	ClientCommandPacket packet(
-			DID::sphero,
-			CID::setRotationRate,
-			flags::notNeeded,
-			0x02,
-			&angspeed, 
-			waitConfirm, 
-			resetTimer
-		); 
+				DID::sphero,
+				CID::setRotationRate,
+				flags::notNeeded,
+				0x02,
+				&angspeed,
+				waitConfirm,
+				resetTimer
+				);
 	sendPacket(packet);
 }//END setRotationRate
 
@@ -319,19 +323,19 @@ void Sphero::setSelfLevel(uint8_t options, uint8_t angle_limit,
 	data_payload[3] = trueTime;
 
 	ClientCommandPacket packet(
-			DID::sphero,
-			CID::selfLevel,
-			flags::notNeeded,
-			0x05,
-			data_payload, 
-			waitConfirm, 
-			resetTimer
-		);
+				DID::sphero,
+				CID::selfLevel,
+				flags::notNeeded,
+				0x05,
+				data_payload,
+				waitConfirm,
+				resetTimer
+				);
 	sendPacket(packet);
 }//END setSelfLevel
 
 
-//void Sphero::setDataStreaming(uint16_t N, uint16_t M,uint32_t MASK, uint8_t 
+//void Sphero::setDataStreaming(uint16_t N, uint16_t M,uint32_t MASK, uint8_t
 //pcnt, uint32_t MASK2 = 0); not used yet
 
 
@@ -364,14 +368,14 @@ void Sphero::enableCollisionDetection(uint8_t Xt, uint8_t Xspd,
 	data_payload[5] = Dead;
 
 	ClientCommandPacket packet(
-			DID::sphero,
-			CID::configureCollisionDetection,
-			flags::notNeeded,
-			0x07,
-			data_payload, 
-			waitConfirm, 
-			resetTimer
-		);
+				DID::sphero,
+				CID::configureCollisionDetection,
+				flags::notNeeded,
+				0x07,
+				data_payload,
+				waitConfirm,
+				resetTimer
+				);
 	sendPacket(packet);
 }//END enableCollisionDetection
 
@@ -390,13 +394,13 @@ void Sphero::disableCollisionDetection()
 	data_payload[5] = 0;
 
 	ClientCommandPacket packet(
-			DID::sphero,
-			CID::configureCollisionDetection,
-			flags::notNeeded,
-			0x07,
-			data_payload,
-			waitConfirm,
-			resetTimer);
+				DID::sphero,
+				CID::configureCollisionDetection,
+				flags::notNeeded,
+				0x07,
+				data_payload,
+				waitConfirm,
+				resetTimer);
 	sendPacket(packet);
 }//END disableCollisionDetection
 
@@ -441,13 +445,13 @@ void Sphero::configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t ya
 	data_payload[6] = yawB;
 
 	ClientCommandPacket packet(
-			DID::sphero,
-			CID::configureLocator,
-			flags::notNeeded,
-			0x08,
-			data_payload,
-			waitConfirm,
-			resetTimer);
+				DID::sphero,
+				CID::configureLocator,
+				flags::notNeeded,
+				0x08,
+				data_payload,
+				waitConfirm,
+				resetTimer);
 	sendPacket(packet);
 }//END configureLocator
 
@@ -471,14 +475,14 @@ void Sphero::configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t ya
 void Sphero::setAccelerometerRange(uint8_t range)
 {
 	ClientCommandPacket packet(
-			DID::sphero,
-			CID::setAccelerometerRange,
-			flags::notNeeded,
-			0x02,
-			&range, 
-			waitConfirm, 
-			resetTimer
-		); 
+				DID::sphero,
+				CID::setAccelerometerRange,
+				flags::notNeeded,
+				0x02,
+				&range,
+				waitConfirm,
+				resetTimer
+				);
 	sendPacket(packet);
 }//END setAccelerometerRange
 
@@ -502,14 +506,14 @@ void Sphero::roll(uint8_t speed, uint16_t heading, uint8_t state)
 	data_payload[3] = state;
 
 	ClientCommandPacket packet(
-			DID::sphero,
-			CID::roll,
-			flags::notNeeded,
-			0x05,
-			data_payload, 
-			waitConfirm, 
-			resetTimer
-		);
+				DID::sphero,
+				CID::roll,
+				flags::notNeeded,
+				0x05,
+				data_payload,
+				waitConfirm,
+				resetTimer
+				);
 	sendPacket(packet);
 }//END roll
 
@@ -533,14 +537,14 @@ void Sphero::setInactivityTimeout(uint16_t timeout)
 	uint8_t* data = (uint8_t*) &timeout;
 
 	ClientCommandPacket packet(
-			DID::core,
-			CID::setInactivityTimeout,
-			flags::notNeeded,
-			0x03,
-			data,
-			waitConfirm,
-			resetTimer
-		);
+				DID::core,
+				CID::setInactivityTimeout,
+				flags::notNeeded,
+				0x03,
+				data,
+				waitConfirm,
+				resetTimer
+				);
 	sendPacket(packet);
 }//END setInactivityTimeout
 
@@ -569,16 +573,16 @@ void Sphero::sleep(uint16_t time, uint8_t macro, uint16_t orbbasic)
 	data_payload[4] = lsbOrb;
 
 	ClientCommandPacket packet(
-			DID::core,
-			CID::sleep,
-			flags::notNeeded,
-			0x06,
-			data_payload, 
-			waitConfirm, 
-			resetTimer
-		);
+				DID::core,
+				CID::sleep,
+				flags::notNeeded,
+				0x06,
+				data_payload,
+				waitConfirm,
+				resetTimer
+				);
 	sendPacket(packet);
-	
+
 }//END sleep
 
 /*

@@ -67,7 +67,7 @@ typedef preSleepHandler_t::listener_t callback_preSleep_t;
 
 //------------------------------------------------------------ Class definition
 
-class Sphero 
+class Sphero
 {
 	public:
 
@@ -90,7 +90,7 @@ class Sphero
 		//------------------------------------------------------ Public methods
 
 		/**
-		 * @brief connect : Initializes the bluetooth connection to the sphero 
+		 * @brief connect : Initializes the bluetooth connection to the sphero
 		 * 					instance
 		 * @return true if the connection was successful, false otherwise
 		 */
@@ -127,7 +127,7 @@ class Sphero
 
 
 		/**
-		 * @brief setBackLedOutput : Lights the back led(used to calibrate 
+		 * @brief setBackLedOutput : Lights the back led(used to calibrate
 		 * 							 the spero direction) with the given power
 		 * @param power : The power the LED will receive
 		 */
@@ -137,6 +137,7 @@ class Sphero
 		/**
 		 * @brief setHeading : Change the heading angle
 		 * @param heading : the new angle, in ° (range from 0 to 359)
+		 *	WARNING : Only use with 0. Effect: set the actual heading angle to 0
 		 */
 		void setHeading(uint16_t heading);
 
@@ -158,14 +159,14 @@ class Sphero
 
 		/**
 		 * @brief setSelfLevel :This command controls the self level routine.
-		 * 						The self level routine attempts to achieve a 
-		 * 						horizontal orientation where pitch and roll 
+		 * 						The self level routine attempts to achieve a
+		 * 						horizontal orientation where pitch and roll
 		 * 						angles are less than the provided Angle Limit
-		 * 						After both angle limits are satisfied, option 
-		 * 						bits control sleep, final angle (heading), and 
+		 * 						After both angle limits are satisfied, option
+		 * 						bits control sleep, final angle (heading), and
 		 * 						control system on/off.
-		 * 						An asynchronous message is returned when the 
-		 * 						self level routine completes (only when started 
+		 * 						An asynchronous message is returned when the
+		 * 						self level routine completes (only when started
 		 * 						by API call)
 		 *
 		 * @param options : Flags to control the routine behavior. Disponible flags are:
@@ -200,34 +201,34 @@ class Sphero
 
 
 		//void setDataStreaming(
-		// 		uint16_t N, 
-		// 		uint16_t M, 
-		// 		uint32_t MASK, 
-		// 		uint8_t pcnt, 
+		// 		uint16_t N,
+		// 		uint16_t M,
+		// 		uint32_t MASK,
+		// 		uint8_t pcnt,
 		// 		uint32_t MASK2 = 0
 		// 	);
 
 
 		/**
-		 * @brief enableCollisionDetection : Enables the onBoard collision 
+		 * @brief enableCollisionDetection : Enables the onBoard collision
 		 * 									 detector
-		 * @param Xt : 	An 8-bit settable threshold for the X (left/right) axis 
+		 * @param Xt : 	An 8-bit settable threshold for the X (left/right) axis
 		 * 				of Sphero
 		 *				A value of 0x00 disables the contribution of this axis
 		 *
-		 * @param Xspd : An 8-bit settable speed value for the X axis. 
-		 * 				 This setting is ranged by the speed, then added to Xt 
+		 * @param Xspd : An 8-bit settable speed value for the X axis.
+		 * 				 This setting is ranged by the speed, then added to Xt
 		 * 				 to generate the final threshold value.
 		 *
-		 * @param Yt : 	An 8-bit settable threshold for the Y (front/back) axis 
+		 * @param Yt : 	An 8-bit settable threshold for the Y (front/back) axis
 		 * 				of Sphero.
 		 *				A value of 0x00 disables the contribution of this axis
 		 *
-		 * @param Yspd : An 8-bit settable speed value for the Y axis. 
-		 * 				 This setting is ranged by the speed, then added to Yt 
+		 * @param Yspd : An 8-bit settable speed value for the Y axis.
+		 * 				 This setting is ranged by the speed, then added to Yt
 		 * 				 to generate the final threshold value.
 		 *
-		 * @param Dead : An 8-bit post-collision dead time to prevent retriggering; 
+		 * @param Dead : An 8-bit post-collision dead time to prevent retriggering;
 		 * 				 specified in 10ms increments.
 		 */
 		void enableCollisionDetection(uint8_t Xt, uint8_t Xspd, uint8_t Yt, uint8_t Yspd, uint8_t Dead);
@@ -246,18 +247,18 @@ class Sphero
 		bool isConnected();
 
 		/**
-		 * @brief configureLocator : Configure sphero's internal location 
+		 * @brief configureLocator : Configure sphero's internal location
 		 * 							 calculation unit offsets
 		 * @param flags
-		 *			FLOATING_Y_AXIS : the Y axis won't be memorized, so heading 
+		 *			FLOATING_Y_AXIS : the Y axis won't be memorized, so heading
 		 *							  0 will do nothing
-		 * @param X : The current position on X axis of Sphero on the ground 
+		 * @param X : The current position on X axis of Sphero on the ground
 		 * 			  plane (in centimeters)
-		 * @param Y : The current position on Y axis of Sphero on the ground 
+		 * @param Y : The current position on Y axis of Sphero on the ground
 		 * 			  plane (in centimeters)
-		 * @param yaw : (yaw tare) Controls how the X,Y-plane is aligned with 
+		 * @param yaw : (yaw tare) Controls how the X,Y-plane is aligned with
 		 * 				Sphero’s heading coordinate system.
-		 *				When this parameter is set to zero, it means that 
+		 *				When this parameter is set to zero, it means that
 		 *				having yaw = 0 corresponds to facing down the Y-axis
 		 *				in the positive direction.
 		 *				The value will be interpreted in the range 0-359 inclusive.
@@ -269,11 +270,11 @@ class Sphero
 		//getRGDLed : same
 
 		/**
-		 * @brief setAccelerometerRange : change sphero's accelerometer range, 
+		 * @brief setAccelerometerRange : change sphero's accelerometer range,
 		 * 								warning : may cause strange behaviors
-		 * @param range : 	The accelerometer range. Use one (and only one!) of 
+		 * @param range : 	The accelerometer range. Use one (and only one!) of
 		 * 				  	the next flags to set the right range
-		 *					Any other value will have indeterminate consequences 
+		 *					Any other value will have indeterminate consequences
 		 *					for driving and collision detection
 		 *
 		 *				ACC_2G : ±2Gs
@@ -285,11 +286,11 @@ class Sphero
 
 		/**
 		 * @brief roll : Defines a new heading angle and a new rotation speed
-		 * @param speed : The new rotation speed (new speed will be 
+		 * @param speed : The new rotation speed (new speed will be
 		 * 				  speed*0.784 degrees/sec)
 		 * @param heading : the new angle, in ° (range from 0 to 359)
 		 * @param state : In the CES firmware, this was used to gate the
-		 *			control system to either obey the roll vector or ignore it 
+		 *			control system to either obey the roll vector or ignore it
 		 *			and apply optimal braking to zero speed
 		 */
 		void roll(uint8_t speed, uint16_t heading, uint8_t state = 1);
@@ -298,9 +299,9 @@ class Sphero
 		//setRawMotorValue : not needed ?
 
 		/**
-		 * @brief setMotionTimeout : This sets the ultimate timeout for the 
+		 * @brief setMotionTimeout : This sets the ultimate timeout for the
 		 * 							last motion command to keep Sphero from
-		 *							rolling away in the case of a crashed (or 
+		 *							rolling away in the case of a crashed (or
 		 *							paused) client app.
 		 *
 		 * @param time : Expressed in milliseconds. Defaults to 2000 upon wake-up.
@@ -308,23 +309,23 @@ class Sphero
 		void setMotionTimeout(uint16_t time);
 
 		/**
-		 * @brief setPermOptFlags : Assigns the permanent option flags to the 
-		 * 							provided value and writes them to the config 
+		 * @brief setPermOptFlags : Assigns the permanent option flags to the
+		 * 							provided value and writes them to the config
 		 * 							block for persistence across power cycles.
 		 * @param flags :
-		 *			OPT_PREVENT_SLEEP : Prevent Sphero from immediately going 
-		 *								to sleep when placed in the charger and 
+		 *			OPT_PREVENT_SLEEP : Prevent Sphero from immediately going
+		 *								to sleep when placed in the charger and
 		 * 								connected over Bluetooth.
-		 *			OPT_EN_VDRIVE : Enable Vector Drive, that is, when Sphero 
-		 *							is stopped and a new roll command is issued 
+		 *			OPT_EN_VDRIVE : Enable Vector Drive, that is, when Sphero
+		 *							is stopped and a new roll command is issued
 		 * 							it achieves the heading before moving along it
-		 *			OPT_DIS_CHARGER_SL : Disable self-leveling when Sphero is 
+		 *			OPT_DIS_CHARGER_SL : Disable self-leveling when Sphero is
 		 *								 inserted into the charger.
 		 *			OPT_FORCE_TAIL_LED : Force the tail LED always on.
 		 *			OPT_EN_MOTION_TO : Enable motion timeouts
-		 *			OPT_EN_RETAIL_DEMO : Enable retail Demo Mode (when placed 
-		 *								 in the charger, ball runs a slow 
-		 *								 rainbow macro for 60 minutes and then 
+		 *			OPT_EN_RETAIL_DEMO : Enable retail Demo Mode (when placed
+		 *								 in the charger, ball runs a slow
+		 *								 rainbow macro for 60 minutes and then
 		 *								 goes to sleep).
 		 */
 		void setPermOptFlags(uint32_t flags);
@@ -332,19 +333,19 @@ class Sphero
 		//getPermOptFlags : we'll see
 
 		/**
-		 * @brief setTmpOptFlags : Assigns the temporary option flags to the 
-		 * 						   provided value. These do not persist across 
+		 * @brief setTmpOptFlags : Assigns the temporary option flags to the
+		 * 						   provided value. These do not persist across
 		 * 						   a power cycle.
 		 * @param flags
-		 *			TOPT_EN_STOP_ON_DISC : when the Bluetooth link transitions 
-		 *								   from connected to disconnected, 
+		 *			TOPT_EN_STOP_ON_DISC : when the Bluetooth link transitions
+		 *								   from connected to disconnected,
 		 *								   Sphero is commanded to stop rolling.
-		 *								   This is ignored if a macro or orbBasic 
-		 *								   program is running though both have 
-		 *								   option flags to allow this during 
+		 *								   This is ignored if a macro or orbBasic
+		 *								   program is running though both have
+		 *								   option flags to allow this during
 		 *								   their execution.
-		 *					
-		 *									This flag is cleared after it is 
+		 *
+		 *									This flag is cleared after it is
 		 *									obeyed, thus it is a one-shot.
 		 */
 		void setTmpOptFlags(uint32_t flags);
@@ -366,13 +367,13 @@ class Sphero
 		/**
 		 * @brief runMacro : This attempts to execute the specified macro
 		 * @param id : Macro IDs are organized into groups
-		 *			01-31 : 	System Macros. Compiled into the Main Application. 
+		 *			01-31 : 	System Macros. Compiled into the Main Application.
 		 *						Always available to run, cannot be deleted.
-		 *			32-253 : 	User Macros. Downloaded and permanently stored, 
+		 *			32-253 : 	User Macros. Downloaded and permanently stored,
 		 *					 	can be deleted in total.
-		 *			254 : 		Stream Macro, a special user macro that doesn't 
+		 *			254 : 		Stream Macro, a special user macro that doesn't
 		 *						require this call to begin execution
-		 *			255 : 		Temporary Macro, a special user macro that's 
+		 *			255 : 		Temporary Macro, a special user macro that's
 		 *						held in RAM for execution
 		 */
 		void runMacro(uint8_t id);
@@ -382,39 +383,39 @@ class Sphero
 
 		/**
 		 * @brief sleep : This command puts Sphero to sleep immediately
-		 * @param time : The number of seconds for Sphero to sleep for and 
+		 * @param time : The number of seconds for Sphero to sleep for and
 		 * 				 then automatically reawaken.
-		 *				 Zero does not program a wakeup interval, so he sleeps 
+		 *				 Zero does not program a wakeup interval, so he sleeps
 		 *				 forever.
-		 *				0xFFFF attempts to put him into deep sleep (if supported 
-		 *				in hardware) and returns an error if the hardware does 
+		 *				0xFFFF attempts to put him into deep sleep (if supported
+		 *				in hardware) and returns an error if the hardware does
 		 *				not support it.
 		 *
 		 * @param macro : If non-zero, Sphero will attempt to run this macro i
 		 * 				  ID upon wakeup.
-		 * @param orbbasic : If non-zero, Sphero will attempt to run an 
+		 * @param orbbasic : If non-zero, Sphero will attempt to run an
 		 * 					 orbBasic program in Flash from this line number.
 		 */
 		void sleep(uint16_t time, uint8_t macro = 0,uint16_t orbbasic = 0);
 
 		/**
-		 * @brief setInactivityTimeout :To save battery power, Sphero normally 
+		 * @brief setInactivityTimeout :To save battery power, Sphero normally
 		 * goes to sleep after a period of inactivity.
-		 * @param timeout : Time before Sphero goes to sleep (when nothing 
+		 * @param timeout : Time before Sphero goes to sleep (when nothing
 		 * 					happens), in seconds.
 		 *					From the factory this value is set to 600 seconds.
-		 *					The inactivity timer is reset every time an API 
+		 *					The inactivity timer is reset every time an API
 		 *					command is received over Bluetooth with the
 		 *					resettimeout flag or a shell command is executed in
 		 *					User Hack mode.
-		 *					
-		 *					In addition, the timer is continually reset when a 
+		 *
+		 *					In addition, the timer is continually reset when a
 		 *					macro is running unless the MF_STEALTH flag is set,
-		 *					and the same for orbBasic unless the BF_STEALTH 
+		 *					and the same for orbBasic unless the BF_STEALTH
 		 *					flag is set.
 		 */
 		void setInactivityTimeout(uint16_t timeout);
-		
+
 		//-------------------------------------------------------------- Events
 
 		/**
@@ -433,7 +434,7 @@ class Sphero
 		 *			Parameters : none (void)
 		 */
 		void onDisconnect(callback_disconnect_t callback);
-		
+
 		/**
 		 * @brief onPreSleep : Event thrown 10 sec. before sphero sleeps
 		 * @param callback : The callback function to assign to this event
@@ -464,7 +465,7 @@ class Sphero
 		bool _connected;
 
 		bluetooth_connector* _bt_adapter;
-		
+
 		spherocoord_t _position_x;
 		spherocoord_t _position_y;
 
