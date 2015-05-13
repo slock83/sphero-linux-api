@@ -192,6 +192,9 @@ void InteractiveController::handleKeysCalibrate(int input, timeval& lastInput)
 	if(lastAngle >= 360)
 		lastAngle -= 360;
 
+	if(lastAngle <= 0)
+		lastAngle += 360;
+
 	s->roll(0, lastAngle);
 	gettimeofday(&lastInput, NULL);
 }

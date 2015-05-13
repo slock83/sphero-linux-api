@@ -21,6 +21,7 @@ namespace keys
 	const int KEY_Q = 0x71;
 	const int KEY_R = 0x72;
 	const int KEY_T = 0x74;
+	const int KEY_V = 0x76;
 	const int KEY_Y = 0x79;
 }
 
@@ -48,7 +49,7 @@ namespace calibrate
 	const int KEY_RIGHT_2 = keys::KEY_T;
 	const int KEY_RIGHT_10 = keys::KEY_Y;
 
-	const int KEY_VALIDATE = keys::KEY_B;
+	const int KEY_VALIDATE = keys::KEY_V;
 	const int KEY_RETURN = keys::KEY_B;
 }
 
