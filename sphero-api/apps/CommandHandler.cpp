@@ -52,6 +52,7 @@ void showHelp()
 	cout << "backled <intensity> -- Changes the Sphero's back LED intensity" << endl;
 	cout << "setIT <TO> -- Set inactivity timeout for the sphero" << endl;
 	cout << "roll <speed> <angle> -- Moves the sphero" << endl;
+	cout << "head <angle> -- Changes the heading angle(the new angle will be considered as 0 for roll)" << endl;
 	cout << "collision -- Enable collision detection feature" << endl;
 	cout << "coll -- Simulates a collision" << endl;
 	cout << endl;
@@ -162,6 +163,20 @@ static void handleRoll(stringstream& css)
 
 }
 
+
+/**
+ * @brief handleDirect : handles the roll command
+ */
+static void handleHead(stringstream& css)
+{
+	if(!isConnected()) return;
+
+	unsigned int angle;
+	css >> angle;
+
+	sm.getSphero()->setHeading((uint16_t) angle % 360);
+
+}
 /**
  * @brief handleIT : Handles the set inactivity timeout command
  */
@@ -273,6 +288,10 @@ int handleCommand(const string& command)
 	else if(cmd == "roll")
 	{
 		handleRoll(css);
+	}
+	else if(cmd == "head")
+	{
+		handleHead(css);
 	}
 	else if(cmd == "collision")
 	{
