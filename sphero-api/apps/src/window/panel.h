@@ -9,7 +9,7 @@ class Panel
 		Panel(int x, int y, int w, int h);
 		virtual ~Panel();
 
-		virtual void drawPanel(int ch); // idem menu
+		virtual void drawPanel(int ch);
 
 	protected:
 		int _startX, _startY;

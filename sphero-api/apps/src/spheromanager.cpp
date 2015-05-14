@@ -19,6 +19,9 @@ using namespace std;
 #include "spheromanager.h"
 
 
+//-------------------------------------------------------- Class variables
+SpheroManager* SpheroManager::instance = new SpheroManager();
+
 
 //------------------------------------------------ Constructors/Destructor
 /**
@@ -30,19 +33,35 @@ SpheroManager::SpheroManager():s(NULL), nbActif(0)
 SpheroManager::~SpheroManager()
 {}
 
+SpheroManager* SpheroManager::getManager()
+{
+	return instance;
+}
+
 
 //--------------------------------------------------------- Public methods
 
 /**
  * @brief listSpheros : Lists the currently connected Spheros
  */
-void SpheroManager::listSpheros()
+vector<string> SpheroManager::listSpheros()
 {
-	for(int i = 0; i < spheroNames.size(); ++i)
+	return spheroNames;
+}
+
+
+/**
+ * @brief getSelectedIndex : Returns the index of the currently selected Sphero
+ * @return -1 if No Sphero is selected, the Sphero index in list otherwise
+ */
+int SpheroManager::getSelectedIndex()
+{
+	for(int i = 0; i < spheroVec.size(); ++i)
 	{
-		cout << ((spheroVec[i] == s) ? "*" : " ");
-		cout << "[" << i << "] " << spheroNames[i] << endl;
+		if(spheroVec[i] == s)
+			return i;
 	}
+	return -1;
 }
 
 

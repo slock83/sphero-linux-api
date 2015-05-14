@@ -21,14 +21,9 @@ void Panel::drawPanel(int ch)
 	initPanel();
 	box(_panel, 0, 0);
 
-	mvwprintw(_panel, 1, 1, "azr");
 	wrefresh(_panel);
 	refresh();
 
-	/*switch(ch)
-	{
-
-	}*/
 }
 
 void Panel::initPanel()

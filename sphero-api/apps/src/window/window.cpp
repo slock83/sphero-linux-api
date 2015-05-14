@@ -152,16 +152,17 @@ void Window::initWindow()
 	_curItem = 0;
 
 	/* Handling multiple calls */
+
+	if(_gMenu != NULL)
+	{
+		free_menu(_gMenu);
+	}
+
 	if(_menus != NULL)
 	{
 		for(int i = 0; i < _nbItems; ++i)
 			free_item(_menus[i]);
 		free(_menus);
-	}
-
-	if(_gMenu != NULL)
-	{
-		free_menu(_gMenu);
 	}
 
 	/* Init (Creation of the ncurses menu) */
