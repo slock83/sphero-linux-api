@@ -19,8 +19,8 @@
 #include <sys/time.h>
 #include <termios.h>
 
-#include "../API-src/bluetooth/bluez_adaptor.h"
-#include "../API-src/Sphero.hpp"
+#include "../../API-src/bluetooth/bluez_adaptor.h"
+#include "../../API-src/Sphero.hpp"
 
 using namespace std;
 
@@ -28,6 +28,8 @@ using namespace std;
 #include "CommandHandler.h"
 #include "spheromanager.h"
 #include "interactivecontroller.h"
+
+#include "cursewindow.h"
 
 
 
@@ -318,6 +320,10 @@ int handleCommand(const string& command)
 		}
 
 		return 0;
+	}
+	else if(cmd == "curse")
+	{
+		CurseWindow().showWindow();
 	}
 	else
 		showHelp();
