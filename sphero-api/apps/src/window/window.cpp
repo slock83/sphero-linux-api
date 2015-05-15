@@ -4,17 +4,33 @@
 	started                : 14/05/2015
 ******************************************************************************/
 
-#include "ncurses.h"
+//-------------------------------------------------------- System includes
+#include <ncurses.h>
+
+
+//--------------------------------------------------------- Local includes
 
 #include "window.h"
 #include "keys.hpp"
 
-#include <iostream>
-using namespace std;
+
+//-------------------------------------------------------- Local functions
+
+static void initScreen()
+{
+	initscr();
+	cbreak();
+	keypad(stdscr, TRUE);
+	noecho();
+}
+
+
+//------------------------------------------------ Constructors/Destructor
 
 Window::Window():
 	_menuList(), _panelList(), _menus(NULL), _gMenu(NULL), _nbItems(0), _curItem(0), _hideBar(true)
 {}
+
 
 Window::~Window()
 {
@@ -25,14 +41,12 @@ Window::~Window()
 		delete p;
 }
 
-static void initScreen()
-{
-	initscr();
-	cbreak();
-	keypad(stdscr, TRUE);
-	noecho();
-}
 
+//--------------------------------------------------------- Public methods
+
+/**
+ * @brief showWindow : Starts ncurses and shows the window
+ */
 void Window::showWindow()
 {
 	WINDOW *menubar, *menuw;
@@ -85,15 +99,28 @@ void Window::showWindow()
 	}
 }
 
+
+/**
+ * @brief addMenu : Adds a new menu to the window
+ * @param m : A pointer to the new menu
+ */
 void Window::addMenu(Menu *m)
 {
 	_menuList.push_back(m);
 }
 
+
+/**
+ * @brief addPanel : Adds a new panel to the window
+ * @param p : A pointer to the new panel
+ */
 void Window::addPanel(Panel *p)
 {
 	_panelList.push_back(p);
 }
+
+
+//------------------------------------------------------ Protected methods
 
 void Window::drawMenuBar(int ch, WINDOW *w)
 {
@@ -153,6 +180,7 @@ void Window::drawMenuBar(int ch, WINDOW *w)
 	post_menu(_gMenu);
 }
 
+
 void Window::initWindow()
 {
 	_curItem = 0;
@@ -193,7 +221,4 @@ void Window::initWindow()
 
 	set_menu_format(_gMenu, 1, 16);
 	set_menu_mark(_gMenu, "");
-
-
 }
-
