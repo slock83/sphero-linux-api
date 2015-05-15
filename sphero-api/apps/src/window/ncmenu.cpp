@@ -1,20 +1,31 @@
+/******************************************************************************
+	Menu  - A console graphic menu
+							 -------------------
+	started                : 14/05/2015
+******************************************************************************/
 
-#include <sstream>
-#include <string>
+//-------------------------------------------------------- System includes
 #include <ncurses.h>
 #include <menu.h>
 
 #include <iostream>
+#include <sstream>
+#include <string>
+
 using namespace std;
 
+
+//--------------------------------------------------------- Local includes
 
 #include "ncmenu.h"
 #include "keys.hpp"
 
 
+//------------------------------------------------ Constructors/Destructor
 Menu::Menu(string name):
 	_menuName(name), _my_items(NULL), _my_menu(NULL), _nbItems(0), _curItem(0)
 {}
+
 
 Menu::~Menu()
 {
@@ -30,11 +41,23 @@ Menu::~Menu()
 		delete mi;
 }
 
+
+//--------------------------------------------------------- Public methods
+
+/**
+ * @brief addItem : Adds an item to the menu
+ * @param m : The menuItem to add
+ */
 void Menu::addItem(MenuItem *m)
 {
 	_itemList.push_back(m);
 }
 
+
+/**
+ * @brief removeItem : Removes an item from the menu
+ * @param index : The index of the item to remove
+ */
 void Menu::removeItem(int index)
 {
 	if(index >= _itemList.size())
@@ -43,6 +66,10 @@ void Menu::removeItem(int index)
 	_itemList.erase(_itemList.begin() + index);
 }
 
+
+/**
+ * @brief initMenu : Initializes the menu (ncurses objects)
+ */
 void Menu::initMenu()
 {
 	_curItem = 0;
@@ -75,6 +102,11 @@ void Menu::initMenu()
 }
 
 
+/**
+ * @brief showMenu : Shows the menu and performs base actions on it
+ * @param ch : The last keyCode performed
+ * @param w : The window wherethe menu will be showed
+ */
 void Menu::showMenu(int ch, WINDOW *w)
 {
 	set_menu_win(_my_menu, w);
@@ -99,16 +131,21 @@ void Menu::showMenu(int ch, WINDOW *w)
 	post_menu(_my_menu);
 }
 
-void Menu::hideMenu(int ch, WINDOW *w)
-{
-	unpost_menu(_my_menu);
-}
 
+/**
+ * @brief getName : Returns the menu name
+ */
 string Menu::getName()
 {
 	return _menuName;
 }
 
+
+/**
+ * @brief getSize : Computes the menu dimensions (to create a window perfectly fitting)
+ * @param height : Reference, the menu height will be placed here
+ * @param width : Reference, the menu width will be placed here
+ */
 void Menu::getSize(int &height, int &width)
 {
 	height = _itemList.size();
