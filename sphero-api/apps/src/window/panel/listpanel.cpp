@@ -14,9 +14,10 @@ using namespace std;
 #include "../../spheromanager.h"
 
 ListPanel::ListPanel(int x, int y, int w, int h):
-	Panel(x, y, w, h), _nameLst(NULL), _names(NULL), menuWin(NULL),  _nbItems(0), _curIndex(0)
+	Panel(x, y, w, h), _names(NULL), _nameLst(NULL), _menuWin(NULL),  _nbItems(0), _curIndex(0)
 {
-	updateList(SpheroManager::getManager());
+	sphM = SpheroManager::getManager();
+	updateList(sphM->listSpheros());
 }
 
 ListPanel::~ListPanel()
@@ -34,14 +35,14 @@ void ListPanel::drawPanel(int ch)
 	switch(ch)
 	{
 		case KEY_KP8:
-			if(menu_driver(_gMenu, REQ_UP_ITEM) == E_OK)
+			if(menu_driver(_nameLst, REQ_UP_ITEM) == E_OK)
 			{
 				_curIndex--;
 			}
 
 			break;
 		case KEY_KP2:
-			if(menu_driver(_gMenu, REQ_DOWN_ITEM) == E_OK)
+			if(menu_driver(_nameLst, REQ_DOWN_ITEM) == E_OK)
 			{
 				_curIndex++;
 			}
@@ -67,7 +68,7 @@ void ListPanel::updateList(const vector<string>& newNames)
 
 	_curIndex = 0;
 
-	for(int i = 0; i < newNames.size(); ++i)
+	for(unsigned int i = 0; i < newNames.size(); ++i)
 	{
 		if(newNames[i] == selected)
 		{

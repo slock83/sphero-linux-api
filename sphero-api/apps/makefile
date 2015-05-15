@@ -4,7 +4,7 @@ RM=rm
 RMFLAGS=-rf
 
 # Bibliothèques supplémentaires
-LIB=bluetooth pthread rt readline ncurses sphero
+LIB=bluetooth pthread rt readline ncurses menu sphero
 
 # Répertoires de bibliothèques
 LIBDIR?=..

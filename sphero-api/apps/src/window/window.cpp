@@ -28,7 +28,7 @@ static void initScreen()
 //------------------------------------------------ Constructors/Destructor
 
 Window::Window():
-	_menuList(), _panelList(), _menus(NULL), _gMenu(NULL), _nbItems(0), _curItem(0), _hideBar(true)
+	_menuList(), _panelList(), _menus(NULL), _gMenu(NULL), _nbItems(0), _hideBar(true), _curItem(0)
 {}
 
 
@@ -50,7 +50,7 @@ Window::~Window()
 void Window::showWindow()
 {
 	WINDOW *menubar, *menuw;
-	WINDOW *test;
+
 	initScreen();
 	int ch = 0;
 	initWindow();

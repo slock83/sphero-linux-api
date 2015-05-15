@@ -42,7 +42,7 @@ class Menu //TODO : memleaks...
 		 * @brief removeItem : Removes an item from the menu
 		 * @param index : The index of the item to remove
 		 */
-		void removeItem(int index);
+		void removeItem(unsigned int index);
 
 
 		/**

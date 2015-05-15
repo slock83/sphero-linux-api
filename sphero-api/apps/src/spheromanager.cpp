@@ -54,9 +54,9 @@ vector<string> SpheroManager::listSpheros()
  * @brief getSelectedIndex : Returns the index of the currently selected Sphero
  * @return -1 if No Sphero is selected, the Sphero index in list otherwise
  */
-int SpheroManager::getSelectedIndex()
+unsigned int SpheroManager::getSelectedIndex()
 {
-	for(int i = 0; i < spheroVec.size(); ++i)
+	for(unsigned int i = 0; i < spheroVec.size(); ++i)
 	{
 		if(spheroVec[i] == s)
 			return i;

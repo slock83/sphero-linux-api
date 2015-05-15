@@ -29,8 +29,6 @@ using namespace std;
 #include "spheromanager.h"
 #include "interactivecontroller.h"
 
-#include "cursewindow.h"
-
 
 
 /**/
@@ -320,10 +318,6 @@ int handleCommand(const string& command)
 		}
 
 		return 0;
-	}
-	else if(cmd == "curse")
-	{
-		CurseWindow().showWindow();
 	}
 	else
 		showHelp();

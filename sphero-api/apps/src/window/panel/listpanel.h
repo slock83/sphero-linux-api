@@ -9,6 +9,7 @@
 using namespace std;
 
 #include "../panel.h"
+#include "../../spheromanager.h"
 
 class ListPanel : public Panel
 {
@@ -17,7 +18,8 @@ class ListPanel : public Panel
 		virtual ~ListPanel();
 
 		virtual void drawPanel(int ch);
-		void updateList(const vector<string> &newNames);
+
+		void updateList(const vector<string>& newNames);
 		void updateSelected(int newIndex);
 
 	protected:

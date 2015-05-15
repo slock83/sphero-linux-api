@@ -18,14 +18,14 @@ class SpheroManager
 	public:
 		//----------------------------------------------------- Operators
 
-		SpheroManager& operator=(const SpheroManager&) = delete;
+		SpheroManager& operator=(const SpheroManager& sphMan) = delete;
 
 
 		//--------------------------------------- Constructors/Destructor
 
 		SpheroManager();//deprecated, will be moved in private, stays here for compat
 
-		SpheroManager(const& SpheroManager) = delete;
+		SpheroManager(const SpheroManager& sphMan) = delete;
 
 		virtual ~SpheroManager();
 
@@ -43,7 +43,7 @@ class SpheroManager
 		 * @brief getSelectedIndex : Returns the index of the currently selected Sphero
 		 * @return -1 if No Sphero is selected, the Sphero index in list otherwise
 		 */
-		int getSelectedIndex();
+		unsigned int getSelectedIndex();
 
 
 		/**

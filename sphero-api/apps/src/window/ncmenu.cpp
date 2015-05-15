@@ -58,7 +58,7 @@ void Menu::addItem(MenuItem *m)
  * @brief removeItem : Removes an item from the menu
  * @param index : The index of the item to remove
  */
-void Menu::removeItem(int index)
+void Menu::removeItem(unsigned int index)
 {
 	if(index >= _itemList.size())
 		return;
@@ -148,12 +148,12 @@ string Menu::getName()
  */
 void Menu::getSize(int &height, int &width)
 {
-	height = _itemList.size();
+	height = (int)_itemList.size();
 
 	width = 0;
 	for(MenuItem* mi : _itemList)
-		if(width < mi->itemText().size())
-			width = mi->itemText().size();
+		if(width < (int)mi->itemText().size())
+			width = (int)mi->itemText().size();
 
 }
 
