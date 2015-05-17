@@ -5,9 +5,9 @@
 *************************************************************************/
 
 //-------------------------------------------------------- System includes
-#ifdef MAP
+//#ifdef MAP
 	#include <iostream>
-#endif
+//#endif
 
 #include <vector>
 #include <sys/socket.h>
@@ -58,22 +58,25 @@ bool SpheroStreamingPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket*
 
 	sphero->requestLock();
 
-	recv(fd, &data, sizeof(data), 0); // garbage?
-	recv(fd, &data, sizeof(data), 0); // len MSB
+	recv(fd, &data, sizeof(data), MSG_DONTWAIT); // garbage?
+	recv(fd, &data, sizeof(data), MSG_DONTWAIT); // len MSB
 		len = data << 8;
 
-	recv(fd, &data, sizeof(data), 0); // len LSB
+	recv(fd, &data, sizeof(data), MSG_DONTWAIT); // len LSB
 		len |= data;
 
 	if(!sphero->checkValid(len))
+	{
+		sphero->requestLock(false);
 		return false;
+	}
 
-	for(int i = 0; i < len/2; i++)
+	for(int i = 0; i < (len-1)/2; i++)
 	{
 		uint16_t value;
 		recv(fd, &value, sizeof(value), 0);
 
-		sphero->getDataBuffer().addValue(sphero->getTypesList()[i%sphero->getTypesList().size()], value);
+		sphero->getDataBuffer()->addValue(sphero->getTypesList()[i%sphero->getTypesList().size()], value);
 	}
 
 	sphero->requestLock(false);

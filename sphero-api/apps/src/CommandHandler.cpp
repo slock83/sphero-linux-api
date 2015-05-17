@@ -21,6 +21,7 @@
 
 #include "../../API-src/bluetooth/bluez_adaptor.h"
 #include "../../API-src/Sphero.hpp"
+#include "../../API-src/packets/Constants.hpp"
 
 using namespace std;
 
@@ -323,7 +324,7 @@ int handleCommand(const string& command)
 	{
 		if(!isConnected()) return;
 
-		sm.getSphero()->setDataStreaming(40, 1, mask::RAW_ACCEL_X, 1, mask2::ODOMETER_X | mask2::ODOMETER_Y);
+		sm.getSphero()->setDataStreaming(1, 1, 0, 0, mask2::ODOMETER_X | mask2::ODOMETER_Y);
 	}
 	else if(cmd == "rst")
 	{

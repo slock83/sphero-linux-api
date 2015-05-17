@@ -63,11 +63,13 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 	_seq(0), _resetTimer(true), _waitConfirm(false)
 {
 	pthread_mutex_init(&lock, NULL);
+	_data = new DataBuffer();
 }
 
 
 Sphero::~Sphero()
 {
+	delete _data;
 	disconnect();
 	delete _bt_adapter;
 }//END destructor
@@ -525,7 +527,7 @@ void Sphero::setDataStreaming(uint16_t freq, uint16_t delay, uint32_t mask, uint
 /**
  * @return The sphero's DataBuffer instance
  */
-DataBuffer Sphero::getDataBuffer()
+DataBuffer* Sphero::getDataBuffer()
 {
 	return _data;
 }
@@ -722,6 +724,7 @@ void Sphero::updateParameters(int nbFrames, uint32_t maskVal, uint32_t mask2Val)
 	sort(_typesLst.begin(), _typesLst.end());
 
 	pthread_mutex_unlock(&lock);
+
 }
 
 const vector<dataTypes> Sphero::getTypesList()
@@ -738,11 +741,8 @@ const vector<dataTypes> Sphero::getTypesList()
 bool Sphero::checkValid(int len)
 {
 	bool valid = false;
-
-	pthread_mutex_lock(&lock);
 	if((unsigned int)len - 1 == _typesLst.size() * 2 * _nbFrames)
 		valid = true;
-	pthread_mutex_unlock(&lock);
 
 	return valid;
 }
