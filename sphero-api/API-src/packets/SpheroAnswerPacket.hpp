@@ -11,6 +11,9 @@
 //--------------------------------------------------------- Local includes
 #include "SpheroPacket.hpp"
 
+//-------------------------------------------------------------- Constants
+
+static const uint8_t
 
 //------------------------------------------------------- Class definition
 class SpheroAnswerPacket : public SpheroPacket
@@ -58,7 +61,6 @@ class SpheroAnswerPacket : public SpheroPacket
 	private:
 
 	   static extractorMap_t _extractorMap;
-
 };
 
 #endif // SpheroAnswerPacket_H

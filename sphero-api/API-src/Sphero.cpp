@@ -22,6 +22,8 @@ using namespace std;
 #include "packets/Constants.hpp"
 #include "packets/async/SpheroStreamingPacket.hpp"
 
+#include "packets/answer/ColorStruct.hpp"
+
 
 //-------------------------------------------------------- Private methods
 
@@ -59,7 +61,8 @@ void* Sphero::monitorStream(void* sphero_ptr)
  * @param btcon : A pointer to the bluetooth connector
  */
 Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
-	_connected(false), _bt_adapter(btcon), _address(btaddr)
+	_connected(false), _bt_adapter(btcon), _address(btaddr),
+	_seq(0), _resetTimer(true), _waitConfirm(false)
 {
 	pthread_mutex_init(&lock, NULL);
 	_data = new DataBuffer();
@@ -183,12 +186,34 @@ void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
 				flags::notNeeded,
 				0x05,
 				data_payload,
-				waitConfirm,
-				resetTimer
+				_waitConfirm,
+				_resetTimer
 				);
 	sendPacket(packet);
 }//END setColor
 
+
+/**
+ * Commentez-les tous ! (feat Sacha)
+ */
+
+ColorStruct* Sphero::getSphero()
+{
+	ColorStruct* color = new ColorStruct();
+	
+	ClientCommandPacket packet(
+				DID::sphero,
+				CID::setBackLEDOutput,
+				_seq++,
+				0x02,
+				&power,
+				_waitConfirm,
+				_resetTimer
+				);
+				
+	
+	return color;
+}
 
 /**
  * @brief setBackLedOutput : Lights the back led(used to calibrate
@@ -203,8 +228,8 @@ void Sphero::setBackLedOutput(uint8_t power)
 				flags::notNeeded,
 				0x02,
 				&power,
-				waitConfirm,
-				resetTimer
+				_waitConfirm,
+				_resetTimer
 				);
 	sendPacket(packet);
 }//END setBackLedOutput
@@ -228,8 +253,8 @@ void Sphero::setHeading(uint16_t heading)
 				flags::notNeeded,
 				0x03,
 				data,
-				waitConfirm,
-				resetTimer
+				_waitConfirm,
+				_resetTimer
 				);
 
 	sendPacket(packet);
@@ -251,8 +276,8 @@ void Sphero::setStabilization(bool on)
 				flags::notNeeded,
 				0x02,
 				&state,
-				waitConfirm,
-				resetTimer
+				_waitConfirm,
+				_resetTimer
 				);
 	sendPacket(packet);
 }//END setStabilization
@@ -271,8 +296,8 @@ void Sphero::setRotationRate(uint8_t angspeed)
 				flags::notNeeded,
 				0x02,
 				&angspeed,
-				waitConfirm,
-				resetTimer
+				_waitConfirm,
+				_resetTimer
 				);
 	sendPacket(packet);
 }//END setRotationRate
@@ -329,8 +354,8 @@ void Sphero::setSelfLevel(uint8_t options, uint8_t angle_limit,
 				flags::notNeeded,
 				0x05,
 				data_payload,
-				waitConfirm,
-				resetTimer
+				_waitConfirm,
+				_resetTimer
 				);
 	sendPacket(packet);
 }//END setSelfLevel
@@ -370,8 +395,8 @@ void Sphero::enableCollisionDetection(uint8_t Xt, uint8_t Xspd,
 				flags::notNeeded,
 				0x07,
 				data_payload,
-				waitConfirm,
-				resetTimer
+				_waitConfirm,
+				_resetTimer
 				);
 	sendPacket(packet);
 }//END enableCollisionDetection
@@ -396,8 +421,8 @@ void Sphero::disableCollisionDetection()
 				flags::notNeeded,
 				0x07,
 				data_payload,
-				waitConfirm,
-				resetTimer);
+				_waitConfirm,
+				_resetTimer);
 	sendPacket(packet);
 }//END disableCollisionDetection
 
@@ -447,8 +472,8 @@ void Sphero::configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t ya
 				flags::notNeeded,
 				0x08,
 				data_payload,
-				waitConfirm,
-				resetTimer);
+				_waitConfirm,
+				_resetTimer);
 	sendPacket(packet);
 }
 
@@ -494,8 +519,8 @@ void Sphero::setDataStreaming(uint16_t freq, uint16_t delay, uint32_t mask, uint
 				flags::notNeeded,
 				dlen,
 				data,
-				waitConfirm,
-				resetTimer);
+				_waitConfirm,
+				_resetTimer);
 	sendPacket(packet);
 	updateParameters(delay, mask, mask2);
 }
@@ -531,8 +556,8 @@ void Sphero::setAccelerometerRange(uint8_t range)
 				flags::notNeeded,
 				0x02,
 				&range,
-				waitConfirm,
-				resetTimer
+				_waitConfirm,
+				_resetTimer
 				);
 	sendPacket(packet);
 }//END setAccelerometerRange
@@ -562,8 +587,8 @@ void Sphero::roll(uint8_t speed, uint16_t heading, uint8_t state)
 				flags::notNeeded,
 				0x05,
 				data_payload,
-				waitConfirm,
-				resetTimer
+				_waitConfirm,
+				_resetTimer
 				);
 	sendPacket(packet);
 }//END roll
@@ -593,8 +618,8 @@ void Sphero::setInactivityTimeout(uint16_t timeout)
 				flags::notNeeded,
 				0x03,
 				data,
-				waitConfirm,
-				resetTimer
+				_waitConfirm,
+				_resetTimer
 				);
 	sendPacket(packet);
 }
@@ -765,8 +790,8 @@ void Sphero::sleep(uint16_t time, uint8_t macro, uint16_t orbbasic)
 				flags::notNeeded,
 				0x06,
 				data_payload,
-				waitConfirm,
-				resetTimer
+				_waitConfirm,
+				_resetTimer
 				);
 	sendPacket(packet);
 
