@@ -89,5 +89,5 @@ bool SpheroStreamingPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket*
  */
 void SpheroStreamingPacket::packetAction()
 {
-	//_sphero->
+	_sphero->reportData();
 }
