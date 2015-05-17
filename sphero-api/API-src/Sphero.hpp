@@ -528,9 +528,11 @@ class Sphero
 		pthread_mutex_t lock;
 		int _nbFrames;
 		vector<dataTypes> _typesLst;
+		
+		uint8_t _seq;
 
-		bool resetTimer = true;
-		bool waitConfirm = false;
+		bool _resetTimer;
+		bool _waitConfirm;
 
 		int _bt_socket;
 		pthread_t monitor;

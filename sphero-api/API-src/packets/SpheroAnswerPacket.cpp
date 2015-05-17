@@ -43,9 +43,27 @@ SpheroAnswerPacket::~SpheroAnswerPacket()
  */
 bool SpheroAnswerPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr)
 {
-	//TODO: Implement
-	fprintf(stderr, "Test : AnswerPacket\n");
+#ifdef MAP
+	fprintf(stderr, "Answer packet reception\n\n");
+#endif
+	// À adapter
+	uint8_t idCode;
+	int rcvVal = 0;
+
+	rcvVal = recv(fd, &idCode, sizeof(idCode), MSG_PEEK);
+	if(rcvVal != sizeof(idCode))
+	{
+		return false;
+	}
+
+	extractorMap_t::iterator mapIt = _extractorMap.find(idCode);
+	if(mapIt != _extractorMap.end())
+	{
+		return mapIt->second(fd, sphero, packet_ptr);
+	}
+	recv(fd, &idCode, sizeof(idCode), 0);
 	return false;
+	
 }
 
 
