@@ -319,6 +319,18 @@ int handleCommand(const string& command)
 
 		return 0;
 	}
+	else if(cmd == "read")
+	{
+		if(!isConnected()) return;
+
+		sm.getSphero()->setDataStreaming(40, 1, mask::RAW_ACCEL_X, 1, mask2::ODOMETER_X | mask2::ODOMETER_Y);
+	}
+	else if(cmd == "rst")
+	{
+		if(!isConnected()) return;
+
+		sm.getSphero()->configureLocator(0, 0, 0, 0);
+	}
 	else
 		showHelp();
 

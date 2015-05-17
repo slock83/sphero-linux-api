@@ -66,7 +66,7 @@ void InteractiveController::startInteractiveMode(Sphero *s)
 	gettimeofday(&lastInput, NULL);
 	do
 	{
-
+		input = getchar();
 		switch (commandMode)
 		{
 			case mode::CLASSIC:

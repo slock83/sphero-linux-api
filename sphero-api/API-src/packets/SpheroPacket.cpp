@@ -1,7 +1,7 @@
 /*************************************************************************
 	SpheroPacket  -  Abstract class. Defines the behavior of
 												packets received by Sphero
-                             -------------------
+							 -------------------
 	started                : 06/05/2015
 *************************************************************************/
 
@@ -69,7 +69,6 @@ bool SpheroPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_p
 			{
 				return false;
 			}
-			
 			extractorMap_t::iterator mapIt = _extractorMap.find(buf);
 
 			if(mapIt == _extractorMap.end())

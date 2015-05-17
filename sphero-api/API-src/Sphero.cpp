@@ -12,14 +12,15 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <iostream>
-#include <bitset>
 using namespace std;
 //--------------------------------------------------------- Local includes
 
 #include "Sphero.hpp"
 #include "packets/SpheroPacket.hpp"
 #include "packets/Constants.hpp"
+#include "packets/async/SpheroStreamingPacket.hpp"
 
 
 //-------------------------------------------------------- Private methods
@@ -49,10 +50,6 @@ void* Sphero::monitorStream(void* sphero_ptr)
 	return NULL;
 }//END monitorStream
 
-void Sphero::reportCollision(CollisionStruct* infos)
-{
-	_collision_handler.reportAction(infos);
-}
 
 //------------------------------------------------ Constructors/Destructor
 
@@ -63,7 +60,9 @@ void Sphero::reportCollision(CollisionStruct* infos)
  */
 Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 	_connected(false), _bt_adapter(btcon), _address(btaddr)
-{}
+{
+	pthread_mutex_init(&lock, NULL);
+}
 
 
 Sphero::~Sphero()
@@ -335,10 +334,6 @@ void Sphero::setSelfLevel(uint8_t options, uint8_t angle_limit,
 }//END setSelfLevel
 
 
-//void Sphero::setDataStreaming(uint16_t N, uint16_t M,uint32_t MASK, uint8_t
-//pcnt, uint32_t MASK2 = 0); not used yet
-
-
 /**
  * @brief enableCollisionDetection : Enables the onBoard collision detector
  * @param Xt : An 8-bit settable threshold for the X (left/right) axis of Sphero
@@ -453,10 +448,64 @@ void Sphero::configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t ya
 				waitConfirm,
 				resetTimer);
 	sendPacket(packet);
-}//END configureLocator
+}
 
-//getLocator : we'll have to discuss this...
-//getRGDLed : same
+/**
+ * @brief setDataStreaming : Enables sphero data streaming
+ * @param freq : The sampling frequency
+ * @param delay : The number of frames collected before sending
+ * @param mask : A mask, to specify wanted values (view constants mask::*)
+ * @param packetCount : The total number of repsonse packets the sphero will send (0 means infinite)
+ * @param mask2 : (Optional) A mask, to specify wanted values (view constants mask2::*)
+ */
+void Sphero::setDataStreaming(uint16_t freq, uint16_t delay, uint32_t mask, uint8_t packetCount, uint32_t mask2)
+{
+	uint16_t M = 400 / freq;
+	byte dlen = (mask2 == 0) ? 0x0a : 0x0e;
+
+	uint8_t data[dlen];
+	data[0] = M >> 8;
+	data[1] = M;
+
+	data[2] = delay >> 8;
+	data[3] = delay;
+
+	data[4] = mask >> 24;
+	data[5] = mask >> 16;
+	data[6] = mask >> 8;
+	data[7] = mask;
+
+	data[8] = packetCount;
+
+	if(mask2)
+	{
+
+		data[9] = mask2 >> 24;
+		data[10] = mask2 >> 16;
+		data[11] = mask2 >> 8;
+		data[12] = mask2;
+	}
+
+	ClientCommandPacket packet(
+				DID::sphero,
+				CID::setDataStreaming,
+				flags::notNeeded,
+				dlen,
+				data,
+				waitConfirm,
+				resetTimer);
+	sendPacket(packet);
+	updateParameters(delay, mask, mask2);
+}
+
+
+/**
+ * @return The sphero's DataBuffer instance
+ */
+DataBuffer Sphero::getDataBuffer()
+{
+	return _data;
+}
 
 
 /**
@@ -546,8 +595,146 @@ void Sphero::setInactivityTimeout(uint16_t timeout)
 				resetTimer
 				);
 	sendPacket(packet);
-}//END setInactivityTimeout
+}
 
+
+/**
+ * @brief updateParameters : Updates the parameters to check on reception
+ * @param nbFrames : the number of frames per packet
+ * @param mask : The data mask
+ * @param mask2 : The data second mask
+ */
+void Sphero::updateParameters(int nbFrames, uint32_t maskVal, uint32_t mask2Val)
+{
+	_nbFrames = nbFrames;
+
+	pthread_mutex_lock(&lock);
+
+	_typesLst.clear();
+
+	if(maskVal & mask::RAW_ACCEL_X)
+		_typesLst.push_back(dataTypes::RAW_ACCEL_X);
+
+	if(maskVal & mask::RAW_ACCEL_Y)
+		_typesLst.push_back(dataTypes::RAW_ACCEL_Y);
+
+	if(maskVal & mask::RAW_ACCEL_Z)
+		_typesLst.push_back(dataTypes::RAW_ACCEL_Z);
+
+	if(maskVal & mask::RAW_GYRO_X)
+		_typesLst.push_back(dataTypes::RAW_GYRO_X);
+
+	if(maskVal & mask::RAW_GYRO_Y)
+		_typesLst.push_back(dataTypes::RAW_GYRO_Y);
+
+	if(maskVal & mask::RAW_GYRO_Z)
+		_typesLst.push_back(dataTypes::RAW_GYRO_Z);
+
+	if(maskVal & mask::RAW_RIGHT_MOTOR_BACK_EMF)
+		_typesLst.push_back(dataTypes::RAW_RIGHT_MOTOR_BACK_EMF);
+
+	if(maskVal & mask::RAW_LEFT_MOTOR_BACK_EMF)
+		_typesLst.push_back(dataTypes::RAW_LEFT_MOTOR_BACK_EMF);
+
+	if(maskVal & mask::RAW_LEFT_MOTOR_PWM)
+		_typesLst.push_back(dataTypes::RAW_LEFT_MOTOR_PWM);
+
+	if(maskVal & mask::RAW_RIGHT_MOTOR_PWM)
+		_typesLst.push_back(dataTypes::RAW_RIGHT_MOTOR_PWM);
+
+	if(maskVal & mask::FILTERED_PITCH_IMU)
+		_typesLst.push_back(dataTypes::FILTERED_PITCH_IMU);
+
+	if(maskVal & mask::FILTERED_ROLL_IMU)
+		_typesLst.push_back(dataTypes::FILTERED_ROLL_IMU);
+
+	if(maskVal & mask::FILTERED_YAW_IMU)
+		_typesLst.push_back(dataTypes::FILTERED_YAW_IMU);
+
+	if(maskVal & mask::FILTERED_ACCEL_X)
+		_typesLst.push_back(dataTypes::FILTERED_ACCEL_X);
+
+	if(maskVal & mask::FILTERED_ACCEL_X)
+		_typesLst.push_back(dataTypes::FILTERED_ACCEL_X);
+
+	if(maskVal & mask::FILTERED_ACCEL_Y)
+		_typesLst.push_back(dataTypes::FILTERED_ACCEL_Y);
+
+	if(maskVal & mask::FILTERED_ACCEL_Z)
+		_typesLst.push_back(dataTypes::FILTERED_ACCEL_Z);
+
+	if(maskVal & mask::FILTERED_RIGHT_MOTOR_BACK_EMF)
+		_typesLst.push_back(dataTypes::FILTERED_RIGHT_MOTOR_BACK_EMF);
+
+	if(maskVal & mask::FILTERED_LEFT_MOTOR_BACK_EMF)
+		_typesLst.push_back(dataTypes::FILTERED_LEFT_MOTOR_BACK_EMF);
+
+	if(mask2Val & mask2::QUATERNION_Q0)
+		_typesLst.push_back(dataTypes::QUATERNION_Q0);
+
+	if(mask2Val & mask2::QUATERNION_Q1)
+		_typesLst.push_back(dataTypes::QUATERNION_Q1);
+
+	if(mask2Val & mask2::QUATERNION_Q2)
+		_typesLst.push_back(dataTypes::QUATERNION_Q2);
+
+	if(mask2Val & mask2::QUATERNION_Q3)
+		_typesLst.push_back(dataTypes::QUATERNION_Q3);
+
+	if(mask2Val & mask2::ODOMETER_X)
+		_typesLst.push_back(dataTypes::ODOMETER_X);
+
+	if(mask2Val & mask2::ODOMETER_Y)
+		_typesLst.push_back(dataTypes::ODOMETER_Y);
+
+	if(mask2Val & mask2::ACCELONE_0)
+		_typesLst.push_back(dataTypes::ACCELONE_0);
+
+	if(mask2Val & mask2::VELOCITY_X)
+		_typesLst.push_back(dataTypes::VELOCITY_X);
+
+	if(mask2Val & mask2::VELOCITY_Y)
+		_typesLst.push_back(dataTypes::VELOCITY_Y);
+
+	sort(_typesLst.begin(), _typesLst.end());
+
+	pthread_mutex_unlock(&lock);
+}
+
+const vector<dataTypes> Sphero::getTypesList()
+{
+	return _typesLst;
+}
+
+
+/**
+ * @brief checkValid : Checks the validity of a packet length
+ * @param len : The packet length
+ * @return true if the length matches with the current parameters
+ */
+bool Sphero::checkValid(int len)
+{
+	bool valid = false;
+
+	pthread_mutex_lock(&lock);
+	if((unsigned int)len - 1 == _typesLst.size() * 2 * _nbFrames)
+		valid = true;
+	pthread_mutex_unlock(&lock);
+
+	return valid;
+}
+
+/**
+ * @brief requestLock : Requests the mutex to use the types list
+ * @param take : if true, the lock will be taken. Otherwise, it will be released
+ */
+void Sphero::requestLock(bool take)
+{
+	if(take)
+		pthread_mutex_lock(&lock);
+	else
+		pthread_mutex_unlock(&lock);
+}
 
 
 /**
@@ -632,6 +819,7 @@ void Sphero::onDisconnect(callback_disconnect_t callback)
 	_disconnect_handler.addActionListener(callback);
 }//END onDisconnect
 
+
 /**
  * @brief onPreSleep : Event thrown 10 sec. before sphero sleeps
  * @param callback : The callback function to assign to this event
@@ -643,6 +831,7 @@ void Sphero::onPreSleep(callback_preSleep_t callback)
 	_preSleep_handler.addActionListener(callback);
 } //END onPreSleep
 
+
 /**
  * @brief onCollision : Event thrown when the Sphero detects a collision
  * @param callback : The callback function to assign to this event
@@ -652,4 +841,34 @@ void Sphero::onPreSleep(callback_preSleep_t callback)
 void Sphero::onCollision(callback_collision_t callback)
 {
 	_collision_handler.addActionListener(callback);
-}//END onCollision
+}
+
+
+/**
+ * @brief onData : Event thrown when the Sphero receives a data stream packet
+ * @param callback : The callback function to assign to this event
+ *			Return type : void
+ *			Parameters : none (void)
+ */
+void Sphero::onData(callback_data_t callback)
+{
+	_data_handler.addActionListener(callback);
+}
+
+
+/**
+ * @brief reportData : Exterior accessor for reporting a new collision
+ */
+void Sphero::reportCollision(CollisionStruct* infos)
+{
+	_collision_handler.reportAction(infos);
+}
+
+
+/**
+ * @brief reportData : Exterior accessor for reporting a new data from stream
+ */
+void Sphero::reportData()
+{
+	_data_handler.reportAction();
+}

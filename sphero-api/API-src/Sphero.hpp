@@ -14,11 +14,13 @@
 #include <string>
 #include <list>
 #include <functional>
+#include <vector>
 
 //-------------------------------------------------------------- Local includes
 #include "bluetooth/bluetooth_connector.h"
 #include "packets/ClientCommandPacket.hpp"
 #include "ActionHandler.hpp"
+#include "packets/async/DataBuffer.h"
 
 #include "packets/async/CollisionStruct.hpp"
 
@@ -58,11 +60,13 @@ typedef ActionHandler<> connectHandler_t;
 typedef ActionHandler<> disconnectHandler_t;
 typedef ActionHandler<> preSleepHandler_t;
 typedef ActionHandler<CollisionStruct*> collisionHandler_t;
+typedef ActionHandler<> dataHandler_t;
 
 typedef connectHandler_t::listener_t callback_connect_t;
 typedef disconnectHandler_t::listener_t callback_disconnect_t;
 typedef collisionHandler_t::listener_t callback_collision_t;
 typedef preSleepHandler_t::listener_t callback_preSleep_t;
+typedef dataHandler_t::listener_t callback_data_t;
 
 
 //------------------------------------------------------------ Class definition
@@ -200,15 +204,6 @@ class Sphero
 						  uint8_t timeout = 15, uint8_t trueTime = 30);
 
 
-		//void setDataStreaming(
-		// 		uint16_t N,
-		// 		uint16_t M,
-		// 		uint32_t MASK,
-		// 		uint8_t pcnt,
-		// 		uint32_t MASK2 = 0
-		// 	);
-
-
 		/**
 		 * @brief enableCollisionDetection : Enables the onBoard collision
 		 * 									 detector
@@ -266,8 +261,22 @@ class Sphero
 		void configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t yaw);
 
 
-		//getLocator : will have to discuss this...
-		//getRGDLed : same
+		/**
+		 * @brief setDataStreaming : Enables sphero data streaming
+		 * @param freq : The sampling frequency
+		 * @param delay : The number of frames collected before sending
+		 * @param mask : A mask, to specify wanted values (view constants mask::*)
+		 * @param packetCount : The total number of repsonse packets the sphero will send (0 means infinite)
+		 * @param mask2 : (Optional) A mask, to specify wanted values (view constants mask2::*)
+		 */
+		void setDataStreaming(uint16_t freq, uint16_t delay, uint32_t mask, uint8_t packetCount, uint32_t mask2 = 0);
+
+
+		/**
+		 * @return The sphero's DataBuffer instance
+		 */
+		DataBuffer getDataBuffer();
+
 
 		/**
 		 * @brief setAccelerometerRange : change sphero's accelerometer range,
@@ -416,6 +425,34 @@ class Sphero
 		 */
 		void setInactivityTimeout(uint16_t timeout);
 
+		//------------------------------------------------ Data streaming utils
+
+		/**
+		 * @brief updateParameters : Updates the parameters to check on reception
+		 * @param nbFrames : the number of frames per packet
+		 * @param mask : The data mask
+		 * @param mask2 : The data second mask
+		 */
+		void updateParameters(int nbFrames, uint32_t maskVal, uint32_t mask2Val);
+
+		/**
+		 * @return The data streaming types
+		 */
+		const vector<dataTypes> getTypesList();
+
+		/**
+		 * @brief checkValid : Checks the validity of a packet length
+		 * @param len : The packet length
+		 * @return true if the length matches with the current parameters
+		 */
+		bool checkValid(int len);
+
+		/**
+		 * @brief requestLock : Requests the mutex to use the types list
+		 * @param take : if true, the lock will be taken. Otherwise, it will be released
+		 */
+		void requestLock(bool take = true);
+
 		//-------------------------------------------------------------- Events
 
 		/**
@@ -452,7 +489,26 @@ class Sphero
 		 */
 		void onCollision(callback_collision_t callback);
 
+
+		/**
+		 * @brief onData : Event thrown when the Sphero receives a data stream packet
+		 * @param callback : The callback function to assign to this event
+		 *			Return type : void
+		 *			Parameters : none (void)
+		 */
+		void onData(callback_data_t callback);
+
+
+		/**
+		 * @brief reportData : Exterior accessor for reporting a new collision
+		 */
 		void reportCollision(CollisionStruct* infos);
+
+
+		/**
+		 * @brief reportData : Exterior accessor for reporting a new data from stream
+		 */
+		void reportData();
 
 	protected:
 		//--------------------------------------------------- Protected methods
@@ -466,20 +522,12 @@ class Sphero
 
 		bluetooth_connector* _bt_adapter;
 
-		spherocoord_t _position_x;
-		spherocoord_t _position_y;
+		DataBuffer _data;
 
-
-		/* X accelerometer */
-		spherocoord_t accelerometer_x;
-
-		/* Y accelerometer */
-		spherocoord_t accelerometer_y;
-
-		/* Z accelerometer */
-		spherocoord_t accelerometer_z;
-
-		//To be continued
+		/* parameters used for data streaming packet extracting */
+		pthread_mutex_t lock;
+		int _nbFrames;
+		vector<dataTypes> _typesLst;
 
 		bool resetTimer = true;
 		bool waitConfirm = false;
@@ -494,6 +542,7 @@ class Sphero
 		disconnectHandler_t _disconnect_handler;
 		collisionHandler_t _collision_handler;
 		preSleepHandler_t _preSleep_handler;
+		dataHandler_t _data_handler;
 };
 
 #endif // SPHERO_HPP

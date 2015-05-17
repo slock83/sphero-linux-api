@@ -1,7 +1,7 @@
 /*************************************************************************
 	Constants  -  Usefull constants for packet configuration
-                             -------------------
-    début                : ven. 8 mai 2015
+							 -------------------
+	début                : ven. 8 mai 2015
 *************************************************************************/
 
 #ifndef CONSTANTS_HPP
@@ -105,6 +105,53 @@ namespace flags
 
 	//for use when SEQ (or else) is any
 	const uint8_t notNeeded = 0x00;
+}
+
+//Flags for data streaming
+	//for mask
+namespace mask
+{
+	static uint32_t const RAW_ACCEL_X = 0x80000000;
+	static uint32_t const RAW_ACCEL_Y = 0x40000000;
+	static uint32_t const RAW_ACCEL_Z = 0x20000000;
+
+	static uint32_t const RAW_GYRO_X = 0x10000000;
+	static uint32_t const RAW_GYRO_Y = 0x08000000;
+	static uint32_t const RAW_GYRO_Z = 0x04000000;
+
+	static uint32_t const RAW_RIGHT_MOTOR_BACK_EMF = 0x00400000;
+	static uint32_t const RAW_LEFT_MOTOR_BACK_EMF = 0x00200000;
+
+	static uint32_t const RAW_LEFT_MOTOR_PWM = 0x00100000;
+	static uint32_t const RAW_RIGHT_MOTOR_PWM = 0x00080000;
+
+	static uint32_t const FILTERED_PITCH_IMU = 0x00040000;
+	static uint32_t const FILTERED_ROLL_IMU = 0x00020000;
+	static uint32_t const FILTERED_YAW_IMU = 0x00010000;
+
+	static uint32_t const FILTERED_ACCEL_X = 0x00008000;
+	static uint32_t const FILTERED_ACCEL_Y = 0x00004000;
+	static uint32_t const FILTERED_ACCEL_Z = 0x00002000;
+
+	static uint32_t const FILTERED_RIGHT_MOTOR_BACK_EMF = 0x00000040;
+	static uint32_t const FILTERED_LEFT_MOTOR_BACK_EMF = 0x00000020;
+}
+
+	//for mask2
+namespace mask2
+{
+	static uint32_t const QUATERNION_Q0 = 0x80000000;
+	static uint32_t const QUATERNION_Q1 = 0x40000000;
+	static uint32_t const QUATERNION_Q2 = 0x20000000;
+	static uint32_t const QUATERNION_Q3 = 0x10000000;
+
+	static uint32_t const ODOMETER_X = 0x08000000;
+	static uint32_t const ODOMETER_Y = 0x04000000;
+
+	static uint32_t const ACCELONE_0 = 0x02000000;
+
+	static uint32_t const VELOCITY_X = 0x01000000;
+	static uint32_t const VELOCITY_Y = 0x00800000;
 }
 
 #endif //CONSTANTS_HPP

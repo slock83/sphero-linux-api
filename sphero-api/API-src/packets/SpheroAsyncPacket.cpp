@@ -1,7 +1,7 @@
 /*************************************************************************
 	SpheroAsyncPacket - Defines asynchronous packets behavior received by Sphero
-                             -------------------
-    début                : mar. 17 mars 2015
+							 -------------------
+	début                : mar. 17 mars 2015
 *************************************************************************/
 
 
@@ -13,10 +13,12 @@
 //--------------------------------------------------------- Local includes
 #include "SpheroAsyncPacket.hpp"
 #include "async/SpheroCollisionPacket.hpp"
+#include "async/SpheroStreamingPacket.hpp"
 
 //-------------------------------------------------------- Class variables
 extractorMap_t SpheroAsyncPacket::_extractorMap = {
-	{COLLISION_DETECTED, SpheroCollisionPacket::extractPacket}
+	{COLLISION_DETECTED, SpheroCollisionPacket::extractPacket},
+	{SENSOR_DATA_STREAMING, SpheroStreamingPacket::extractPacket}
 };
 
 //------------------------------------------------ Constructors/Destructor
