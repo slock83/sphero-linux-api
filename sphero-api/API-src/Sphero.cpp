@@ -22,8 +22,6 @@ using namespace std;
 #include "packets/Constants.hpp"
 #include "packets/async/SpheroStreamingPacket.hpp"
 
-#include "packets/answer/ColorStruct.hpp"
-
 
 //-------------------------------------------------------- Private methods
 
@@ -195,7 +193,7 @@ void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
  * Commentez-les tous ! (feat Sacha)
  */
 
-ColorStruct* Sphero::getSphero()
+ColorStruct* Sphero::getColor()
 {
 	ColorStruct* color = new ColorStruct();
 	
@@ -203,8 +201,8 @@ ColorStruct* Sphero::getSphero()
 				DID::sphero,
 				CID::setBackLEDOutput,
 				_seq++,
-				0x02,
-				&power,
+				0x01,
+				nullptr,
 				_waitConfirm,
 				_resetTimer
 				);

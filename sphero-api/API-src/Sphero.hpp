@@ -24,6 +24,8 @@
 
 #include "packets/async/CollisionStruct.hpp"
 
+#include "packets/answer/ColorStruct.hpp"
+
 //------------------------------------------------------------------- Constants
 
 static uint8_t const ABORT_ROUTINE = 0x00;
@@ -129,6 +131,8 @@ class Sphero
 		 */
 		void setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist = false);
 
+
+		ColorStruct* getColor();
 
 		/**
 		 * @brief setBackLedOutput : Lights the back led(used to calibrate

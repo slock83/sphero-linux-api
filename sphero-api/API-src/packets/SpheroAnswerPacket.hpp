@@ -11,9 +11,18 @@
 //--------------------------------------------------------- Local includes
 #include "SpheroPacket.hpp"
 
+#include <queue>
+
+#include "answer/ColorStruct.hpp"
+
 //-------------------------------------------------------------- Constants
 
-static const uint8_t
+//------------------------------------------------------------------ Types
+
+union answerUnion_t
+{
+	ColorStruct* color;
+};
 
 //------------------------------------------------------- Class definition
 class SpheroAnswerPacket : public SpheroPacket
@@ -30,6 +39,8 @@ class SpheroAnswerPacket : public SpheroPacket
 		virtual ~SpheroAnswerPacket();
 
 		//------------------------------------------------- Public methods
+
+		static answerUnion_t* getAnswer(uint8_t seq);
 
 		/**
 		 * @brief extractPacket : extracts the packet from a socket
@@ -50,6 +61,10 @@ class SpheroAnswerPacket : public SpheroPacket
 
 	protected:
 
+		//--------------------------------------------- Protected methods
+		
+		static void setAnswer(uint8_t seq, answerUnion_t* answer);
+	
 		//-------------------------------------------------- Constructors
 
 		/**
@@ -59,8 +74,9 @@ class SpheroAnswerPacket : public SpheroPacket
 		SpheroAnswerPacket(Sphero* sphero);
 
 	private:
+		static std::queue<answerUnion_t*> _sequence_array[256];
 
-	   static extractorMap_t _extractorMap;
+	    static extractorMap_t _extractorMap;
 };
 
 #endif // SpheroAnswerPacket_H
