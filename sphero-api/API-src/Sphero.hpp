@@ -275,7 +275,7 @@ class Sphero
 		/**
 		 * @return The sphero's DataBuffer instance
 		 */
-		DataBuffer getDataBuffer();
+		DataBuffer *getDataBuffer();
 
 
 		/**
@@ -522,7 +522,7 @@ class Sphero
 
 		bluetooth_connector* _bt_adapter;
 
-		DataBuffer _data;
+		DataBuffer *_data;
 
 		/* parameters used for data streaming packet extracting */
 		pthread_mutex_t lock;

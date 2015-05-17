@@ -100,6 +100,16 @@ void SpheroManager::connectSphero(string address)
 						sph->setColor(red, green, blue);
 				});
 
+	sph->onData([sph](){
+		uint16_t var;
+
+		if(sph->getDataBuffer()->waitForNext(dataTypes::ODOMETER_X, var, -1))
+			cout << "posX:" << var << endl;
+
+		if(sph->getDataBuffer()->waitForNext(dataTypes::ODOMETER_Y, var, -1))
+			cout << "posY:" << var << endl;
+	});
+
 	if(sph->connect())
 	{
 		size_t idx = nbActif++;

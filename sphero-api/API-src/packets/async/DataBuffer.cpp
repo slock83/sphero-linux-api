@@ -1,9 +1,11 @@
 
-
+#include <iostream>
 #include <deque>
 #include <unistd.h>
 #include <pthread.h>
 #include <cstdint>
+
+using namespace std;
 
 #include "DataBuffer.h"
 
@@ -18,6 +20,7 @@ DataBuffer::DataBuffer()
 
 DataBuffer::~DataBuffer()
 {
+	cout << "<DataBuffer> destroyed" << endl;
 	delete[] _dataValues;
 }
 
