@@ -322,15 +322,15 @@ int handleCommand(const string& command)
 	}
 	else if(cmd == "read")
 	{
-		if(!isConnected()) return;
+		if(!isConnected()) cout << "please connect first" <<endl;
 
-		sm.getSphero()->setDataStreaming(1, 1, 0, 0, mask2::ODOMETER_X | mask2::ODOMETER_Y);
+		else sm.getSphero()->setDataStreaming(1, 1, 0, 0, mask2::ODOMETER_X | mask2::ODOMETER_Y);
 	}
 	else if(cmd == "rst")
 	{
-		if(!isConnected()) return;
+		if(!isConnected()) cout << "please connect first" <<endl;
 
-		sm.getSphero()->configureLocator(0, 0, 0, 0);
+		else sm.getSphero()->configureLocator(0, 0, 0, 0);
 	}
 	else
 		showHelp();
