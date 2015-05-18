@@ -53,7 +53,7 @@ orbBasic refenrence, with plenty examples : https://s3.amazonaws.com/docs.gosphe
 ####1. Building the testing application : 
 
   ```sh
-  $ cd apps
+  $ cd example-app
   $ make
   ```
 
@@ -61,10 +61,10 @@ orbBasic refenrence, with plenty examples : https://s3.amazonaws.com/docs.gosphe
 
 ##### Running
 	
-still in the apps folder, do
+still in the example-app folder, do
 	
   ```sh
-  $ ./Appli
+  $ ./sphero-cli
   ```
 
 ##### Commands
@@ -83,3 +83,7 @@ sleep | Puts the sphero to sleep for the given amount of time, it will then wake
 interactive | Switch to interactive driving mode | interactive |
 setit | Change inactivity timeout | setit duration |
 exit | Closes the application | exit |
+
+### Graphical application
+
+> A graphical application is also being worked on by the team ! please check out https://github.com/slock83/sphero-command-app for more details
