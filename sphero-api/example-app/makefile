@@ -71,6 +71,8 @@ endif
 .PHONY: ALL
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp 
+	@mkdir -p $(DEPDIR);
+	@mkdir -p $(OBJDIR);
 	@$(MAKEDEPEND); \
 		cp $(df).d $(df).P;\
 		sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
