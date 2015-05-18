@@ -13,7 +13,7 @@ LIBDIR?=..
 ECHO=@echo
 
 # Nom de la bibliothèque
-EXECNAME=Appli
+EXECNAME=sphero-cli
 
 # Dossiers d'include perso
 INCDIR=src

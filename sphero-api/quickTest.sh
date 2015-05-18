@@ -4,10 +4,10 @@
 make -B
 
 #Création de l'appli
-cd apps
+cd example-app
 make -B
 
 #Lancement de l'appli
-cp Appli ../testAppLastBuild
-chmod 777 ../testAppLastBuild
-../testAppLastBuild
+cp sphero-cli ../sphero-cli
+chmod 777 ../sphero-cli
+../sphero-cli
