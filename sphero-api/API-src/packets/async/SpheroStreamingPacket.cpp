@@ -74,7 +74,10 @@ bool SpheroStreamingPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket*
 	for(int i = 0; i < (len-1)/2; i++)
 	{
 		uint16_t value;
-		recv(fd, &value, sizeof(value), 0);
+		recv(fd, &data, sizeof(data), 0);
+		value = data << 8;
+		recv(fd, &data, sizeof(data), 0);
+		value |= data;
 
 		sphero->getDataBuffer()->addValue(sphero->getTypesList()[i%sphero->getTypesList().size()], value);
 	}
