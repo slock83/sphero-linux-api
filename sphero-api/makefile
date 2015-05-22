@@ -3,11 +3,20 @@ RM=rm
 # Flags de délétion
 RMFLAGS=-rf
 
+# Commande de copie
+CP=cp
+
 # Bibliothèques supplémentaires
 LIB=bluetooth pthread rt
 
 # Répertoires de bibliothèques
 LIBDIR?=
+
+# System libraries folder
+SYSLIB=/usr/lib/
+
+# System include folder
+SYSINC=/usr/include/
 
 # Commande écho
 ECHO=@echo
@@ -35,6 +44,7 @@ SRC=$(shell find $(SRCDIR) -type f -name *.cpp | sed -e "s/$(SRCDIR)\///")
 OBJ=$(SRC:.cpp=.o)
 
 CLEAR=clean
+INSTALL=install
 
 MAKEDEPEND = g++ $(addprefix -I, $(EXTINCDIR)) -I$(INCDIR) -o $(df).d -std=c++11 -MM $< #Pour calculer les dépendances
 
@@ -68,6 +78,7 @@ endif
 
 
 .PHONY: $(CLEAR)
+.PHONY: $(INSTALL)
 .PHONY: ALL
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp 
@@ -92,6 +103,11 @@ $(LIBNAME): $(addprefix $(OBJDIR)/, $(OBJ))
 
 #Fichiers de dépendance
 -include $(SRC:%.cpp=$(DEPDIR)/%.P)
+
+$(INSTALL):
+    $(CP) $(LIBNAME) $(addprefix $(SYSLIB),$(LIBNAME))
+    @mkdir -p $(SYSINC)sphero
+    $(CP) $(SRCDIR)/Sphero.hpp $(SYSINC)sphero/sphero
 
 $(CLEAR):
 	$(RM) $(RMFLAGS) $(OBJDIR)/* $(DEPDIR)/*.P $(LIBNAME) 
