@@ -16,19 +16,19 @@ ECHO=@echo
 LIBNAME=libsphero.so
 
 # Dossiers d'include pero
-INCDIR=API-src
+INCDIR=src
 
 # Dossier d'include externes
 EXTINCDIR?=
 
 # Dossier sources
-SRCDIR=API-src
+SRCDIR=src
 
 # Dossier objets
 OBJDIR=obj
 
 # Dossier où sont mises les dépendances
-DEPDIR=API-src-dep
+DEPDIR=dep
 df=$(DEPDIR)/$(*F)
 
 SRC=$(shell find $(SRCDIR) -type f -name *.cpp | sed -e "s/$(SRCDIR)\///")
