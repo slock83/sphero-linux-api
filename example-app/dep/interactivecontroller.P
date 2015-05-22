@@ -1,0 +1,14 @@
+obj/interactivecontroller.o: src/interactivecontroller.cpp \
+ ../API-src/Sphero.hpp ../API-src/bluetooth/bluetooth_connector.h \
+ ../API-src/packets/ClientCommandPacket.hpp ../API-src/ActionHandler.hpp \
+ ../API-src/ActionHandler.tpp ../API-src/packets/async/DataBuffer.h \
+ ../API-src/packets/async/CollisionStruct.hpp \
+ ../API-src/packets/answer/ColorStruct.hpp src/interactivecontroller.h \
+ src/Keys.hpp
+src/interactivecontroller.cpp :
+ ../API-src/Sphero.hpp ../API-src/bluetooth/bluetooth_connector.h :
+ ../API-src/packets/ClientCommandPacket.hpp ../API-src/ActionHandler.hpp :
+ ../API-src/ActionHandler.tpp ../API-src/packets/async/DataBuffer.h :
+ ../API-src/packets/async/CollisionStruct.hpp :
+ ../API-src/packets/answer/ColorStruct.hpp src/interactivecontroller.h :
+ src/Keys.hpp :
