@@ -22,7 +22,7 @@
  * @brief SpheroAnswerPacket : Constructor
  * @param sphero : The Sphero instance that receives the answer packet
  */
-SpheroAnswerPacket::SpheroAnswerPacket(Sphero* sphero) : SpheroPacket(sphero)
+SpheroAnswerPacket::SpheroAnswerPacket(Sphero* sphero) : SpheroPacket(sphero)	
 {}
 
 

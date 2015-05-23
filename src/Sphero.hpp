@@ -96,6 +96,13 @@ class Sphero
 		//------------------------------------------------------ Public methods
 
 		/**
+		 * @brief : notify sphero that a synchronous packet has arrived
+		 *
+		 * @return nothing since it's a void method :-)
+		 */
+		void notifySyncPacket();
+
+		/**
 		 * @brief connect : Initializes the bluetooth connection to the sphero
 		 * 					instance
 		 * @return true if the connection was successful, false otherwise
@@ -391,7 +398,8 @@ class Sphero
 		 */
 		void runMacro(uint8_t id);
 
-		//TODO quelqu'un : implémenter les fonctions de setMacro (parce que ça sert pas à grand chose de pouvoir les lancer si on en a pas)
+		//TODO quelqu'un : implémenter les fonctions de setMacro (parce que ça 
+		//sert pas à grand chose de pouvoir les lancer si on en a pas) 
 		//void saveMacro(Macro macro);
 
 		/**
@@ -543,7 +551,12 @@ class Sphero
 
 		const std::string _address;
 
-			/* Callbacks lists (one for each declared event) */
+		/* Synchronisation for synchronous packet receiving */
+
+		pthread_mutex_t _mutex_syncpacket;
+		pthread_cond_t _conditional_syncpacket;
+
+		/* Callbacks lists (one for each declared event) */
 		connectHandler_t _connect_handler;
 		disconnectHandler_t _disconnect_handler;
 		collisionHandler_t _collision_handler;

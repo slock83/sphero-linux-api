@@ -48,6 +48,7 @@ OBJ=$(SRC:.cpp=.o)
 CLEAR=clean
 INSTALL=install
 UNINSTALL=uninstall
+REINSTALL=reinstall
 
 MAKEDEPEND = g++ $(addprefix -I, $(EXTINCDIR)) -I$(INCDIR) -o $(df).d -std=c++11 -MM $< #Pour calculer les dépendances
 
@@ -84,6 +85,7 @@ endif
 .PHONY: $(INSTALL)
 .PHONY: ALL
 .PHONY: $(UNINSTALL)
+.PHONY: $(REINSTALL)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp 
 	@mkdir -p $(DEPDIR);
@@ -113,10 +115,12 @@ $(UNINSTALL):
 	@rm -rvf $(SYSINC)sphero
 	$(ECHO) Désinstallation effectuée
 
-$(INSTALL): 
+$(INSTALL): $(LIBNAME) 
 	$(CP) $(LIBNAME) $(addprefix $(SYSLIB), $(LIBNAME))
 	@mkdir -p $(SYSINC)sphero
 	cd $(INCDIR) ; $(CP) --parent $(INC) $(SYSINC)sphero
+
+$(REINSTALL): $(UNINSTALL) $(INSTALL)
 
 $(CLEAR):
 	$(RM) $(RMFLAGS) $(OBJDIR)/* $(DEPDIR)/*.P $(LIBNAME) 

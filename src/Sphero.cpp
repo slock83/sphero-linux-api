@@ -64,6 +64,8 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 {
 	pthread_mutex_init(&lock, NULL);
 	_data = new DataBuffer();
+	_mutex_syncpacket = PTHREAD_MUTEX_INITIALIZER;
+	_conditional_syncpacket = PTHREAD_COND_INITIALIZER;
 }
 
 
@@ -76,6 +78,17 @@ Sphero::~Sphero()
 
 
 //--------------------------------------------------------- Public methods
+/**
+ * @brief : notify sphero that a synchronous packet has arrived
+ *
+ * @return nothing since it's a void method :-)
+ */
+void Sphero::notifySyncPacket()
+{
+	pthread_mutex_lock(&_mutex_syncpacket);
+	pthread_cond_signal(&_conditional_syncpacket);
+	pthread_mutex_unlock(&_mutex_syncpacket);
+}
 
 /**
  * @brief connect : Initializes the bluetooth connection to the sphero instance
