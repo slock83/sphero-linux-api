@@ -104,10 +104,10 @@ $(LIBNAME): $(addprefix $(OBJDIR)/, $(OBJ))
 #Fichiers de dépendance
 -include $(SRC:%.cpp=$(DEPDIR)/%.P)
 
-$(INSTALL):
-    $(CP) $(LIBNAME) $(addprefix $(SYSLIB),$(LIBNAME))
-    @mkdir -p $(SYSINC)sphero
-    $(CP) $(SRCDIR)/Sphero.hpp $(SYSINC)sphero/sphero
+$(INSTALL): 
+	$(CP) $(LIBNAME) $(addprefix $(SYSLIB), $(LIBNAME))
+	@mkdir -p $(SYSINC)sphero
+	$(CP) $(SRCDIR)/Sphero.hpp $(SYSINC)sphero/sphero
 
 $(CLEAR):
 	$(RM) $(RMFLAGS) $(OBJDIR)/* $(DEPDIR)/*.P $(LIBNAME) 
