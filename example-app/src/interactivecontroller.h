@@ -11,7 +11,7 @@
 
 #include <stddef.h>
 #include <unistd.h>
-#include "../API-src/Sphero.hpp"
+#include "sphero/Sphero.hpp"
 
 
 //--------------------------------------------------------- Local includes

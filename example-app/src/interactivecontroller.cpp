@@ -14,7 +14,7 @@
 
 #include "ncurses.h"
 
-#include "../API-src/Sphero.hpp"
+#include "sphero/Sphero.hpp"
 
 using namespace std;
 

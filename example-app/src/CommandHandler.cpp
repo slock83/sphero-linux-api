@@ -19,9 +19,9 @@
 #include <sys/time.h>
 #include <termios.h>
 
-#include "../../API-src/bluetooth/bluez_adaptor.h"
-#include "../../API-src/Sphero.hpp"
-#include "../../API-src/packets/Constants.hpp"
+#include "sphero/bluetooth/bluez_adaptor.h"
+#include "sphero/Sphero.hpp"
+#include "sphero/packets/Constants.hpp"
 
 using namespace std;
 

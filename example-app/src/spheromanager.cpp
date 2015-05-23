@@ -5,8 +5,8 @@
 *************************************************************************/
 
 //-------------------------------------------------------- System includes
-#include "../API-src/bluetooth/bluez_adaptor.h"
-#include "../API-src/Sphero.hpp"
+#include "sphero/bluetooth/bluez_adaptor.h"
+#include "sphero/Sphero.hpp"
 
 #include <iostream>
 #include <fstream>

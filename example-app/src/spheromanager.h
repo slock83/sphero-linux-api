@@ -10,7 +10,7 @@
 //-------------------------------------------------------- System includes
 #include <string>
 #include <vector>
-#include "../API-src/Sphero.hpp"
+#include "sphero/Sphero.hpp"
 
 //------------------------------------------------------- Class definition
 class SpheroManager

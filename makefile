@@ -41,7 +41,8 @@ DEPDIR=dep
 df=$(DEPDIR)/$(*F)
 
 SRC=$(shell find $(SRCDIR) -type f -name *.cpp | sed -e "s/$(SRCDIR)\///")
-INC=$(shell find $(INCDIR) -type f -name *.hpp | sed -e "s/$(INCDIR)\///")
+INC=$(shell find $(INCDIR) -type f \( -name *.hpp -o -name *.h -o -name *.tpp \) | sed -e "s/$(INCDIR)\///")
+
 OBJ=$(SRC:.cpp=.o)
 
 CLEAR=clean
@@ -115,8 +116,7 @@ $(UNINSTALL):
 $(INSTALL): 
 	$(CP) $(LIBNAME) $(addprefix $(SYSLIB), $(LIBNAME))
 	@mkdir -p $(SYSINC)sphero
-	$(foreach header, $(addprefix $(INCDIR)/, $(INC)), $(CP) --no-target-directory $(header) $(SYSINC)sphero/$(basename $(notdir ($(header))));)
-
+	cd $(INCDIR) ; $(CP) --parent $(INC) $(SYSINC)sphero
 
 $(CLEAR):
 	$(RM) $(RMFLAGS) $(OBJDIR)/* $(DEPDIR)/*.P $(LIBNAME) 
