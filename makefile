@@ -41,10 +41,12 @@ DEPDIR=dep
 df=$(DEPDIR)/$(*F)
 
 SRC=$(shell find $(SRCDIR) -type f -name *.cpp | sed -e "s/$(SRCDIR)\///")
+INC=$(shell find $(INCDIR) -type f -name *.hpp | sed -e "s/$(INCDIR)\///")
 OBJ=$(SRC:.cpp=.o)
 
 CLEAR=clean
 INSTALL=install
+UNINSTALL=uninstall
 
 MAKEDEPEND = g++ $(addprefix -I, $(EXTINCDIR)) -I$(INCDIR) -o $(df).d -std=c++11 -MM $< #Pour calculer les dépendances
 
@@ -80,6 +82,7 @@ endif
 .PHONY: $(CLEAR)
 .PHONY: $(INSTALL)
 .PHONY: ALL
+.PHONY: $(UNINSTALL)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp 
 	@mkdir -p $(DEPDIR);
@@ -104,10 +107,16 @@ $(LIBNAME): $(addprefix $(OBJDIR)/, $(OBJ))
 #Fichiers de dépendance
 -include $(SRC:%.cpp=$(DEPDIR)/%.P)
 
+$(UNINSTALL):
+	@rm $(addprefix $(SYSLIB), $(LIBNAME))
+	@rm -rvf $(SYSINC)sphero
+	$(ECHO) Désinstallation effectuée
+
 $(INSTALL): 
 	$(CP) $(LIBNAME) $(addprefix $(SYSLIB), $(LIBNAME))
 	@mkdir -p $(SYSINC)sphero
-	$(CP) $(SRCDIR)/Sphero.hpp $(SYSINC)sphero/sphero
+	$(foreach header, $(addprefix $(INCDIR)/, $(INC)), $(CP) --no-target-directory $(header) $(SYSINC)sphero/$(basename $(notdir ($(header))));)
+
 
 $(CLEAR):
 	$(RM) $(RMFLAGS) $(OBJDIR)/* $(DEPDIR)/*.P $(LIBNAME) 
