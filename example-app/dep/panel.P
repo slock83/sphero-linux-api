@@ -1,2 +1,0 @@
-obj/panel.o: src/window/panel.cpp src/window/panel.h
-src/window/panel.cpp src/window/panel.h :

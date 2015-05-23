@@ -1,6 +1,0 @@
-obj/ncmenu.o: src/window/ncmenu.cpp src/window/ncmenu.h src/window/menuitem.h \
- src/window/ActionHandler.hpp src/window/ActionHandler.tpp \
- src/window/keys.hpp
-src/window/ncmenu.cpp src/window/ncmenu.h src/window/menuitem.h :
- src/window/ActionHandler.hpp src/window/ActionHandler.tpp :
- src/window/keys.hpp :

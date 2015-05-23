@@ -1,2 +1,0 @@
-obj/appli.o: src/appli.cpp src/CommandHandler.h
-src/appli.cpp src/CommandHandler.h :

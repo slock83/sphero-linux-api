@@ -1,6 +1,0 @@
-obj/window.o: src/window/window.cpp src/window/window.h src/window/ncmenu.h \
- src/window/menuitem.h src/window/ActionHandler.hpp \
- src/window/ActionHandler.tpp src/window/panel.h src/window/keys.hpp
-src/window/window.cpp src/window/window.h src/window/ncmenu.h :
- src/window/menuitem.h src/window/ActionHandler.hpp :
- src/window/ActionHandler.tpp src/window/panel.h src/window/keys.hpp :

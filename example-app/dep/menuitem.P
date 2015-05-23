@@ -1,4 +1,0 @@
-obj/menuitem.o: src/window/menuitem.cpp src/window/menuitem.h \
- src/window/ActionHandler.hpp src/window/ActionHandler.tpp
-src/window/menuitem.cpp src/window/menuitem.h :
- src/window/ActionHandler.hpp src/window/ActionHandler.tpp :
