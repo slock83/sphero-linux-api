@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include <unistd.h>
 #include "sphero/Sphero.hpp"
+#include "JoystickAdaptor.h"
 
 
 //--------------------------------------------------------- Local includes
@@ -42,19 +43,25 @@ class InteractiveController
 		/* Sphero which will be controlled */
 		Sphero *s;
 		mode commandMode;
+		JoystickAdaptor* ja;
+		JoystickEvent lastEvent;
 
 		bool isBackLedEnabled;
 		uint16_t lastAngle;
+
+		int dead;
 
 		bool isConnected();
 
 		void handleKeysClassic(int input, timeval &lastInput);
 		void handleKeysCalibrate(int input, timeval &lastInput);
+		void handleKeysJoystick(timeval &lastInput);
 
 		void changeMode(mode newMode);
 
 		void classicHelp();
 		void calibrateHelp();
+		void joystickHelp();
 
 		//----------------------------------------------- Private classes
 		class BufferToggle

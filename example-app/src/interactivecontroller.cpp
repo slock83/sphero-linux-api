@@ -15,6 +15,7 @@
 #include "ncurses.h"
 
 #include "sphero/Sphero.hpp"
+#include "JoystickAdaptor.h"
 
 using namespace std;
 
@@ -29,8 +30,11 @@ static const uint8_t _SPEED = 128;
 static const uint8_t _MAX_LIGHT = 255;
 
 //------------------------------------------------ Constructors/Destructor
-InteractiveController::InteractiveController() : isBackLedEnabled(false), commandMode(mode::CLASSIC)
-{}
+InteractiveController::InteractiveController() :
+	isBackLedEnabled(false), commandMode(mode::CLASSIC), dead(20)
+{
+	ja = new JoystickAdaptor();
+}
 
 InteractiveController::~InteractiveController()
 {}
@@ -49,6 +53,8 @@ void InteractiveController::startInteractiveMode(Sphero *s)
 	this->s = s;
 	if(!isConnected()) return;
 
+	ja->startListener();
+	commandMode = mode::CLASSIC;
 
 
 	cout << "************************************" << endl;
@@ -75,6 +81,9 @@ void InteractiveController::startInteractiveMode(Sphero *s)
 			case mode::CALIBRATE:
 				handleKeysCalibrate(input, lastInput);
 				break;
+			case mode::JOYSTICK:
+				handleKeysJoystick(lastInput);
+				break;
 		}
 
 #ifdef MAP
@@ -93,6 +102,7 @@ void InteractiveController::startInteractiveMode(Sphero *s)
 	}while(input != global::_KEY_QUIT);
 
 	bt.on();
+	ja->stop();
 }
 
 
@@ -150,6 +160,11 @@ void InteractiveController::handleKeysClassic(int input, timeval &lastInput)
 		s->roll(0, 0);
 		lastAngle = 0;
 	}
+	else if(input == classic::_KEY_MODE_JOYSTICK)
+	{
+		changeMode(mode::JOYSTICK);
+		lastEvent.type = NONE;
+	}
 	else
 		return;
 
@@ -201,6 +216,117 @@ void InteractiveController::handleKeysCalibrate(int input, timeval& lastInput)
 	gettimeofday(&lastInput, NULL);
 }
 
+void InteractiveController::handleKeysJoystick(timeval &lastInput)
+{
+	JoystickEvent ev = ja->next();
+	if(ev.type == NONE)
+	{
+		ev = lastEvent;
+		if(ev.type == NONE)
+			return;
+	}
+
+	if(ev.type == AXIS_1)
+	{
+		if(ev.buttonType == AXIS_X)
+		{
+			if(ev.value < dead && ev.value > -dead)
+			{
+				s->roll(0, lastAngle,1);
+				ev.type = NONE;
+			}
+			else if(ev.value > 0)
+			{
+				s->roll((uint8_t)_SPEED % 256 * (ev.value / 127),(uint16_t) 90 % 0x10000,1);
+				lastAngle = 90;
+			}
+			else
+			{
+				s->roll((uint8_t)_SPEED % 256 * (ev.value / 127),(uint16_t) 270 % 0x10000,1);
+				lastAngle = 270;
+			}
+		}
+		else if(ev.buttonType == AXIS_Y)
+		{
+			if(ev.value < dead && ev.value > -dead)
+			{
+				s->roll(0, lastAngle,1);
+				ev.type = NONE;
+			}
+			else if(ev.value < 0)
+			{
+				s->roll((uint8_t)_SPEED % 256 * (ev.value / 127),(uint16_t) 0 % 0x10000,1);
+				lastAngle = 0;
+			}
+			else
+			{
+				s->roll((uint8_t)_SPEED % 256 * (ev.value / 127),(uint16_t) 180 % 0x10000,1);
+				lastAngle = 180;
+			}
+		}
+	}
+	else
+	{
+		if(ev.buttonType == BUTTON_0 && ev.value == 1)
+			s->setColor(0, 0, 255, false);
+		else if(ev.buttonType == BUTTON_1 && ev.value == 1)
+			s->setColor(255, 0, 0, false);
+		else if(ev.buttonType == BUTTON_2 && ev.value == 1)
+			s->setColor(255, 255, 0, false);
+		else if(ev.buttonType == BUTTON_3 && ev.value == 1)
+			s->setColor(0, 255, 0, false);
+		else if(ev.buttonType == START && ev.value == 1)
+			changeMode(mode::CLASSIC);
+		else if(ev.buttonType == SELECT && ev.value == 1)
+		{
+			if(isBackLedEnabled)
+				s->setBackLedOutput(0);
+			else
+				s->setBackLedOutput(_MAX_LIGHT);
+
+			isBackLedEnabled = !isBackLedEnabled;
+			ev.type = NONE;
+		}
+		else if(ev.buttonType == LEFT_PRESS)
+		{
+			if(ev.value == 0)
+			{
+				s->setHeading(0);
+				lastAngle = 0;
+				ev.type = NONE;
+			}
+			else
+			{
+				if(lastAngle < 2)
+					lastAngle += 360;
+
+				lastAngle -= 2;
+				s->roll(0, lastAngle, 1);
+			}
+		}
+		else if(ev.buttonType == RIGHT_PRESS)
+		{
+			if(ev.value == 0)
+			{
+				s->setHeading(0);
+				lastAngle = 0;
+				ev.type = NONE;
+			}
+			else
+			{
+				lastAngle += 2;
+				if(lastAngle >= 360)
+					lastAngle -= 360;
+				s->roll(0, lastAngle, 1);
+			}
+		}
+	}
+
+	lastEvent = ev;
+
+	gettimeofday(&lastInput, NULL);
+}
+
 void InteractiveController::changeMode(mode newMode)
 {
 	if(commandMode == newMode)
@@ -213,6 +339,9 @@ void InteractiveController::changeMode(mode newMode)
 			break;
 		case mode::CALIBRATE:
 			calibrateHelp();
+			break;
+		case mode::JOYSTICK:
+			joystickHelp();
 			break;
 	}
 }
@@ -228,6 +357,7 @@ void InteractiveController::classicHelp()
 	cout << "*         arrow keys to move       *" <<endl;
 	cout << "*   b to enable/disable backled    *" <<endl;
 	cout << "*    c to enter calibrate mode     *" <<endl;
+	cout << "*     j to enter joystick mode     *" <<endl;
 	cout << "*                                  *" <<endl;
 	cout << "*      WARNING : early WIP !!!     *"<<endl;
 	cout << "************************************" << endl;
@@ -248,5 +378,20 @@ void InteractiveController::calibrateHelp()
 	cout << "*                                  *" <<endl;
 	cout << "*        press v to validate       *" <<endl;
 	cout << "*         press b to return        *" <<endl;
+	cout << "************************************" << endl;
+}
+
+void InteractiveController::joystickHelp()
+{
+
+	cout << "************************************" << endl;
+	cout << "****** Joystick mode commands ******" << endl;
+	cout << "************************************" << endl;
+	cout << "*                                  *" <<endl;
+	cout << "*         press arrows to go       *" <<endl;
+	cout << "*   press LEFT to turn left(10°)   *" <<endl;
+	cout << "*   press RIGHT to turn left(10°)  *" <<endl;
+	cout << "*                                  *" <<endl;
+	cout << "*       press START to return      *" <<endl;
 	cout << "************************************" << endl;
 }
