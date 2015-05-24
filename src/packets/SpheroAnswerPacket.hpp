@@ -7,19 +7,20 @@
 
 #ifndef SPHEROANSWERPACKET_H
 #define SPHEROANSWERPACKET_H
+//--------------------------------------------------------- System includes
+#include <queue>
 
 //--------------------------------------------------------- Local includes
 #include "SpheroPacket.hpp"
-
-#include <queue>
+#include "answer/AskedCommandCode.hpp"
 
 #include "answer/ColorStruct.hpp"
 
 //-------------------------------------------------------------- Constants
 
 //------------------------------------------------------------------ Types
-//First uint8_t is mrsp, second is seq number
-typedef std::function<void*(int)> packetFormatter;
+// int uint8_t is dlen and uint8_t* is dataPayload
+typedef void*(*packetFormatter)(uint8_t dlen, uint8_t* dataPayload);
 
 //------------------------------------------------------- Class definition
 class SpheroAnswerPacket : public SpheroPacket
@@ -46,7 +47,7 @@ class SpheroAnswerPacket : public SpheroPacket
 		 *
 		 * Contract: the socket has to be in blocking read
 		 */
-		static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
+		static bool extractPacket(int fd, Sphero* sphero, SpheroPacket**);
 
 		/**
 		 * @brief packetAction : Performs the action associated to the packet
@@ -67,7 +68,7 @@ class SpheroAnswerPacket : public SpheroPacket
 		SpheroAnswerPacket(Sphero* sphero);
 
 	private:
-		static answerPacketExtractor choixPaquet(uint8_t seqNum, Sphero* sphero);
+		static packetFormatter getPacketFromTodo(pendingCommandType todo);
 		
 };
 

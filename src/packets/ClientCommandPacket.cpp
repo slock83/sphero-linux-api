@@ -93,14 +93,6 @@ uint8_t* ClientCommandPacket::toByteArray()
 
 	array[6+_dlen-1] = _chk;
 
-#ifdef MAP
-	for(size_t i = 0 ; i < _dlen + 6 ; ++i)
-	{
-		std::cout <<
-			"array[" << i << "] = " << (unsigned int) array[i] << std::endl;
-	}
-#endif
-
 	return array;
 }
 

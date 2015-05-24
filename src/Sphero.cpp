@@ -95,13 +95,14 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 {
 	pthread_mutex_init(&lock, NULL);
 	_data = new DataBuffer();
-	_mutex_seqNum = new pthread_mutex_t[256];
-	_mutex_syncParameters = PTHREAD_MUTEX_INITIALIZER;
+	_mutex_seqNum = PTHREAD_MUTEX_INITIALIZER;
+	_mutex_syncParameters = new pthread_mutex_t[256];
 	
 	_syncSempahores = new sem_t[256];
 	_syncMRSPCode = new uint8_t[256];
 	_syncPacketParameters = new void* [256];
 	_syncTodo = new pendingCommandType[256];
+
 
 	for(size_t i = 0 ; i < 256 ; i++)	
 	{
@@ -109,7 +110,7 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 		_syncMRSPCode[i] = 0xFF;
 		_syncPacketParameters[i] = NULL;
 		sem_init(&(_syncSempahores[i]), 0, 0);
-		_mutex_syncParameters[i] = PTHREAD_MUTEX_INITIALIZER;
+		pthread_mutex_init(&(_mutex_syncParameters[i]), NULL);
 	}
 }
 
@@ -342,12 +343,12 @@ void Sphero::setStabilization(bool on)
 
 void Sphero::lockSeqnum(uint8_t seqnum)
 {
-	pthread_mutex_lock(&(_syncPacketParameters[seqnum]));
+	pthread_mutex_lock(&(_mutex_syncParameters[seqnum]));
 }
 
 void Sphero::unlockSeqnum(uint8_t seqnum)
 {
-	pthread_mutex_unlock(&(_syncPacketParameters[seqnum]));
+	pthread_mutex_unlock(&(_mutex_syncParameters[seqnum]));
 }
 
 /**
