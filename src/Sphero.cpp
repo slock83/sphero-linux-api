@@ -299,7 +299,7 @@ void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
 void Sphero::getColor(void (*callback)(ColorStruct*))
 {
 	pthread_mutex_lock(&_mutex_seqNum);
-	uint8_t currentSeq = seq++;
+	uint8_t currentSeq = _seq++;
 	pthread_mutex_unlock(&_mutex_seqNum);
 
 	_syncTodo[currentSeq] = GETCOLOR;

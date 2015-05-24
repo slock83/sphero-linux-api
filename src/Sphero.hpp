@@ -533,7 +533,8 @@ class Sphero
 		static void* wait_seq(void* thread_params);
 
 		void sendAcknowledgedPacket(ClientCommandPacket& packet, 
-			std::function<void(answerUnion_t*)> callback);
+			std::function<void(answerUnion_t*)> callback,
+			uint8_t seqToWait);
 
 		void sendPacket(ClientCommandPacket& packet);
 
