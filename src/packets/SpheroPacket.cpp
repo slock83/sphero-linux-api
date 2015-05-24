@@ -63,7 +63,9 @@ bool SpheroPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_p
 		{
 			return false;
 		}
-
+#ifdef MAP
+		fprintf(stdout, "%02x ", buf);
+#endif
 		if(buf == START_OF_PACKET_FLAG)
 		{
 			if(recv(fd, &buf, sizeof(buf), 0) != sizeof(buf))

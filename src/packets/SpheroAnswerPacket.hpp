@@ -18,11 +18,8 @@
 //-------------------------------------------------------------- Constants
 
 //------------------------------------------------------------------ Types
-
-union answerUnion_t
-{
-	ColorStruct* color;
-};
+//First uint8_t is mrsp, second is seq number
+typedef std::function<void*(int)> packetFormatter;
 
 //------------------------------------------------------- Class definition
 class SpheroAnswerPacket : public SpheroPacket
@@ -70,7 +67,8 @@ class SpheroAnswerPacket : public SpheroPacket
 		SpheroAnswerPacket(Sphero* sphero);
 
 	private:
-	    static extractorMap_t _extractorMap;
+		static answerPacketExtractor choixPaquet(uint8_t seqNum, Sphero* sphero);
+		
 };
 
 #endif // SpheroAnswerPacket_H

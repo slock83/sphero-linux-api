@@ -1,4 +1,4 @@
 sphero-cli
 obj/
 dep/
-lastConnection
+/lastConnection

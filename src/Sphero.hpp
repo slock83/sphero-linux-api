@@ -16,6 +16,7 @@
 #include <functional>
 #include <vector>
 #include <sys/time.h>
+#include <semaphore.h>
 
 //-------------------------------------------------------------- Local includes
 #include "bluetooth/bluetooth_connector.h"
@@ -27,6 +28,7 @@
 #include "packets/async/CollisionStruct.hpp"
 
 #include "packets/answer/ColorStruct.hpp"
+#include "packets/answer/AskedCommandCode.hpp"
 
 //------------------------------------------------------------------- Constants
 
@@ -104,7 +106,7 @@ class Sphero
 		 *
 		 * @return nothing since it's a void method :-)
 		 */
-		void notifySyncPacket(uint8_t seqId, answerUnion_t* pointer);
+		void notifyPacket(uint8_t seqNum, uint8_t mrsp, void* pointer);
 
 		/**
 		 * @brief connect : Initializes the bluetooth connection to the sphero
@@ -140,7 +142,7 @@ class Sphero
 		 * 					 User needs to manually destruct the ColorStruct*
 		 * 					 argument;
 		 */
-		void getColor(void (*callback)(ColorStruct*));
+		ColorStruct* getColor();
 
 		/**
 		 * @brief setBackLedOutput : Lights the back led(used to calibrate
@@ -526,15 +528,18 @@ class Sphero
 		 */
 		void reportData();
 
+		void lockSeqnum(uint8_t seqnum);
+		pendingCommandType getTodo(uint8_t sequm);
+		void unlockSeqnum(uint8_t packet);
+
 	protected:
 		//--------------------------------------------------- Protected methods
 		static void* monitorStream(void* sphero_ptr);
-		static void* wait_seq(void* thread_params);
 
-		void sendAcknowledgedPacket(ClientCommandPacket& packet, 
-			std::function<void(answerUnion_t*)> callback);
+		void sendAcknowledgedPacket(ClientCommandPacket& packet, uint8_t seqToWait);
 
 		void sendPacket(ClientCommandPacket& packet);
+
 
 	private:
 		//-------------------------------------------------- Private attributes
@@ -561,12 +566,17 @@ class Sphero
 		pthread_t monitor;
 
 
-		answerUnion_t** _seqNumberReceived;
+		uint8_t* _syncMRSPCode;	
+		void** _syncPacketParameters;
+		sem_t* _syncSempahores;
+
+		pendingCommandType* _syncTodo;
+
 
 		/* Synchronisation for synchronous packet receiving */
 
-		pthread_mutex_t _mutex_syncpacket;
-		pthread_cond_t _conditional_syncpacket;
+		pthread_mutex_t* _mutex_syncParameters;
+		pthread_mutex_t _mutex_seqNum;
 
 		/* Callbacks lists (one for each declared event) */
 		connectHandler_t _connect_handler;

@@ -22,6 +22,8 @@
 #include "sphero/bluetooth/bluez_adaptor.h"
 #include "sphero/Sphero.hpp"
 #include "sphero/packets/Constants.hpp"
+//Test
+#include <sphero/packets/answer/ColorStruct.hpp>
 
 using namespace std;
 
@@ -29,12 +31,14 @@ using namespace std;
 #include "CommandHandler.h"
 #include "spheromanager.h"
 #include "interactivecontroller.h"
+#include "snescontroller.h"
 
 
 
 /**/
 static SpheroManager sm;
 static InteractiveController ic;
+static SnesController sc;
 /**/
 
 
@@ -132,6 +136,23 @@ static void handleCollision()
 
 	sm.getSphero()->enableCollisionDetection(80,0,80,0, 15);
 }
+
+/**
+ * Simple test
+ */
+static void testGetColor()
+{
+	ColorStruct* ptr = sm.getSphero()->getColor();
+	if(ptr != NULL)
+	{
+		fprintf(stdout, "SpheroColor (RVB) : %02x %02x %02x\n", ptr->red, ptr->green, ptr->blue);
+	}
+	else
+	{
+		fprintf(stderr, "Received nullptr\n");
+	}
+}
+
 
 
 /**
@@ -277,10 +298,18 @@ int handleCommand(const string& command)
 	{
 		ic.startInteractiveMode(sm.getSphero());
 	}
+	else if(cmd == "joystick")
+	{
+		sc.startJoystickMode(sm.getSphero());
+	}
 		//------------------------------ Others
 	else if(cmd == "changecolor")
 	{
 		handleCc(css);
+	}
+	else if(cmd == "testcolor")
+	{
+		testGetColor();
 	}
 	else if(cmd == "backled")
 	{

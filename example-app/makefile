@@ -7,7 +7,7 @@ RMFLAGS=-rf
 LIB=bluetooth pthread rt readline ncurses menu sphero
 
 # Répertoires de bibliothèques
-LIBDIR?=
+LIBDIR?=..
 
 # Commande écho
 ECHO=@echo
@@ -19,7 +19,7 @@ EXECNAME=sphero-cli
 INCDIR=src
 
 # Dossier d'include externes
-EXTINCDIR?=.
+EXTINCDIR?=
 
 # Dossier sources
 SRCDIR=src

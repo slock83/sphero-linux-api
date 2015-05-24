@@ -22,12 +22,6 @@ using namespace std;
 #include "packets/Constants.hpp"
 #include "packets/async/SpheroStreamingPacket.hpp"
 
-typedef struct syncThreadParam{
-	std::function<void(answerUnion_t*)> callback;
-	Sphero* sphero;
-	uint8_t seqNum;
-} syncThreadParam;
-
 //-------------------------------------------------------- Private methods
 
 void* Sphero::monitorStream(void* sphero_ptr)
@@ -56,41 +50,6 @@ void* Sphero::monitorStream(void* sphero_ptr)
 }
 //END monitorStream
 
-void* Sphero::wait_seq(void* thread_params)
-{
-	syncThreadParam* threadParam = (syncThreadParam*) thread_params;
-
-	uint8_t seqNum = threadParam->seqNum;
-	Sphero* sphero = threadParam->sphero;
-	std::function<void(answerUnion_t*)> callback = threadParam->callback;
-
-	delete threadParam;
-
-	struct timespec timer;
-	struct timeval tv;
-
-	gettimeofday(&tv, NULL);
-	timer.tv_sec = tv.tv_sec;
-	timer.tv_nsec = tv.tv_usec * 1000;
-	timer.tv_sec += NB_SEC_SYNC_BEFORE_FAILURE;
-
-	pthread_mutex_lock(&(sphero->_mutex_syncpacket));
-	int rc = 0;
-	while(sphero->_seqNumberReceived[seqNum] == NULL && rc != ETIMEDOUT)
-	{
-		rc = pthread_cond_timedwait(
-				&(sphero->_conditional_syncpacket), 
-				&(sphero->_mutex_syncpacket), &timer);
-	}
-
-	answerUnion_t* answer = sphero->_seqNumberReceived[seqNum];
-	sphero->_seqNumberReceived[seqNum] = NULL;
-	pthread_mutex_unlock(&(sphero->_mutex_syncpacket));
-	callback(answer);
-	delete answer;
-	return 0;
-}
-
 /**
  * @brief sendPacket : Send the specified packet to the Sphero
  * @param packet : The packet to send to the Sphero
@@ -108,30 +67,23 @@ void Sphero::sendPacket(ClientCommandPacket& packet)
 }//END sendPacket
 
 void Sphero::sendAcknowledgedPacket(ClientCommandPacket& packet, 
-		std::function<void(answerUnion_t*)> callback){
-	pthread_attr_t attr;
-	pthread_attr_init(&attr);
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-
-	pthread_mutex_lock(&_mutex_syncpacket);
-	if(_seqNumberReceived[_seq] != NULL)
-		_seqNumberReceived[_seq] = NULL;
-	pthread_mutex_unlock(&_mutex_syncpacket);
-
-	syncThreadParam* threadParam = new syncThreadParam();
-	threadParam->sphero = this;
-	threadParam->seqNum = _seq++;
-	threadParam->callback = callback;
+		uint8_t seqToWait){
 	
-	pthread_t thread;
+	struct timeval tv;
+	struct timespec timer;
 
-	pthread_create(&thread, &attr, wait_seq, (void*) threadParam);
-	pthread_attr_destroy(&attr);
+	gettimeofday(&tv, NULL);
+	timer.tv_sec = tv.tv_sec + NB_SEC_SYNC_BEFORE_FAILURE;
+	timer.tv_nsec = 1000 * tv.tv_usec;
+
 	sendPacket(packet);
+	sem_timedwait(&(_syncSempahores[seqToWait]), &timer);
+	pthread_mutex_lock(&(_mutex_syncParameters[seqToWait]));	
+	_syncTodo[seqToWait] = NONE;
+	pthread_mutex_unlock(&(_mutex_syncParameters[seqToWait]));
 }
 
 //------------------------------------------------ Constructors/Destructor
-
 
 /**
  * @param btaddr : Device address (format : "XX:XX:XX:XX:XX:XX")
@@ -143,12 +95,21 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 {
 	pthread_mutex_init(&lock, NULL);
 	_data = new DataBuffer();
-	_mutex_syncpacket = PTHREAD_MUTEX_INITIALIZER;
-	_conditional_syncpacket = PTHREAD_COND_INITIALIZER;
-	_seqNumberReceived = new answerUnion_t* [256];
+	_mutex_seqNum = new pthread_mutex_t[256];
+	_mutex_syncParameters = PTHREAD_MUTEX_INITIALIZER;
+	
+	_syncSempahores = new sem_t[256];
+	_syncMRSPCode = new uint8_t[256];
+	_syncPacketParameters = new void* [256];
+	_syncTodo = new pendingCommandType[256];
+
 	for(size_t i = 0 ; i < 256 ; i++)	
 	{
-		_seqNumberReceived[i++] = NULL;
+		_syncTodo[i] = NONE;
+		_syncMRSPCode[i] = 0xFF;
+		_syncPacketParameters[i] = NULL;
+		sem_init(&(_syncSempahores[i]), 0, 0);
+		_mutex_syncParameters[i] = PTHREAD_MUTEX_INITIALIZER;
 	}
 }
 
@@ -162,32 +123,19 @@ Sphero::~Sphero()
 
 	for(size_t i = 0 ; i < 256 ; i++)
 	{
-		if(_seqNumberReceived[i] != NULL)
-		{
-			delete(_seqNumberReceived[i]);
-		}
+		sem_destroy(&(_syncSempahores[i]));
+		pthread_mutex_destroy(&(_mutex_syncParameters[i]));
 	}
 
-	pthread_cond_destroy(&_conditional_syncpacket);
-	pthread_mutex_destroy(&_mutex_syncpacket);
-	delete[] _seqNumberReceived;
-
+	pthread_mutex_destroy(&_mutex_seqNum);
+	delete[] _syncPacketParameters;
+	delete[] _syncMRSPCode;
+	delete[] _syncTodo;
+	delete[] _syncSempahores;
 }//END destructor
 
 
 //--------------------------------------------------------- Public methods
-/**
- * @brief : notify sphero that a synchronous packet has arrived
- *
- * @return nothing since it's a void method :-)
- */
-void Sphero::notifySyncPacket(uint8_t seqId, answerUnion_t* pointer)
-{
-	pthread_mutex_lock(&_mutex_syncpacket);
-	_seqNumberReceived[seqId] = pointer;
-	pthread_cond_broadcast(&_conditional_syncpacket);
-	pthread_mutex_unlock(&_mutex_syncpacket);
-}
 
 /**
  * @brief connect : Initializes the bluetooth connection to the sphero instance
@@ -215,6 +163,18 @@ bool Sphero::connect()
 
 	return false;
 }//END connect
+
+void Sphero::notifyPacket(uint8_t seqNum, uint8_t mrsp, void* pointer)
+{
+	_syncMRSPCode[seqNum] = mrsp;
+	_syncPacketParameters[seqNum] = pointer;
+	sem_post(&(_syncSempahores[seqNum]));
+}
+
+pendingCommandType Sphero::getTodo(uint8_t seqNum)
+{
+	return _syncTodo[seqNum];
+}
 
 
 /**
@@ -291,23 +251,26 @@ void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
 /**
  * Commentez-les tous ! (feat Sacha)
  */
-
-void Sphero::getColor(void (*callback)(ColorStruct*))
+ColorStruct* Sphero::getColor()
 {
+	pthread_mutex_lock(&_mutex_seqNum);
+	uint8_t currentSeq = _seq++;
+	pthread_mutex_unlock(&_mutex_seqNum);
+
+	_syncTodo[currentSeq] = GETCOLOR;
+
 	ClientCommandPacket packet(
 				DID::sphero,
-				CID::setBackLEDOutput,
-				_seq++,
+				CID::getRGBLED,
+				currentSeq,
 				0x01,
 				nullptr,
-				_waitConfirm,
+				true,
 				_resetTimer
 				);
-	auto localWrapper = [callback](answerUnion_t* retour){
-		ColorStruct* color = new ColorStruct(*(retour->color));	
-		callback(color);
-	};
-	sendAcknowledgedPacket(packet, localWrapper);
+
+	sendAcknowledgedPacket(packet, currentSeq);
+	return (ColorStruct*) _syncPacketParameters[currentSeq];	
 }
 
 /**
@@ -377,6 +340,15 @@ void Sphero::setStabilization(bool on)
 	sendPacket(packet);
 }//END setStabilization
 
+void Sphero::lockSeqnum(uint8_t seqnum)
+{
+	pthread_mutex_lock(&(_syncPacketParameters[seqnum]));
+}
+
+void Sphero::unlockSeqnum(uint8_t seqnum)
+{
+	pthread_mutex_unlock(&(_syncPacketParameters[seqnum]));
+}
 
 /**
  * @brief setRotationRate : Change the rotation speed
@@ -539,9 +511,10 @@ bool Sphero::isConnected()
  *			FLOATING_Y_AXIS : the Y axis won't be memorized, so heading 0 will do nothing
  * @param X : The current position on X axis of Sphero on the ground plane (in centimeters)
  * @param Y : The current position on Y axis of Sphero on the ground plane (in centimeters)
- * @param yaw : (yaw tare) Controls how the X,Y-plane is aligned with Sphero’s heading coordinate system.
- *			When this parameter is set to zero, it means that having yaw = 0 corresponds to facing down the Y-axis
- *																						 in the positive direction
+ * @param yaw : (yaw tare) Controls how the X,Y-plane is aligned with Sphero’s
+ * heading coordinate system.  When this parameter is set to zero, it means that
+ * having yaw = 0
+ *			corresponds to facing down the Y-axis in the positive direction
  *			The value will be interpreted in the range 0-359 inclusive.
  */
 void Sphero::configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t yaw)
@@ -580,8 +553,8 @@ void Sphero::configureLocator(uint8_t flags, uint16_t X, uint16_t Y, uint16_t ya
  * @param packetCount : The total number of repsonse packets the sphero will send (0 means infinite)
  * @param mask2 : (Optional) A mask, to specify wanted values (view constants mask2::*)
  */
-void Sphero::setDataStreaming(uint16_t freq, uint16_t delay, uint32_t mask, uint8_t packetCount, uint32_t mask2)
-{
+void Sphero::setDataStreaming(uint16_t freq, uint16_t delay, uint32_t mask,
+		uint8_t packetCount, uint32_t mask2) {
 	uint16_t M = 400 / freq;
 	byte dlen = (mask2 == 0) ? 0x0a : 0x0e;
 
@@ -690,13 +663,15 @@ void Sphero::roll(uint8_t speed, uint16_t heading, uint8_t state)
 
 
 /**
- * @brief setInactivityTimeout :To save battery power, Sphero normally goes to sleep after a period of inactivity.
- * @param timeout : Time before Sphero goes to sleep (when nothing happens), in seconds
+ * @brief setInactivityTimeout :To save battery power, Sphero normally goes to
+ * sleep after a period of inactivity.  @param timeout : Time before Sphero goes
+ * to sleep (when nothing happens), in seconds
  *			From the factory this value is set to 600 seconds (10 minutes)
- *			The inactivity timer is reset every time an API command is received over Bluetooth or a shell
- *																			command is executed in User Hack mode.
- *			In addition, the timer is continually reset when a macro is running unless the MF_STEALTH
- *										flag is set, and the same for orbBasic unless the BF_STEALTH flag is set.
+ *			The inactivity timer is reset every time an API command is received
+ *			over Bluetooth or a shell command is executed in User Hack mode.
+ *			In addition, the timer is continually reset when a macro is running
+ *			unless the MF_STEALTH flag is set, and the same for orbBasic unless
+ *			the BF_STEALTH flag is set.
  */
 void Sphero::setInactivityTimeout(uint16_t timeout)
 {
@@ -859,12 +834,14 @@ void Sphero::requestLock(bool take)
 
 /**
  * @brief sleep : This command puts Sphero to sleep immediately
- * @param time : The number of seconds for Sphero to sleep for and then automatically reawaken.
- *			Zero does not program a wakeup interval, so he sleeps forever.
+ * @param time : The number of seconds for Sphero to sleep for and then
+ * 				 automatically reawaken.  Zero does not program a wakeup interval, 
+ * 				 so it sleeps forever.
  *			0xFFFF attempts to put him into deep sleep (if supported in hardware)
  *									and returns an error if the hardware does not support it.
  * @param macro : If non-zero, Sphero will attempt to run this macro ID upon wakeup.
- * @param orbbasic : If non-zero, Sphero will attempt to run an orbBasic program in Flash from this line number.
+ * @param orbbasic : If non-zero, Sphero will attempt to run an orbBasic program
+ * in Flash from this line number.
  */
 void Sphero::sleep(uint16_t time, uint8_t macro, uint16_t orbbasic)
 {
