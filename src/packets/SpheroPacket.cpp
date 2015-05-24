@@ -12,6 +12,7 @@
 #include <sys/socket.h>
 
 //--------------------------------------------------------- Local includes
+#include "../Sphero.hpp"
 #include "SpheroPacket.hpp"
 #include "SpheroAsyncPacket.hpp"
 #include "SpheroAnswerPacket.hpp"

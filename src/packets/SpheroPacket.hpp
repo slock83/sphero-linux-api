@@ -12,7 +12,6 @@
 #include <unordered_map>
 
 //--------------------------------------------------------- Local includes
-#include "../Sphero.hpp"
 
 //-------------------------------------------------------------- Constants
 static uint8_t const START_OF_PACKET_FLAG = 0xFF;
@@ -21,6 +20,7 @@ static uint8_t const ANSWER_FLAG = 0xFF;
 
 //------------------------------------------------------------------ Types 
 class SpheroPacket;
+class Sphero;
 
 typedef bool (*packetExtractor)(int socketd, Sphero* sphero, SpheroPacket** packet_ptr);
 typedef std::unordered_map<uint8_t, packetExtractor> extractorMap_t;

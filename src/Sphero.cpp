@@ -22,6 +22,11 @@ using namespace std;
 #include "packets/Constants.hpp"
 #include "packets/async/SpheroStreamingPacket.hpp"
 
+typedef struct syncThreadParam{
+	std::function<void(answerUnion_t*)> callback;
+	Sphero* sphero;
+	uint8_t seqNum;
+} syncThreadParam;
 
 //-------------------------------------------------------- Private methods
 
@@ -48,8 +53,82 @@ void* Sphero::monitorStream(void* sphero_ptr)
 	}
 
 	return NULL;
-}//END monitorStream
+}
+//END monitorStream
 
+void* Sphero::wait_seq(void* thread_params)
+{
+	syncThreadParam* threadParam = (syncThreadParam*) thread_params;
+
+	uint8_t seqNum = threadParam->seqNum;
+	Sphero* sphero = threadParam->sphero;
+	std::function<void(answerUnion_t*)> callback = threadParam->callback;
+
+	delete threadParam;
+
+	struct timespec timer;
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+	timer.tv_sec = tv.tv_sec;
+	timer.tv_nsec = tv.tv_usec * 1000;
+	timer.tv_sec += NB_SEC_SYNC_BEFORE_FAILURE;
+
+	pthread_mutex_lock(&(sphero->_mutex_syncpacket));
+	int rc = 0;
+	while(sphero->_seqNumberReceived[seqNum] == NULL && rc != ETIMEDOUT)
+	{
+		rc = pthread_cond_timedwait(
+				&(sphero->_conditional_syncpacket), 
+				&(sphero->_mutex_syncpacket), &timer);
+	}
+
+	answerUnion_t* answer = sphero->_seqNumberReceived[seqNum];
+	sphero->_seqNumberReceived[seqNum] = NULL;
+	pthread_mutex_unlock(&(sphero->_mutex_syncpacket));
+	callback(answer);
+	delete answer;
+	return 0;
+}
+
+/**
+ * @brief sendPacket : Send the specified packet to the Sphero
+ * @param packet : The packet to send to the Sphero
+ */
+void Sphero::sendPacket(ClientCommandPacket& packet)
+{
+	ssize_t retour;
+	if((retour = send(_bt_socket, packet.toByteArray(),  packet.getSize(), 0)) <= 0)
+	{
+		disconnect();
+	}
+
+	fsync(_bt_socket);
+
+}//END sendPacket
+
+void Sphero::sendAcknowledgedPacket(ClientCommandPacket& packet, 
+		std::function<void(answerUnion_t*)> callback){
+	pthread_attr_t attr;
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+
+	pthread_mutex_lock(&_mutex_syncpacket);
+	if(_seqNumberReceived[_seq] != NULL)
+		_seqNumberReceived[_seq] = NULL;
+	pthread_mutex_unlock(&_mutex_syncpacket);
+
+	syncThreadParam* threadParam = new syncThreadParam();
+	threadParam->sphero = this;
+	threadParam->seqNum = _seq++;
+	threadParam->callback = callback;
+	
+	pthread_t thread;
+
+	pthread_create(&thread, &attr, wait_seq, (void*) threadParam);
+	pthread_attr_destroy(&attr);
+	sendPacket(packet);
+}
 
 //------------------------------------------------ Constructors/Destructor
 
@@ -66,6 +145,7 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 	_data = new DataBuffer();
 	_mutex_syncpacket = PTHREAD_MUTEX_INITIALIZER;
 	_conditional_syncpacket = PTHREAD_COND_INITIALIZER;
+	_seqNumberReceived = new answerUnion_t* [256]{NULL};
 }
 
 
@@ -74,6 +154,21 @@ Sphero::~Sphero()
 	delete _data;
 	disconnect();
 	delete _bt_adapter;
+	
+	size_t i = 0;
+	do
+	{
+		if(_seqNumberReceived[i] != NULL)
+		{
+			delete(_seqNumberReceived[i]);
+		}
+		i++;
+	}while(i != 0);
+
+	pthread_cond_destroy(&_conditional_syncpacket);
+	pthread_mutex_destroy(&_mutex_syncpacket);
+	delete[] _seqNumberReceived;
+
 }//END destructor
 
 
@@ -83,10 +178,11 @@ Sphero::~Sphero()
  *
  * @return nothing since it's a void method :-)
  */
-void Sphero::notifySyncPacket()
+void Sphero::notifySyncPacket(uint8_t seqId, answerUnion_t* pointer)
 {
 	pthread_mutex_lock(&_mutex_syncpacket);
-	pthread_cond_signal(&_conditional_syncpacket);
+	_seqNumberReceived[seqId] = pointer;
+	pthread_cond_broadcast(&_conditional_syncpacket);
 	pthread_mutex_unlock(&_mutex_syncpacket);
 }
 
@@ -138,21 +234,6 @@ void Sphero::disconnect()
 }//END disconnect
 
 
-/**
- * @brief sendPacket : Send the specified packet to the Sphero
- * @param packet : The packet to send to the Sphero
- */
-void Sphero::sendPacket(ClientCommandPacket& packet)
-{
-	ssize_t retour;
-	if((retour = send(_bt_socket, packet.toByteArray(),  packet.getSize(), 0)) <= 0)
-	{
-		disconnect();
-	}
-
-	fsync(_bt_socket);
-
-}//END sendPacket
 
 
 /**
@@ -208,10 +289,8 @@ void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
  * Commentez-les tous ! (feat Sacha)
  */
 
-ColorStruct* Sphero::getColor()
+void Sphero::getColor(void (*callback)(ColorStruct*))
 {
-	ColorStruct* color = new ColorStruct();
-	
 	ClientCommandPacket packet(
 				DID::sphero,
 				CID::setBackLEDOutput,
@@ -221,9 +300,11 @@ ColorStruct* Sphero::getColor()
 				_waitConfirm,
 				_resetTimer
 				);
-				
-	
-	return color;
+	auto localWrapper = [callback](answerUnion_t* retour){
+		ColorStruct* color = new ColorStruct(*(retour->color));	
+		callback(color);
+	};
+	sendAcknowledgedPacket(packet, localWrapper);
 }
 
 /**

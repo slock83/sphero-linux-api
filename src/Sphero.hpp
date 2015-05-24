@@ -15,11 +15,13 @@
 #include <list>
 #include <functional>
 #include <vector>
+#include <sys/time.h>
 
 //-------------------------------------------------------------- Local includes
 #include "bluetooth/bluetooth_connector.h"
 #include "packets/ClientCommandPacket.hpp"
 #include "ActionHandler.hpp"
+#include "packets/SpheroAnswerPacket.hpp"
 #include "packets/async/DataBuffer.h"
 
 #include "packets/async/CollisionStruct.hpp"
@@ -49,6 +51,8 @@ static uint8_t const OPT_EN_MOTION_TO = 0x10;
 static uint8_t const OPT_EN_RETAIL_DEMO = 0x20;
 
 static uint8_t const TOPT_EN_STOP_ON_DISC = 0x01;
+
+static time_t const NB_SEC_SYNC_BEFORE_FAILURE = 1;
 
 //----------------------------------------------------------------------- Types
 class ClientCommandPacket;
@@ -100,7 +104,7 @@ class Sphero
 		 *
 		 * @return nothing since it's a void method :-)
 		 */
-		void notifySyncPacket();
+		void notifySyncPacket(uint8_t seqId, answerUnion_t* pointer);
 
 		/**
 		 * @brief connect : Initializes the bluetooth connection to the sphero
@@ -109,25 +113,15 @@ class Sphero
 		 */
 		bool connect();
 
-
 		/**
 		 * @brief disconnect : Disconnects the current Sphero
 		 */
 		void disconnect();
 
-
-		/**
-		 * @brief sendPacket : Send the specified packet to the Sphero
-		 * @param packet : The packet to send to the Sphero
-		 */
-		void sendPacket(ClientCommandPacket& packet);
-
-
 		/**
 		 * @brief ping : Creates a ping request to the Sphero
 		 */
 		void ping();
-
 
 		/**
 		 * @brief setColor : Changes the Sphero light color
@@ -138,8 +132,15 @@ class Sphero
 		 */
 		void setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist = false);
 
-
-		ColorStruct* getColor();
+		/**
+		 * @brief getColor : Ask to sphero for colors information and pass it to 
+		 * 						to a callback
+		 * @param callback : callback function to be called when answer is
+		 * 					 received. Will be called only one time.
+		 * 					 User needs to manually destruct the ColorStruct*
+		 * 					 argument;
+		 */
+		void getColor(void (*callback)(ColorStruct*));
 
 		/**
 		 * @brief setBackLedOutput : Lights the back led(used to calibrate
@@ -237,7 +238,8 @@ class Sphero
 		 * @param Dead : An 8-bit post-collision dead time to prevent retriggering;
 		 * 				 specified in 10ms increments.
 		 */
-		void enableCollisionDetection(uint8_t Xt, uint8_t Xspd, uint8_t Yt, uint8_t Yspd, uint8_t Dead);
+		void enableCollisionDetection(uint8_t Xt, uint8_t Xspd, uint8_t Yt,
+				uint8_t Yspd, uint8_t Dead);
 
 
 		/**
@@ -277,10 +279,12 @@ class Sphero
 		 * @param freq : The sampling frequency
 		 * @param delay : The number of frames collected before sending
 		 * @param mask : A mask, to specify wanted values (view constants mask::*)
-		 * @param packetCount : The total number of repsonse packets the sphero will send (0 means infinite)
-		 * @param mask2 : (Optional) A mask, to specify wanted values (view constants mask2::*)
+		 * @param packetCount : The total number of repsonse packets the sphero
+		 * will send (0 means infinite) @param mask2 : (Optional) A mask, to
+		 * specify wanted values (view constants mask2::*)
 		 */
-		void setDataStreaming(uint16_t freq, uint16_t delay, uint32_t mask, uint8_t packetCount, uint32_t mask2 = 0);
+		void setDataStreaming(uint16_t freq, uint16_t delay, uint32_t mask,
+				uint8_t packetCount, uint32_t mask2 = 0);
 
 
 		/**
@@ -525,6 +529,12 @@ class Sphero
 	protected:
 		//--------------------------------------------------- Protected methods
 		static void* monitorStream(void* sphero_ptr);
+		static void* wait_seq(void* thread_params);
+
+		void sendAcknowledgedPacket(ClientCommandPacket& packet, 
+			std::function<void(answerUnion_t*)> callback);
+
+		void sendPacket(ClientCommandPacket& packet);
 
 	private:
 		//-------------------------------------------------- Private attributes
@@ -541,6 +551,7 @@ class Sphero
 		int _nbFrames;
 		vector<dataTypes> _typesLst;
 		
+		const std::string _address;
 		uint8_t _seq;
 
 		bool _resetTimer;
@@ -549,7 +560,8 @@ class Sphero
 		int _bt_socket;
 		pthread_t monitor;
 
-		const std::string _address;
+
+		answerUnion_t** _seqNumberReceived;
 
 		/* Synchronisation for synchronous packet receiving */
 
