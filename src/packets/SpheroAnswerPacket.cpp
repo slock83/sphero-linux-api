@@ -32,15 +32,6 @@ SpheroAnswerPacket::~SpheroAnswerPacket()
 
 //--------------------------------------------------------- Public methods
 
-answerUnion_t* SpheroAnswerPacket::getAnswer(uint8_t seq)
-{
-	answerUnion_t* answer = _sequence_array[seq].front();
-
-	_sequence_array[seq].pop();
-
-	return answer;
-}
-
 /**
  * @brief extractPacket : extracts the packet from a socket
  * @param fd : The socket file descriptor
@@ -76,10 +67,3 @@ bool SpheroAnswerPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** pa
 	return false;
 	
 }
-
-void SpheroAnswerPacket::setAnswer(uint8_t seq, answerUnion_t* answer)
-{
-	_sequence_array[seq].push(answer);
-}
-
-

@@ -40,8 +40,6 @@ class SpheroAnswerPacket : public SpheroPacket
 
 		//------------------------------------------------- Public methods
 
-		static answerUnion_t* getAnswer(uint8_t seq);
-
 		/**
 		 * @brief extractPacket : extracts the packet from a socket
 		 * @param fd : The socket file descriptor
@@ -63,8 +61,6 @@ class SpheroAnswerPacket : public SpheroPacket
 
 		//--------------------------------------------- Protected methods
 		
-		static void setAnswer(uint8_t seq, answerUnion_t* answer);
-	
 		//-------------------------------------------------- Constructors
 
 		/**
@@ -74,8 +70,6 @@ class SpheroAnswerPacket : public SpheroPacket
 		SpheroAnswerPacket(Sphero* sphero);
 
 	private:
-		static std::queue<answerUnion_t*> _sequence_array[256];
-
 	    static extractorMap_t _extractorMap;
 };
 
