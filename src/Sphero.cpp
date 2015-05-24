@@ -82,13 +82,11 @@ void Sphero::sendAcknowledgedPacket(ClientCommandPacket& packet,
 	timer.tv_sec = tv.tv_sec + NB_SEC_SYNC_BEFORE_FAILURE;
 	timer.tv_nsec = 1000 * tv.tv_usec;
 
-	if(_syncPacketParameters[seqToWait] != NULL)
-	{
-		delete _syncPacketParameters[seqToWait];
-		_syncPacketParameters[seqToWait] = null;
-	}
 	sendPacket(packet);
 	sem_timedwait(&(_syncSempahores[seqToWait]), &timer);
+	pthread_mutex_lock(&(_mutex_syncParameters));	
+	_syncTodo[seqToWait] = NONE;
+	pthread_mutex_unlock(&(_mutex_syncParameters));
 }
 
 //------------------------------------------------ Constructors/Destructor
@@ -104,6 +102,7 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 	pthread_mutex_init(&lock, NULL);
 	_data = new DataBuffer();
 	_mutex_seqNum = PTHREAD_MUTEX_INITIALIZER;
+	_mutex_syncParameters = PTHREAD_MUTEX_INITIALIZER;
 	
 	_syncSempahores = new sem_t[256];
 	_syncMRSPCode = new uint8_t[256];
@@ -114,7 +113,7 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 	{
 		_syncTodo[i] = NONE;
 		_syncMRSPCode[i] = 0xFF;
-		_syncPacketParameters[i] = NULL;
+		_syncPacketParameters[i] = NULL;
 		sem_init(&(_syncSempahores[i]), 0, 0);
 	}
 }
@@ -129,14 +128,11 @@ Sphero::~Sphero()
 
 	for(size_t i = 0 ; i < 256 ; i++)
 	{
-		if(_syncPacketParameters[i] != NULL)
-		{
-			delete(_syncPacketParameters[i]);
-		}
 		sem_destroy(&(_syncSempahores[i]));
 	}
 
 	pthread_mutex_destroy(&_mutex_seqNum);
+	pthread_mutex_destroy(&_mutex_syncParameters);
 	delete[] _syncPacketParameters;
 	delete[] _syncMRSPCode;
 	delete[] _syncTodo;
@@ -176,7 +172,7 @@ bool Sphero::connect()
 void Sphero::notifyPacket(uint8_t seqNum, uint8_t mrsp, void* pointer)
 {
 	_syncMRSPCode[seqNum] = mrsp;
-	_syncPacketParameters[seqNum] = pointer;
+	_syncPacketParameters[seqNum] = pointer;
 	sem_post(&(_syncSempahores[seqNum]));
 }
 

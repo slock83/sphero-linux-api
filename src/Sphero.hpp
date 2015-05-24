@@ -106,7 +106,7 @@ class Sphero
 		 *
 		 * @return nothing since it's a void method :-)
 		 */
-		void notifySyncPacket(uint8_t seqId, answerUnion_t* pointer);
+		void notifyPacket(uint8_t seqNum, uint8_t mrsp, void* pointer);
 
 		/**
 		 * @brief connect : Initializes the bluetooth connection to the sphero
@@ -531,11 +531,8 @@ class Sphero
 	protected:
 		//--------------------------------------------------- Protected methods
 		static void* monitorStream(void* sphero_ptr);
-		static void* wait_seq(void* thread_params);
 
-		void sendAcknowledgedPacket(ClientCommandPacket& packet, 
-			std::function<void(answerUnion_t*)> callback,
-			uint8_t seqToWait);
+		void sendAcknowledgedPacket(ClientCommandPacket& packet, uint8_t seqToWait);
 
 		void sendPacket(ClientCommandPacket& packet);
 
@@ -573,9 +570,8 @@ class Sphero
 
 		/* Synchronisation for synchronous packet receiving */
 
-		pthread_mutex_t _mutex_syncpacket;
+		pthread_mutex_t _mutex_syncParameters;
 		pthread_mutex_t _mutex_seqNum;
-		pthread_cond_t _conditional_syncpacket;
 
 		/* Callbacks lists (one for each declared event) */
 		connectHandler_t _connect_handler;
