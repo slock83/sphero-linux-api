@@ -19,7 +19,7 @@ EXECNAME=sphero-cli
 INCDIR=src
 
 # Dossier d'include externes
-EXTINCDIR?=.
+EXTINCDIR?=
 
 # Dossier sources
 SRCDIR=src

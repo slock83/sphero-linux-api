@@ -140,21 +140,15 @@ static void handleCollision()
  */
 static void testGetColor()
 {
-	auto lambda = [](ColorStruct* color){
-			if(color != NULL)
-			{
-				fprintf(stdout, "Sphero color : %u %u %u\n", color->red, color->green, color->blue);
-				delete color;
-			}
-			else
-			{
-				fprintf(stderr, "Sphero getColor received a null ptr\n");
-			}
-	};
-
-	if (!isConnected()) return;
-
-	sm.getSphero()->getColor(lambda);
+	ColorStruct* ptr = sm.getSphero()->getColor();
+	if(ptr != NULL)
+	{
+		fprintf(stdout, "SpheroColor (RVB) : %02x %02x %02x\n", ptr->red, ptr->green, ptr->blue);
+	}
+	else
+	{
+		fprintf(stderr, "Received nullptr\n");
+	}
 }
 
 
