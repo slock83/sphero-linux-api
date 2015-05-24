@@ -142,6 +142,12 @@ static void handleCollision()
  */
 static void testGetColor()
 {
+
+	if(!isConnected())
+	{
+		return;
+	}
+
 	ColorStruct* ptr = sm.getSphero()->getColor();
 	if(ptr != NULL)
 	{

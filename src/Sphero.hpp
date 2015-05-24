@@ -568,13 +568,13 @@ class Sphero
 
 		uint8_t* _syncMRSPCode;	
 		void** _syncPacketParameters;
-		sem_t* _syncSempahores;
 
 		pendingCommandType* _syncTodo;
 
 
 		/* Synchronisation for synchronous packet receiving */
 
+		sem_t* _syncSempahores;
 		pthread_mutex_t* _mutex_syncParameters;
 		pthread_mutex_t _mutex_seqNum;
 

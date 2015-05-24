@@ -69,7 +69,7 @@ bool SpheroAnswerPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket**)
 	}
 
 	rcvVal = recv(fd, &dlen, sizeof(dlen), 0);
-	if(rcvVal != sizeof(seq))
+	if(rcvVal != sizeof(dlen))
 	{
 		return false;
 	}
@@ -78,7 +78,7 @@ bool SpheroAnswerPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket**)
 	{
 		dataPayload = (uint8_t*) malloc((dlen-1) * sizeof(uint8_t));
 		rcvVal = recv(fd, dataPayload, dlen - 1, 0);
-		if(rcvVal != sizeof(seq))
+		if(rcvVal != dlen - 1)
 		{
 			free(dataPayload);
 			return false;
