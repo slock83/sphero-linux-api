@@ -22,6 +22,7 @@ namespace keysLegacy
 	const int _KEY_B = 0x62;
 	const int _KEY_C = 0x63;
 	const int _KEY_E = 0x65;
+	const int _KEY_J = 0x6a;
 	const int _KEY_Q = 0x71;
 	const int _KEY_R = 0x72;
 	const int _KEY_T = 0x74;
@@ -63,6 +64,7 @@ namespace classic
 	const int _KEY_BACKLIGHT = keysLegacy::_KEY_B;
 
 	const int _KEY_MODE_CALIBRATE = keysLegacy::_KEY_C;
+	const int _KEY_MODE_JOYSTICK = keysLegacy::_KEY_J;
 }
 
 namespace calibrate
@@ -79,7 +81,8 @@ namespace calibrate
 enum mode
 {
 	CLASSIC,
-	CALIBRATE
+	CALIBRATE,
+	JOYSTICK
 };
 
 #endif //_KEYS_HPP
