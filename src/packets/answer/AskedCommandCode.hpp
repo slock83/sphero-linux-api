@@ -7,8 +7,8 @@
 #ifndef ASKEDCOMMANDCODE_H
 #define ASKEDCOMMANDCODE_H
 
-enum pendingCommandType{
-	NONE, SIMPLE_RESPONSE, GETCOLOR
+enum class pendingCommandType{
+	NONE, SIMPLE_RESPONSE, GETCOLOR, GETBTINFO
 };
 
 #endif // ASKEDCOMMANDCODE_H

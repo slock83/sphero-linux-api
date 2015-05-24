@@ -21,6 +21,7 @@ using namespace std;
 #include "packets/SpheroPacket.hpp"
 #include "packets/Constants.hpp"
 #include "packets/async/SpheroStreamingPacket.hpp"
+#include "packets/answer/AskedCommandCode.hpp"
 
 //-------------------------------------------------------- Private methods
 
@@ -79,7 +80,7 @@ void Sphero::sendAcknowledgedPacket(ClientCommandPacket& packet,
 	sendPacket(packet);
 	sem_timedwait(&(_syncSempahores[seqToWait]), &timer);
 	pthread_mutex_lock(&(_mutex_syncParameters[seqToWait]));	
-	_syncTodo[seqToWait] = NONE;
+	_syncTodo[seqToWait] = pendingCommandType::NONE;
 	pthread_mutex_unlock(&(_mutex_syncParameters[seqToWait]));
 }
 
@@ -106,7 +107,7 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 
 	for(size_t i = 0 ; i < 256 ; i++)	
 	{
-		_syncTodo[i] = NONE;
+		_syncTodo[i] = pendingCommandType::NONE;
 		_syncMRSPCode[i] = 0xFF;
 		_syncPacketParameters[i] = NULL;
 		sem_init(&(_syncSempahores[i]), 0, 0);
@@ -258,7 +259,7 @@ ColorStruct* Sphero::getColor()
 	uint8_t currentSeq = _seq++;
 	pthread_mutex_unlock(&_mutex_seqNum);
 
-	_syncTodo[currentSeq] = GETCOLOR;
+	_syncTodo[currentSeq] = pendingCommandType::GETCOLOR;
 
 	ClientCommandPacket packet(
 				DID::sphero,
@@ -272,6 +273,41 @@ ColorStruct* Sphero::getColor()
 
 	sendAcknowledgedPacket(packet, currentSeq);
 	return (ColorStruct*) _syncPacketParameters[currentSeq];	
+}
+
+
+/**
+ * @brief getBTInfo : this is a well named method so if you're
+ * 		intelligent enough you will figure out what it's intended to do 
+ * 		...
+ * 		if you're not, here is a clue : it gives informations about
+ * 		bluetooth parameters, for example bluetooth name and address.
+ *
+ * 	@return a BTInfoStruct pointer pointing on a dynamically allocated
+ * 	struct that user will be very kind to deallocate himself or null if
+ * 	answer wasn't received in time (in this case we tried to manage
+ * 	properly the memory, don't be scared).
+ */
+BTInfoStruct* Sphero::getBTInfo()
+{
+	pthread_mutex_lock(&_mutex_seqNum);
+	uint8_t currentSeq = _seq++;
+	pthread_mutex_unlock(&_mutex_seqNum);
+
+	_syncTodo[currentSeq] = pendingCommandType::GETBTINFO;
+
+	ClientCommandPacket packet(
+				DID::core,
+				CID::getBluetoothInfo,
+				currentSeq,
+				0x01,
+				nullptr,
+				true,
+				_resetTimer
+			);
+
+	sendAcknowledgedPacket(packet, currentSeq);
+	return (BTInfoStruct*) _syncPacketParameters[currentSeq];	
 }
 
 /**

@@ -24,6 +24,7 @@
 #include "sphero/packets/Constants.hpp"
 //Test
 #include <sphero/packets/answer/ColorStruct.hpp>
+#include <sphero/packets/answer/BTInfoStruct.hpp>
 
 using namespace std;
 
@@ -33,16 +34,11 @@ using namespace std;
 #include "interactivecontroller.h"
 #include "snescontroller.h"
 
-
-
 /**/
 static SpheroManager sm;
 static InteractiveController ic;
 static SnesController sc;
 /**/
-
-
-
 
 void showHelp()
 {
@@ -152,6 +148,7 @@ static void testGetColor()
 	if(ptr != NULL)
 	{
 		fprintf(stdout, "SpheroColor (RVB) : %02x %02x %02x\n", ptr->red, ptr->green, ptr->blue);
+		delete ptr;
 	}
 	else
 	{
@@ -191,6 +188,25 @@ static void handleRoll(stringstream& css)
 
 }
 
+static void testBTInfo()
+{
+	if(!isConnected())
+	{
+		return;
+	}
+
+	BTInfoStruct* booza = sm.getSphero()->getBTInfo();	
+	if(booza != NULL)
+	{
+
+		std::cout << "Get BTInfo(s) BT Name : " << booza->bt_name << 
+			" BT Address : " << booza->bt_adress << std::endl;
+		delete booza;
+		return;
+	}
+
+	std::cerr << "Get BTInfo(s) : nullptr received" << std::endl;
+}
 
 /**
  * @brief handleDirect : handles the roll command
@@ -312,6 +328,10 @@ int handleCommand(const string& command)
 	else if(cmd == "changecolor")
 	{
 		handleCc(css);
+	}
+	else if(cmd == "testbtinfo")
+	{
+		testBTInfo();
 	}
 	else if(cmd == "testcolor")
 	{

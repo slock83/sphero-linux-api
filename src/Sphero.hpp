@@ -28,7 +28,7 @@
 #include "packets/async/CollisionStruct.hpp"
 
 #include "packets/answer/ColorStruct.hpp"
-#include "packets/answer/AskedCommandCode.hpp"
+#include "packets/answer/BTInfoStruct.hpp"
 
 //------------------------------------------------------------------- Constants
 
@@ -387,8 +387,23 @@ class Sphero
 		 */
 		void setDeviceMode(uint8_t value = 0);
 
+		
 
 		//getDeviceMode
+		
+		/**
+		 * @brief getBTInfo : this is a well named method so if you're
+		 * 		intelligent enough you will figure out what it's intended to do 
+		 * 		...
+		 * 		if you're not, here is a clue : it gives informations about
+		 * 		bluetooth parameters, for example bluetooth name and address.
+		 *
+		 * 	@return a BTInfoStruct pointer pointing on a dynamically allocated
+		 * 	struct that user will be very kind to deallocate himself or null if
+		 * 	answer wasn't received in time (in this case we tried to manage
+		 * 	properly the memory, don't be scared).
+		 */
+		BTInfoStruct* getBTInfo();
 
 		/**
 		 * @brief runMacro : This attempts to execute the specified macro
@@ -573,7 +588,6 @@ class Sphero
 
 
 		/* Synchronisation for synchronous packet receiving */
-
 		sem_t* _syncSempahores;
 		pthread_mutex_t* _mutex_syncParameters;
 		pthread_mutex_t _mutex_seqNum;

@@ -17,6 +17,7 @@
 #include "../Sphero.hpp"
 #include "SpheroAnswerPacket.hpp"
 #include "ChecksumComputer.hpp"
+#include "answer/BTInfoStruct.hpp"
 
 //------------------------------------------------ Constructors/Destructor
 
@@ -143,7 +144,7 @@ bool SpheroAnswerPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket**)
 packetFormatter SpheroAnswerPacket::getPacketFromTodo(pendingCommandType todo)
 {
 	switch(todo){
-		case GETCOLOR:
+		case pendingCommandType::GETCOLOR:
 			return [](uint8_t dlen, uint8_t* dataPayload){
 				if (dlen != 0x04)
 				{
@@ -156,8 +157,22 @@ packetFormatter SpheroAnswerPacket::getPacketFromTodo(pendingCommandType todo)
 				return (void*) color;
 			};
 			break;
-		case NONE:
-		case SIMPLE_RESPONSE:
+		case pendingCommandType::GETBTINFO:
+			return [](uint8_t dlen, uint8_t* dataPayload){
+				if (dlen != 0x21)
+				{
+					return (void*) NULL;
+				}
+				BTInfoStruct* btinfo = new BTInfoStruct;
+				
+				btinfo->bt_name = std::string((const char*)dataPayload);
+				btinfo->bt_adress = std::string((const char*)(dataPayload + 16));
+				return (void*) btinfo;
+
+			};
+			break;
+		case pendingCommandType::NONE:
+		case pendingCommandType::SIMPLE_RESPONSE:
 		default:
 			return [](uint8_t, uint8_t* ){ return (void*) NULL; };
 			break;
