@@ -16,6 +16,7 @@
 #include <functional>
 #include <vector>
 #include <sys/time.h>
+#include <semaphore.h>
 
 //-------------------------------------------------------------- Local includes
 #include "bluetooth/bluetooth_connector.h"
@@ -563,7 +564,10 @@ class Sphero
 		pthread_t monitor;
 
 
-		answerUnion_t** _seqNumberReceived;
+		uint8_t* _syncMRSPCode;	
+		void** _syncPacketParameters;
+		sem_t* _syncSempahores;
+
 		pendingCommandType* _syncTodo;
 
 
