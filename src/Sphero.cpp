@@ -22,12 +22,6 @@ using namespace std;
 #include "packets/Constants.hpp"
 #include "packets/async/SpheroStreamingPacket.hpp"
 
-typedef struct syncThreadParam{
-	std::function<void(answerUnion_t*)> callback;
-	Sphero* sphero;
-	uint8_t seqNum;
-} syncThreadParam;
-
 //-------------------------------------------------------- Private methods
 
 void* Sphero::monitorStream(void* sphero_ptr)
@@ -84,9 +78,9 @@ void Sphero::sendAcknowledgedPacket(ClientCommandPacket& packet,
 
 	sendPacket(packet);
 	sem_timedwait(&(_syncSempahores[seqToWait]), &timer);
-	pthread_mutex_lock(&(_mutex_syncParameters));	
+	pthread_mutex_lock(&(_mutex_syncParameters[seqToWait]));	
 	_syncTodo[seqToWait] = NONE;
-	pthread_mutex_unlock(&(_mutex_syncParameters));
+	pthread_mutex_unlock(&(_mutex_syncParameters[seqToWait]));
 }
 
 //------------------------------------------------ Constructors/Destructor
@@ -101,7 +95,7 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 {
 	pthread_mutex_init(&lock, NULL);
 	_data = new DataBuffer();
-	_mutex_seqNum = PTHREAD_MUTEX_INITIALIZER;
+	_mutex_seqNum = new pthread_mutex_t[256];
 	_mutex_syncParameters = PTHREAD_MUTEX_INITIALIZER;
 	
 	_syncSempahores = new sem_t[256];
@@ -115,6 +109,7 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 		_syncMRSPCode[i] = 0xFF;
 		_syncPacketParameters[i] = NULL;
 		sem_init(&(_syncSempahores[i]), 0, 0);
+		_mutex_syncParameters[i] = PTHREAD_MUTEX_INITIALIZER;
 	}
 }
 
@@ -129,10 +124,10 @@ Sphero::~Sphero()
 	for(size_t i = 0 ; i < 256 ; i++)
 	{
 		sem_destroy(&(_syncSempahores[i]));
+		pthread_mutex_destroy(&(_mutex_syncParameters[i]));
 	}
 
 	pthread_mutex_destroy(&_mutex_seqNum);
-	pthread_mutex_destroy(&_mutex_syncParameters);
 	delete[] _syncPacketParameters;
 	delete[] _syncMRSPCode;
 	delete[] _syncTodo;
@@ -340,6 +335,15 @@ void Sphero::setStabilization(bool on)
 	sendPacket(packet);
 }//END setStabilization
 
+void Sphero::lockSeqnum(uint8_t seqnum)
+{
+	pthread_mutex_lock(&(_syncPacketParameters[seqnum]));
+}
+
+void Sphero::unlockSeqnum(uint8_t seqnum)
+{
+	pthread_mutex_unlock(&(_syncPacketParameters[seqnum]));
+}
 
 /**
  * @brief setRotationRate : Change the rotation speed

@@ -570,7 +570,7 @@ class Sphero
 
 		/* Synchronisation for synchronous packet receiving */
 
-		pthread_mutex_t _mutex_syncParameters;
+		pthread_mutex_t* _mutex_syncParameters;
 		pthread_mutex_t _mutex_seqNum;
 
 		/* Callbacks lists (one for each declared event) */
