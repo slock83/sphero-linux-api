@@ -223,13 +223,12 @@ void InteractiveController::classicHelp()
 	cout << "************************************" << endl;
 	cout << "****** Classic mode commands *******" << endl;
 	cout << "************************************" << endl;
-	cout << "*          press q to quit         *" <<endl;
-	cout << "*                                  *" <<endl;
-	cout << "*         arrow keys to move       *" <<endl;
-	cout << "*   b to enable/disable backled    *" <<endl;
-	cout << "*    c to enter calibrate mode     *" <<endl;
-	cout << "*                                  *" <<endl;
-	cout << "*      WARNING : early WIP !!!     *"<<endl;
+	cout << "*          press q to quit         *" << endl;
+	cout << "*                                  *" << endl;
+	cout << "*         arrow keys to move       *" << endl;
+	cout << "*   b to enable/disable backled    *" << endl;
+	cout << "*    c to enter calibrate mode     *" << endl;
+	cout << "*                                  *" << endl;
 	cout << "************************************" << endl;
 }
 
@@ -239,14 +238,14 @@ void InteractiveController::calibrateHelp()
 	cout << "************************************" << endl;
 	cout << "***** Calibrate mode commands ******" << endl;
 	cout << "************************************" << endl;
-	cout << "*          press q to quit         *" <<endl;
-	cout << "*                                  *" <<endl;
-	cout << "*     press r to turn left(2°)     *" <<endl;
-	cout << "*     press e to turn left(10°)    *" <<endl;
-	cout << "*     press t to turn right(2°)    *" <<endl;
-	cout << "*     press y to turn right(10°)   *" <<endl;
-	cout << "*                                  *" <<endl;
-	cout << "*        press v to validate       *" <<endl;
-	cout << "*         press b to return        *" <<endl;
+	cout << "*          press q to quit         *" << endl;
+	cout << "*                                  *" << endl;
+	cout << "*     press r to turn left(2°)     *" << endl;
+	cout << "*     press e to turn left(10°)    *" << endl;
+	cout << "*     press t to turn right(2°)    *" << endl;
+	cout << "*     press y to turn right(10°)   *" << endl;
+	cout << "*                                  *" << endl;
+	cout << "*        press v to validate       *" << endl;
+	cout << "*         press b to return        *" << endl;
 	cout << "************************************" << endl;
 }

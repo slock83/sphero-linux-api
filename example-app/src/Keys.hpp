@@ -7,6 +7,10 @@
 #ifndef _KEYS_HPP
 #define _KEYS_HPP
 
+
+#include <stddef.h>
+
+
 //------------------------------------------------------------- Constants
 namespace keysLegacy
 {
@@ -23,6 +27,25 @@ namespace keysLegacy
 	const int _KEY_T = 0x74;
 	const int _KEY_V = 0x76;
 	const int _KEY_Y = 0x79;
+}
+
+namespace snesPad
+{
+	const int16_t KEY_PRESSED = 1;
+	const int16_t KEY_RELEASED = 0;
+	const uint8_t EVENT_BUTTON = 0x01;
+	const uint8_t EVENT_AXIS = 0x02;
+	const uint8_t EVENT_INIT = 0x80;
+	const uint8_t KEY_X = 0x00;
+	const uint8_t KEY_A = 0x01;
+	const uint8_t KEY_B = 0x02;
+	const uint8_t KEY_Y = 0x03;
+	const uint8_t KEY_LB = 0x04;
+	const uint8_t KEY_RB = 0x05;
+	const uint8_t KEY_SEL = 0x08;
+	const uint8_t KEY_START = 0x09;
+	const uint8_t AXIS_HORIZ = 0x00;
+	const uint8_t AXIS_VERT = 0x01;
 }
 
 namespace global

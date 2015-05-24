@@ -31,12 +31,14 @@ using namespace std;
 #include "CommandHandler.h"
 #include "spheromanager.h"
 #include "interactivecontroller.h"
+#include "snescontroller.h"
 
 
 
 /**/
 static SpheroManager sm;
 static InteractiveController ic;
+static SnesController sc;
 /**/
 
 
@@ -295,6 +297,10 @@ int handleCommand(const string& command)
 	else if(cmd == "interactive")
 	{
 		ic.startInteractiveMode(sm.getSphero());
+	}
+	else if(cmd == "joystick")
+	{
+		sc.startJoystickMode(sm.getSphero());
 	}
 		//------------------------------ Others
 	else if(cmd == "changecolor")
