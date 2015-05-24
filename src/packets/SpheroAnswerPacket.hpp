@@ -19,7 +19,7 @@
 
 //------------------------------------------------------------------ Types
 //First uint8_t is mrsp, second is seq number
-typedef bool (*answerPacketExtractor) (int, Sphero*, SpheroPacket**, uint8_t, uint8_t);
+typedef std::function<void*(int)> packetFormatter;
 
 //------------------------------------------------------- Class definition
 class SpheroAnswerPacket : public SpheroPacket

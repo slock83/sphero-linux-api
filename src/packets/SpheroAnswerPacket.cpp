@@ -15,6 +15,7 @@
 
 //--------------------------------------------------------- Local includes
 #include "SpheroAnswerPacket.hpp"
+#include "answer/AskedCommandCode.h"
 
 //------------------------------------------------ Constructors/Destructor
 
@@ -66,6 +67,11 @@ bool SpheroAnswerPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** pa
 #ifdef MAP
 	fprintf(stdout, "msgrsp : %u ;\nseq : %u;\n", msgrsp, seq);
 #endif
+
+	sphero->lockSeqnum(seq);
+	pendingCommandType requested = sphero->getTodo(seq);
+
+	
 
 	return false;
 }

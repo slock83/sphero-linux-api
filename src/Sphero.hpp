@@ -528,6 +528,10 @@ class Sphero
 		 */
 		void reportData();
 
+		void lockSeqnum(uint8_t seqnum);
+		pendingCommandType getTodo(uint8_t sequm);
+		void unlockSeqnum(uint8_t packet);
+
 	protected:
 		//--------------------------------------------------- Protected methods
 		static void* monitorStream(void* sphero_ptr);
@@ -535,6 +539,7 @@ class Sphero
 		void sendAcknowledgedPacket(ClientCommandPacket& packet, uint8_t seqToWait);
 
 		void sendPacket(ClientCommandPacket& packet);
+
 
 	private:
 		//-------------------------------------------------- Private attributes

@@ -171,6 +171,11 @@ void Sphero::notifyPacket(uint8_t seqNum, uint8_t mrsp, void* pointer)
 	sem_post(&(_syncSempahores[seqNum]));
 }
 
+pendingCommandType Sphero::getTodo(uint8_t seqNum)
+{
+	return _syncTodo[seqNum];
+}
+
 
 /**
  * @brief disconnect : Disconnects the current Sphero
