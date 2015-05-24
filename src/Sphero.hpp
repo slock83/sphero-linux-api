@@ -27,6 +27,7 @@
 #include "packets/async/CollisionStruct.hpp"
 
 #include "packets/answer/ColorStruct.hpp"
+#include "packets/answer/AskedCommandCode.hpp"
 
 //------------------------------------------------------------------- Constants
 
@@ -562,10 +563,13 @@ class Sphero
 
 
 		answerUnion_t** _seqNumberReceived;
+		pendingCommandType* _syncTodo;
+
 
 		/* Synchronisation for synchronous packet receiving */
 
 		pthread_mutex_t _mutex_syncpacket;
+		pthread_mutex_t _mutex_seqNum;
 		pthread_cond_t _conditional_syncpacket;
 
 		/* Callbacks lists (one for each declared event) */

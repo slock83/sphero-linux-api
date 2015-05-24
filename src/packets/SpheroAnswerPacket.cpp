@@ -10,7 +10,7 @@
 
 //-------------------------------------------------------- System includes
 #include <iostream>
-#include <sys/select.h>
+#include <sys/socket.h>
 #include <fcntl.h>
 
 //--------------------------------------------------------- Local includes
@@ -47,6 +47,25 @@ bool SpheroAnswerPacket::extractPacket(int fd, Sphero* sphero, SpheroPacket** pa
 	fprintf(stderr, "Answer packet reception\n\n");
 #endif
 	// À adapter
+	uint8_t msgrsp;
+	uint8_t seq;
+	
+	int rcvVal;
+	rcvVal = recv(fd, &msgrsp, sizeof(msgrsp), 0);
+	if(rcvVal != sizeof(msgrsp))
+	{
+		return false;
+	}
+
+	rcvVal = recv(fd, &seq, sizeof(seq), 0);
+	if(rcvVal != sizeof(seq))
+	{
+		return false;
+	}
+
+#ifdef MAP
+	fprintf(stdout, "msgrsp : %u ;\nseq : %u;\n", msgrsp, seq);
+#endif
 /*
 	uint8_t idCode;
 	int rcvVal = 0;

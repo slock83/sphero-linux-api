@@ -22,6 +22,8 @@
 #include "sphero/bluetooth/bluez_adaptor.h"
 #include "sphero/Sphero.hpp"
 #include "sphero/packets/Constants.hpp"
+//Test
+#include <sphero/packets/answer/ColorStruct.hpp>
 
 using namespace std;
 
@@ -132,6 +134,29 @@ static void handleCollision()
 
 	sm.getSphero()->enableCollisionDetection(80,0,80,0, 15);
 }
+
+/**
+ * Simple test
+ */
+static void testGetColor()
+{
+	auto lambda = [](ColorStruct* color){
+			if(color != NULL)
+			{
+				fprintf(stdout, "Sphero color : %u %u %u\n", color->red, color->green, color->blue);
+				delete color;
+			}
+			else
+			{
+				fprintf(stderr, "Sphero getColor received a null ptr\n");
+			}
+	};
+
+	if (!isConnected()) return;
+
+	sm.getSphero()->getColor(lambda);
+}
+
 
 
 /**
@@ -281,6 +306,10 @@ int handleCommand(const string& command)
 	else if(cmd == "changecolor")
 	{
 		handleCc(css);
+	}
+	else if(cmd == "testcolor")
+	{
+		testGetColor();
 	}
 	else if(cmd == "backled")
 	{

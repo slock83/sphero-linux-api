@@ -108,19 +108,19 @@ void Sphero::sendPacket(ClientCommandPacket& packet)
 }//END sendPacket
 
 void Sphero::sendAcknowledgedPacket(ClientCommandPacket& packet, 
-		std::function<void(answerUnion_t*)> callback){
+		std::function<void(answerUnion_t*)> callback, uint8_t seqToWait){
 	pthread_attr_t attr;
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
 	pthread_mutex_lock(&_mutex_syncpacket);
-	if(_seqNumberReceived[_seq] != NULL)
-		_seqNumberReceived[_seq] = NULL;
+	if(_seqNumberReceived[seqToWait] != NULL)
+		_seqNumberReceived[seqToWait] = NULL;
 	pthread_mutex_unlock(&_mutex_syncpacket);
 
 	syncThreadParam* threadParam = new syncThreadParam();
 	threadParam->sphero = this;
-	threadParam->seqNum = _seq++;
+	threadParam->seqNum = seqToWait;
 	threadParam->callback = callback;
 	
 	pthread_t thread;
@@ -144,11 +144,14 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 	pthread_mutex_init(&lock, NULL);
 	_data = new DataBuffer();
 	_mutex_syncpacket = PTHREAD_MUTEX_INITIALIZER;
+	_mutex_seqNum = PTHREAD_MUTEX_INITIALIZER;
 	_conditional_syncpacket = PTHREAD_COND_INITIALIZER;
 	_seqNumberReceived = new answerUnion_t* [256];
+	_syncTodo = new pendingCommandType[256];
 	for(size_t i = 0 ; i < 256 ; i++)	
 	{
 		_seqNumberReceived[i++] = NULL;
+		_syncTodo[i] = NONE;
 	}
 }
 
@@ -169,6 +172,7 @@ Sphero::~Sphero()
 	}
 
 	pthread_cond_destroy(&_conditional_syncpacket);
+	pthread_mutex_destroy(&_mutex_seqNum);
 	pthread_mutex_destroy(&_mutex_syncpacket);
 	delete[] _seqNumberReceived;
 
@@ -294,20 +298,28 @@ void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
 
 void Sphero::getColor(void (*callback)(ColorStruct*))
 {
+	pthread_mutex_lock(&_mutex_seqNum);
+	uint8_t currentSeq = seq++;
+	pthread_mutex_unlock(&_mutex_seqNum);
+
+	_syncTodo[currentSeq] = GETCOLOR;
+
 	ClientCommandPacket packet(
 				DID::sphero,
 				CID::setBackLEDOutput,
-				_seq++,
+				currentSeq,
 				0x01,
 				nullptr,
-				_waitConfirm,
+				true,
 				_resetTimer
 				);
 	auto localWrapper = [callback](answerUnion_t* retour){
-		ColorStruct* color = new ColorStruct(*(retour->color));	
+		ColorStruct* color = NULL;
+		if(retour != NULL)
+			color = new ColorStruct(*(retour->color));	
 		callback(color);
 	};
-	sendAcknowledgedPacket(packet, localWrapper);
+	sendAcknowledgedPacket(packet, localWrapper, currentSeq);
 }
 
 /**

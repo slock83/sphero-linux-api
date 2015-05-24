@@ -60,7 +60,7 @@ CCFLAGS+=-Wall -fPIC -fpermissive -Wextra -Woverloaded-virtual -std=c++11 -I$(IN
 EL=g++ #Éditeur de liens
 ELFLAGS= -shared
 
-DEBUG?=FAlSE
+DEBUG?=FALSE
 
 DSHARP?=FALSE
 
