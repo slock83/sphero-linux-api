@@ -142,7 +142,7 @@ class Sphero
 		 * 					 User needs to manually destruct the ColorStruct*
 		 * 					 argument;
 		 */
-		void getColor(void (*callback)(ColorStruct*));
+		ColorStruct* getColor();
 
 		/**
 		 * @brief setBackLedOutput : Lights the back led(used to calibrate

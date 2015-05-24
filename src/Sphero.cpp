@@ -251,7 +251,7 @@ void Sphero::setColor(uint8_t red, uint8_t green, uint8_t blue, bool persist)
 /**
  * Commentez-les tous ! (feat Sacha)
  */
-Color* Sphero::getColor(uint8_t* mrsp)
+ColorStruct* Sphero::getColor()
 {
 	pthread_mutex_lock(&_mutex_seqNum);
 	uint8_t currentSeq = _seq++;
@@ -270,8 +270,7 @@ Color* Sphero::getColor(uint8_t* mrsp)
 				);
 
 	sendAcknowledgedPacket(packet, currentSeq);
-	*mrsp = _syncMRSPCode[currentSeq];
-	return (Color*) _syncPacketParameters[_seqNum];	
+	return (ColorStruct*) _syncPacketParameters[currentSeq];	
 }
 
 /**
