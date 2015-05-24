@@ -9,6 +9,7 @@
 
 //--------------------------------------------------------- Local includes
 #include "../SpheroAsyncPacket.hpp"
+struct CollisionStruct;
 
 
 //------------------------------------------------------- Class definition

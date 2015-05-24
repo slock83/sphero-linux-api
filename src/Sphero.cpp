@@ -145,7 +145,11 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 	_data = new DataBuffer();
 	_mutex_syncpacket = PTHREAD_MUTEX_INITIALIZER;
 	_conditional_syncpacket = PTHREAD_COND_INITIALIZER;
-	_seqNumberReceived = new answerUnion_t* [256]{NULL};
+	_seqNumberReceived = new answerUnion_t* [256];
+	for(size_t i = 0 ; i < 256 ; i++)	
+	{
+		_seqNumberReceived[i++] = NULL;
+	}
 }
 
 
@@ -155,15 +159,14 @@ Sphero::~Sphero()
 	disconnect();
 	delete _bt_adapter;
 	
-	size_t i = 0;
-	do
+
+	for(size_t i = 0 ; i < 256 ; i++)
 	{
 		if(_seqNumberReceived[i] != NULL)
 		{
 			delete(_seqNumberReceived[i]);
 		}
-		i++;
-	}while(i != 0);
+	}
 
 	pthread_cond_destroy(&_conditional_syncpacket);
 	pthread_mutex_destroy(&_mutex_syncpacket);

@@ -17,6 +17,7 @@
 #include "SpheroCollisionPacket.hpp"
 #include "../Toolbox.hpp"
 #include "CollisionStruct.hpp"
+#include "../../Sphero.hpp"
 
 
 //-------------------------------------------------------------- Constants

@@ -17,6 +17,7 @@ using namespace std;
 
 //--------------------------------------------------------- Local includes
 #include "SpheroStreamingPacket.hpp"
+#include "../../Sphero.hpp"
 #include "../Toolbox.hpp"
 #include "../Constants.hpp"
 #include "DataBuffer.h"

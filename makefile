@@ -55,11 +55,12 @@ MAKEDEPEND = g++ $(addprefix -I, $(EXTINCDIR)) -I$(INCDIR) -o $(df).d -std=c++11
 #Compilateur
 CC=gcc 
 #Options du compilateur
-CCFLAGS+=-Wall -fPIC -fpermissive -Wextra -Woverloaded-virtual -std=c++11 -I$(INCDIR) $(addprefix -I, $(EXTINCDIR)) $(addprefix -l, $(LIB)) -c -pthread -g
+CCFLAGS+=-Wall -fPIC -fpermissive -Wextra -Woverloaded-virtual -std=c++11 -I$(INCDIR) $(addprefix -I, $(EXTINCDIR)) $(addprefix -l, $(LIB)) -c -pthread 
 
 EL=g++ #Éditeur de liens
-ELFLAGS= -shared -g
+ELFLAGS= -shared
 
+DEBUG?=FAlSE
 
 DSHARP?=FALSE
 
@@ -67,12 +68,13 @@ MAP?=FALSE
 
 PROF?=FALSE
 
-ifneq ($(DSHARP),FALSE)
-    CCFLAGS+= -DSHARP 
+ifneq ($(DEBUG),FALSE)
+    CCFLAGS+= -g
+    ELFLAGS+= -g
 endif
 
 ifneq ($(MAP),FALSE)
-    CCFLAGS+= -DMAP 
+    CCFLAGS+= -DMAP
 endif
 
 ifneq ($(PROF),FALSE)
