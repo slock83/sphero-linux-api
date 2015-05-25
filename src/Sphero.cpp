@@ -113,6 +113,8 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 		sem_init(&(_syncSempahores[i]), 0, 0);
 		pthread_mutex_init(&(_mutex_syncParameters[i]), NULL);
 	}
+
+	
 }
 
 
@@ -160,6 +162,32 @@ bool Sphero::connect()
 		_connected = true;
 		_connect_handler.reportAction();
 
+		static uint8_t const dlen = 0x0c;
+		uint8_t data[dlen];
+		data[0] = 0;
+		data[1] = 12; //N
+		data[2] = 0;
+		data[3] = 1; //M
+		data[4] = 0;
+		data[5] = 0;
+		data[6] = 0;
+		data[7] = 0;
+		data[8] = 0;
+		data[9] = 13;
+		data[10] = 0x80;
+		data[11] = 0;
+		data[12] = 0;
+
+
+	ClientCommandPacket activeDataPacket(DID::sphero,
+				CID::setDataStreaming,
+				flags::notNeeded,
+				dlen,
+				data,
+				_waitConfirm,
+				_resetTimer);
+	sendPacket(activeDataPacket);
+
 		return true;
 	}
 
@@ -199,7 +227,39 @@ void Sphero::disconnect()
 }//END disconnect
 
 
+void Sphero::setX(spherocoord_t x)
+{
+	_x = x;
+}
+void Sphero::setY(spherocoord_t y)
+{
+	_y = y;
+}
+void Sphero::setSpeedX(int16_t speedx)
+{
+	_speedX = speedx;
+}
+void Sphero::setSpeedY(int16_t speedy)
+{
+	_speedY = speedy;
+}
 
+int16_t Sphero::getX()
+{
+	return _x;
+}
+int16_t Sphero::getY()
+{
+	return _y;
+}
+int16_t Sphero::getSpeedX()
+{
+	return _speedX;
+}
+int16_t Sphero::getSpeedY()
+{
+	return _speedY;
+}
 
 /**
  * @brief ping : Creates a ping request to the Sphero

@@ -73,7 +73,9 @@ class DataBuffer
 
 
 		/**
-		 * @brief flush : Flushes the specified queue (can be used when configuring locator, to avoid meaningless)
+		 * @brief flush : Flushes the specified queue (can be used when
+		 * configuring locator, to avoid meaningless ... (fill with your
+		 * favorite word)) 
 		 * @param valueType
 		 */
 		void flush(dataTypes valueType);
