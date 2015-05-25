@@ -499,7 +499,7 @@ void Sphero::enableCollisionDetection(uint8_t Xt, uint8_t Xspd,
 				flags::notNeeded,
 				0x07,
 				data_payload,
-				_waitConfirm,
+				false,
 				_resetTimer
 				);
 	sendPacket(packet);
