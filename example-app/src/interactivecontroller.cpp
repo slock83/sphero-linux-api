@@ -14,7 +14,8 @@
 
 #include "ncurses.h"
 
-#include "sphero/Sphero.hpp"
+#include <sphero/Sphero.hpp>
+#include <sphero/packets/Constants.hpp>
 #include "JoystickAdaptor.h"
 
 using namespace std;
@@ -187,6 +188,10 @@ void InteractiveController::handleKeysCalibrate(int input, timeval& lastInput)
 	{
 		s->setHeading(0);
 		changeMode(mode::CLASSIC);
+
+		// On change l'orientation du monde
+		// et on le force à ne pas tourner avec le sphero
+		s->configureLocator(locator_flags::autoCorrection, 0, 0, 0);
 
 		s->setBackLedOutput(0);
 		isBackLedEnabled = false;
