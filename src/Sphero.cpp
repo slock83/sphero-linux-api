@@ -158,7 +158,7 @@ void Sphero::rollToPosition(spherocoord_t x, spherocoord_t y, uint8_t initSpeed)
 	actualY = getY();
 
 	int angle;
-	while((abs(actualX - x) > 4 || abs(actualY- y)) > 4 && !collision)
+	while( (abs(actualX - x) > 4 || abs(actualY- y) > 4 ) && !collision)
 	{
 		//speed = speed - (nbTours / 256);
 		if(speed < MIN_SPEED)
