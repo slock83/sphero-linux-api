@@ -11,6 +11,7 @@
 #include <sys/socket.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <cmath>
 
 #include <algorithm>
 #include <iostream>
@@ -140,6 +141,43 @@ Sphero::~Sphero()
 
 
 //--------------------------------------------------------- Public methods
+
+void Sphero::rollToPosition(spherocoord_t x, spherocoord_t y, uint8_t initSpeed)
+{
+	static uint8_t const MIN_SPEED = 20;
+
+	spherocoord_t actualX, actualY;
+	uint8_t speed = initSpeed;
+	uint16_t nbTours = 0;
+
+	enableCollisionDetection(90, 50, 90, 50, 90);
+
+	collision = false;
+
+	while(((actualX = getX()) != x || (actualY = getY())) != y && !collision)
+	{
+		speed = speed - (nbTours / 256);
+		if(speed < MIN_SPEED)
+		{
+			speed = MIN_SPEED;
+		}
+		
+		uint16_t angle = ((uint16_t) round((atan2(x - actualX, y - actualY)
+					* 3.141592683585 / 180)) + 360) % 360; 
+		
+		std::cout << "Speed : " << (uint32_t)speed << endl << "Angle : " << angle << endl;
+		std::cout << "ActualX : " << actualX << endl << "ActualY : " << actualY << endl;
+
+		roll(speed, angle);
+		usleep(8000);
+
+		nbTours ++;
+		if(nbTours > 32000)
+		{
+			return;	
+		}
+	}
+}
 
 /**
  * @brief connect : Initializes the bluetooth connection to the sphero instance
@@ -1032,6 +1070,7 @@ void Sphero::onData(callback_data_t callback)
  */
 void Sphero::reportCollision(CollisionStruct* infos)
 {
+	collision = true;
 	_collision_handler.reportAction(infos);
 }
 

@@ -136,7 +136,7 @@ static void handleCollision()
 /**
  * Simple test
  */
-static void testGetColor()
+static void testGetInfos()
 {
 
 	if(!isConnected())
@@ -144,8 +144,8 @@ static void testGetColor()
 		return;
 	}
 	
-	int16_t x = sm.getSphero()->getX();
-	std::cout << "X : " << x << std::endl;
+	std::cout << "X : " << sm.getSphero()->getX() << std::endl;
+	std::cout << "Y : " << sm.getSphero()->getY() << std::endl;
 }
 
 
@@ -265,6 +265,13 @@ static void handleBackLED(stringstream& css)
 	sm.getSphero()->setBackLedOutput((uint8_t) i%256);
 }
 
+static void handleGoto(stringstream& css)
+{
+	spherocoord_t x, y;
+	css >> x >> y;
+	cout << "X:" << x << " Y:" << y << endl;
+	sm.getSphero()->rollToPosition(x,y);
+}
 
 void init()
 {
@@ -325,9 +332,9 @@ int handleCommand(const string& command)
 	{
 		testBTInfo();
 	}
-	else if(cmd == "testcolor")
+	else if(cmd == "testloc")
 	{
-		testGetColor();
+		testGetInfos();
 	}
 	else if(cmd == "backled")
 	{
@@ -336,6 +343,10 @@ int handleCommand(const string& command)
 	else if(cmd == "roll")
 	{
 		handleRoll(css);
+	}
+	else if(cmd == "goto")
+	{
+		handleGoto(css);
 	}
 	else if(cmd == "head")
 	{

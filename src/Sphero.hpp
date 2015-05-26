@@ -217,6 +217,7 @@ class Sphero
 		void setSelfLevel(uint8_t options = 0, uint8_t angle_limit = 3,
 						  uint8_t timeout = 15, uint8_t trueTime = 30);
 
+		void rollToPosition(spherocoord_t x, spherocoord_t y, uint8_t initSpeed = 90);
 
 		/**
 		 * @brief enableCollisionDetection : Enables the onBoard collision
@@ -568,6 +569,8 @@ class Sphero
 
 	private:
 		//-------------------------------------------------- Private attributes
+		
+		bool collision;
 		
 		spherocoord_t _x, _y;
 		int16_t _speedX, _speedY;

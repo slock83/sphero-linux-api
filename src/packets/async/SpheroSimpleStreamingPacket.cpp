@@ -99,6 +99,7 @@ bool SpheroSimpleStreamingPacket::extractPacket(int fd,  Sphero* sphero, SpheroP
 	y = (int16_t) be16toh(*((uint16_t*)(&(rawdata[4]))));
 	speedX = (int16_t) be16toh(*((uint16_t*)(&(rawdata[6]))));
 	speedY = (int16_t) be16toh(*((uint16_t*)(&(rawdata[8]))));
+
 	sphero->setX(x);
 	sphero->setY(y);
 	sphero->setSpeedX(speedX);
