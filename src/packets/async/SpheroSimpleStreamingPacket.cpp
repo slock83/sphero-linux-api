@@ -62,7 +62,7 @@ SpheroSimpleStreamingPacket::~SpheroSimpleStreamingPacket ( )
  *
  * Contract: the socket has to be in blocking read
  */
-bool SpheroSimpleStreamingPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket** packet_ptr)
+bool SpheroSimpleStreamingPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket**)
 {
 	uint8_t buf;
 	uint8_t rawdata[PACKET_SIZE];
@@ -95,12 +95,16 @@ bool SpheroSimpleStreamingPacket::extractPacket(int fd,  Sphero* sphero, SpheroP
 		return false;
 	}
 	
-	x = *((uint16_t*)(&(rawdata[2])));
-	y = *((uint16_t*)(&(rawdata[4])));
-	speedX = *((uint16_t*)(&(rawdata[6])));
-	speedY = *((uint16_t*)(&(rawdata[8])));
-	*packet_ptr = new SpheroSimpleStreamingPacket(sphero, x, y, speedX, speedY);
-	return true;
+	x = (int16_t) be16toh(*((uint16_t*)(&(rawdata[2]))));
+	y = (int16_t) be16toh(*((uint16_t*)(&(rawdata[4]))));
+	speedX = (int16_t) be16toh(*((uint16_t*)(&(rawdata[6]))));
+	speedY = (int16_t) be16toh(*((uint16_t*)(&(rawdata[8]))));
+	sphero->setX(x);
+	sphero->setY(y);
+	sphero->setSpeedX(speedX);
+	sphero->setSpeedY(speedY);
+
+	return false;
 }
 
 

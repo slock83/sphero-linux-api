@@ -30,7 +30,7 @@ class SpheroSimpleStreamingPacket : public SpheroAsyncPacket
 		 *
 		 * Contract: the socket has to be in blocking read
 		 */
-		static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** packet_ptr);
+		static bool extractPacket(int fd, Sphero* sphero, SpheroPacket** );
 
 
 		/**
