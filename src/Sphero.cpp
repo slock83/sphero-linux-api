@@ -162,31 +162,8 @@ bool Sphero::connect()
 		_connected = true;
 		_connect_handler.reportAction();
 
-		static uint8_t const dlen = 0x0c;
-		uint8_t data[dlen];
-		data[0] = 0;
-		data[1] = 12; //N
-		data[2] = 0;
-		data[3] = 1; //M
-		data[4] = 0;
-		data[5] = 0;
-		data[6] = 0;
-		data[7] = 0;
-		data[8] = 0;
-		data[9] = 13;
-		data[10] = 0x80;
-		data[11] = 0;
-		data[12] = 0;
-
-
-	ClientCommandPacket activeDataPacket(DID::sphero,
-				CID::setDataStreaming,
-				flags::notNeeded,
-				dlen,
-				data,
-				_waitConfirm,
-				_resetTimer);
-	sendPacket(activeDataPacket);
+		setDataStreaming(40, 1, 0, 0, 
+				mask2::ODOMETER_X | mask2::ODOMETER_Y | mask2::VELOCITY_X | mask2::VELOCITY_Y);
 
 		return true;
 	}
