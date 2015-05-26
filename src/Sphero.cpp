@@ -263,6 +263,11 @@ void Sphero::setSpeedY(int16_t speedy)
 	_speedY = speedy;
 }
 
+bool Sphero::getCollision(void)
+{
+	return collision;
+}
+
 int16_t Sphero::getX()
 {
 	return _x;

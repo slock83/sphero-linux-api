@@ -469,6 +469,8 @@ class Sphero
 		 *					flag is set.
 		 */
 		void setInactivityTimeout(uint16_t timeout);
+		
+		bool getCollision(void);
 
 		//------------------------------------------------ Data streaming utils
 
