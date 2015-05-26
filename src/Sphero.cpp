@@ -148,7 +148,6 @@ void Sphero::rollToPosition(spherocoord_t x, spherocoord_t y, uint8_t initSpeed)
 
 	spherocoord_t actualX, actualY;
 	uint8_t speed = initSpeed;
-	uint16_t nbTours = 0;
 
 	enableCollisionDetection(90, 50, 90, 50, 90);
 
@@ -158,14 +157,13 @@ void Sphero::rollToPosition(spherocoord_t x, spherocoord_t y, uint8_t initSpeed)
 	actualY = getY();
 
 	int angle;
-	while( (abs(actualX - x) > 4 || abs(actualY- y) > 4 ) && !collision)
+	while( (abs(actualX - x) > 1 || abs(actualY- y) > 1 || speed > 35) && !collision )
 	{
-		//speed = speed - (nbTours / 256);
-		if(speed < MIN_SPEED)
-		{
-			speed = MIN_SPEED;
-		}
-		
+
+		speed = min(10 + max(abs(actualX - x), abs(actualY- y)), 100);
+
+		sleeptime = 5000;
+
 		angle = ((int) (atan2(x - actualX, y - actualY)
 					* 180.0 / 3.14159268) + 360) % 360;
 		
@@ -173,16 +171,12 @@ void Sphero::rollToPosition(spherocoord_t x, spherocoord_t y, uint8_t initSpeed)
 		std::cout << "ActualX : " << actualX << endl << "ActualY : " << actualY << endl;
 
 		roll(speed, angle);
-		usleep(8000);
 
-		nbTours ++;
-		if(nbTours > 32000)
-		{
-			return;	
-		}
+		usleep(sleeptime);
 
 		actualX = getX();
 		actualY = getY();
+
 	}
 	roll(0,angle);
 }
@@ -208,7 +202,7 @@ bool Sphero::connect()
 		_connected = true;
 		_connect_handler.reportAction();
 
-		setDataStreaming(40, 1, 0, 0, 
+		setDataStreaming(400, 1, 0, 0,
 				mask2::ODOMETER_X | mask2::ODOMETER_Y | mask2::VELOCITY_X | mask2::VELOCITY_Y);
 
 		return true;

@@ -244,6 +244,10 @@ class Sphero
 		void enableCollisionDetection(uint8_t Xt, uint8_t Xspd, uint8_t Yt,
 				uint8_t Yspd, uint8_t Dead);
 
+		void resetCollision();
+
+		bool collisionOccured();
+
 
 		/**
 		 * @brief disableCollisionDetection : Disables the onBoard collision detector
@@ -570,7 +574,7 @@ class Sphero
 	private:
 		//-------------------------------------------------- Private attributes
 		
-		bool collision;
+		volatile bool collision;
 		
 		spherocoord_t _x, _y;
 		int16_t _speedX, _speedY;
