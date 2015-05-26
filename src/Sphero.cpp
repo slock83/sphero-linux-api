@@ -234,7 +234,7 @@ bool Sphero::connect()
 		_connected = true;
 		_connect_handler.reportAction();
 
-		setDataStreaming(400, 1, 0, 0,
+		setDataStreaming(100, 1, 0, 0,
 				mask2::ODOMETER_X | mask2::ODOMETER_Y | mask2::ACCELONE_0 |mask2::VELOCITY_X | mask2::VELOCITY_Y);
 
 		return true;
