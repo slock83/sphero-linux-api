@@ -148,7 +148,7 @@ void Sphero::rollToPosition(spherocoord_t x, spherocoord_t y, uint8_t initSpeed)
 	spherocoord_t actualX, actualY;
 	uint8_t speed = initSpeed;
 
-	enableCollisionDetection(90, 50, 90, 50, 90);
+	enableCollisionDetection(90, 30, 90, 30, 90);
 
 	collision = false;
 
@@ -159,12 +159,12 @@ void Sphero::rollToPosition(spherocoord_t x, spherocoord_t y, uint8_t initSpeed)
 
 	int angle;
 	size_t nbPoints = 0;
-	roll(35, 0);
+	roll(45, 0);
 	usleep(6000);
-	while( (abs(actualX - x) > 1 || abs(actualY- y) > 1 || speed > 35) && !collision )
+	while( (abs(actualX - x) > 2 || abs(actualY- y) > 2 || speed > 35) && !collision )
 	{
 
-		speed = min(20 + max(abs(actualX - x), abs(actualY- y)), 100);
+		speed = min(35 + max(abs(actualX - x), abs(actualY- y)), 100);
 
 		sleeptime = 3000;
 
@@ -174,9 +174,9 @@ void Sphero::rollToPosition(spherocoord_t x, spherocoord_t y, uint8_t initSpeed)
 		angle = ((int) (atan2(x - actualX, y - actualY)
 					* 180.0 / 3.14159268) + 360) % 360;
 		
-		std::cout << "Speed : " << (uint32_t)speed << endl << "Angle : " << angle << endl;
+	/*	std::cout << "Speed : " << (uint32_t)speed << endl << "Angle : " << angle << endl;
 		std::cout << "ActualX : " << actualX << endl << "ActualY : " << actualY << endl;
-
+*/
 		roll(speed, angle);
 		usleep(10*sleeptime);
 		roll(0, angle);
