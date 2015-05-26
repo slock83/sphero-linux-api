@@ -88,7 +88,7 @@ class DataBuffer
 
 	private:
 		pthread_mutex_t lock;
-		deque<uint16_t> *_dataValues;
+		uint16_t *_dataValues;
 
 
 };

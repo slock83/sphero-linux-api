@@ -11,16 +11,15 @@ using namespace std;
 
 DataBuffer::DataBuffer()
 {
-	_dataValues = new deque<uint16_t>[27];
+	_dataValues = new uint16_t[27];
 	for(int i = 0; i < 27; ++i)
-		_dataValues[i] = deque<uint16_t>();
+		_dataValues[i] = 0;
 
 	pthread_mutex_init(&lock, NULL);
 }
 
 DataBuffer::~DataBuffer()
 {
-	cout << "<DataBuffer> destroyed" << endl;
 	delete[] _dataValues;
 }
 
@@ -40,21 +39,18 @@ bool DataBuffer::waitForNext(dataTypes valueType, uint16_t &returnValue, int wai
 	do
 	{
 		pthread_mutex_lock(&lock);
-		if(_dataValues[valueType].size() > 0)
-		{
-			returnValue = _dataValues[valueType][0];
-			_dataValues[valueType].pop_front();
+		returnValue = _dataValues[valueType];
 
-			pthread_mutex_unlock(&lock);
-			return true;
-		}
 		pthread_mutex_unlock(&lock);
+		return true;
+			
+		/*pthread_mutex_unlock(&lock);
 
 		if(wait < 0)
 			return false;
 		usleep(wait);
 
-		--remaining;
+		--remaining;*/
 	}while(remaining > 0);
 
 	return false;
@@ -68,7 +64,7 @@ bool DataBuffer::waitForNext(dataTypes valueType, uint16_t &returnValue, int wai
 void DataBuffer::flush(dataTypes valueType)
 {
 	pthread_mutex_lock(&lock);
-	_dataValues[valueType].clear();
+	_dataValues[valueType] = 0;
 	pthread_mutex_unlock(&lock);
 }
 
@@ -82,7 +78,7 @@ void DataBuffer::addValue(dataTypes valueType, uint16_t value)
 {
 	pthread_mutex_lock(&lock);
 
-	_dataValues[valueType].push_back(value);
+	_dataValues[valueType] = value;
 
 	pthread_mutex_unlock(&lock);
 }
