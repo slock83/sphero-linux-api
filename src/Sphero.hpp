@@ -125,6 +125,10 @@ class Sphero
 		 */
 		void ping();
 
+
+		uint16_t getNormalisedSpeed();
+		void setNormalisedSpeed(uint16_t normalisedSpeed);
+
 		/**
 		 * @brief setColor : Changes the Sphero light color
 		 * @param red : level of red (between 0x00 and 0xFF)
@@ -577,6 +581,7 @@ class Sphero
 		
 		spherocoord_t _x, _y;
 		int16_t _speedX, _speedY;
+		uint16_t _normalisedSpeed;
 
 		static const size_t MAX_CONNECT_ATTEMPT = 5;
 		bool _connected;

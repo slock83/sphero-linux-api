@@ -146,6 +146,9 @@ static void testGetInfos()
 	
 	std::cout << "X : " << sm.getSphero()->getX() << std::endl;
 	std::cout << "Y : " << sm.getSphero()->getY() << std::endl;
+	std::cout << "Speed : " << sm.getSphero()->getNormalisedSpeed() << std::endl;
+	std::cout << "SpeedX : " << sm.getSphero()->getSpeedX() << std::endl;
+	std::cout << "SpeedY : " << sm.getSphero()->getSpeedY() << std::endl;
 }
 
 

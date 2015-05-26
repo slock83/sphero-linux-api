@@ -25,7 +25,7 @@ using namespace std;
 #include "../ChecksumComputer.hpp"
 
 //------------------------------------------------ Constants
-static size_t const PACKET_SIZE = 11;
+static size_t const PACKET_SIZE = 13;
 
 //------------------------------------------------ Constructors/Destructor
 
@@ -66,7 +66,7 @@ bool SpheroSimpleStreamingPacket::extractPacket(int fd,  Sphero* sphero, SpheroP
 {
 	uint8_t buf;
 	uint8_t rawdata[PACKET_SIZE];
-	int16_t x,y,speedX,speedY;
+	int16_t x,y,speedX,speedY,normalisedSpeed;
 
 	ChecksumComputer cc;
 #ifdef MAP
@@ -87,7 +87,7 @@ bool SpheroSimpleStreamingPacket::extractPacket(int fd,  Sphero* sphero, SpheroP
 
 	cc.addField(rawdata, PACKET_SIZE - 1);
 
-	if(cc() !=  rawdata[10])
+	if(cc() !=  rawdata[12])
 	{
 #ifdef MAP
 		std::cerr << "Erreur checksum" << std::endl;
@@ -97,11 +97,13 @@ bool SpheroSimpleStreamingPacket::extractPacket(int fd,  Sphero* sphero, SpheroP
 	
 	x = (int16_t) be16toh(*((uint16_t*)(&(rawdata[2]))));
 	y = (int16_t) be16toh(*((uint16_t*)(&(rawdata[4]))));
-	speedX = (int16_t) be16toh(*((uint16_t*)(&(rawdata[6]))));
-	speedY = (int16_t) be16toh(*((uint16_t*)(&(rawdata[8]))));
+	normalisedSpeed = (int16_t) be16toh(*((uint16_t*)(&(rawdata[6]))));
+	speedX = (int16_t) be16toh(*((uint16_t*)(&(rawdata[8]))));
+	speedY = (int16_t) be16toh(*((uint16_t*)(&(rawdata[10]))));
 
 	sphero->setX(x);
 	sphero->setY(y);
+	sphero->setNormalisedSpeed(normalisedSpeed);
 	sphero->setSpeedX(speedX);
 	sphero->setSpeedY(speedY);
 

@@ -114,7 +114,6 @@ Sphero::Sphero(char const* const btaddr, bluetooth_connector* btcon):
 		sem_init(&(_syncSempahores[i]), 0, 0);
 		pthread_mutex_init(&(_mutex_syncParameters[i]), NULL);
 	}
-
 	
 }
 
@@ -159,12 +158,18 @@ void Sphero::rollToPosition(spherocoord_t x, spherocoord_t y, uint8_t initSpeed)
 	unsigned int sleeptime;
 
 	int angle;
+	size_t nbPoints = 0;
+	roll(35, 0);
+	usleep(6000);
 	while( (abs(actualX - x) > 1 || abs(actualY- y) > 1 || speed > 35) && !collision )
 	{
 
-		speed = min(10 + max(abs(actualX - x), abs(actualY- y)), 100);
+		speed = min(20 + max(abs(actualX - x), abs(actualY- y)), 100);
 
-		sleeptime = 5000;
+		sleeptime = 3000;
+
+
+
 
 		angle = ((int) (atan2(x - actualX, y - actualY)
 					* 180.0 / 3.14159268) + 360) % 360;
@@ -173,14 +178,39 @@ void Sphero::rollToPosition(spherocoord_t x, spherocoord_t y, uint8_t initSpeed)
 		std::cout << "ActualX : " << actualX << endl << "ActualY : " << actualY << endl;
 
 		roll(speed, angle);
+		usleep(10*sleeptime);
+		roll(0, angle);
 
-		usleep(sleeptime);
+		if(abs(getSpeedX()) < 10 && abs(getSpeedY()) < 10)
+		{
+			if(nbPoints++ > 40)
+			{
+				roll(0,angle);
+				return;
+			}
+		}
+		else
+		{
+			nbPoints = 0;
+		}
+
+		usleep(6*sleeptime);
 
 		actualX = getX();
 		actualY = getY();
 
 	}
 	roll(0,angle);
+}
+
+uint16_t Sphero::getNormalisedSpeed()
+{
+	return _normalisedSpeed;
+}
+
+void Sphero::setNormalisedSpeed(uint16_t normalisedSpeed)
+{
+	_normalisedSpeed = normalisedSpeed;
 }
 
 /**
@@ -205,7 +235,7 @@ bool Sphero::connect()
 		_connect_handler.reportAction();
 
 		setDataStreaming(400, 1, 0, 0,
-				mask2::ODOMETER_X | mask2::ODOMETER_Y | mask2::VELOCITY_X | mask2::VELOCITY_Y);
+				mask2::ODOMETER_X | mask2::ODOMETER_Y | mask2::ACCELONE_0 |mask2::VELOCITY_X | mask2::VELOCITY_Y);
 
 		return true;
 	}
