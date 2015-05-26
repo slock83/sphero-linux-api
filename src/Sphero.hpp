@@ -244,9 +244,6 @@ class Sphero
 		void enableCollisionDetection(uint8_t Xt, uint8_t Xspd, uint8_t Yt,
 				uint8_t Yspd, uint8_t Dead);
 
-		void resetCollision();
-
-		bool collisionOccured();
 
 
 		/**
@@ -264,7 +261,7 @@ class Sphero
 		void setX(spherocoord_t x);
 		void setY(spherocoord_t y);
 		void setSpeedX(int16_t speedx);
-		void setSpeedY(int16_t speedy);
+		void setSpeedY(int16_t speedy); //vas donc, vas donc chez speedy, speedy !
 		
 		int16_t getX();
 		int16_t getY();

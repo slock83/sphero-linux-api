@@ -156,6 +156,8 @@ void Sphero::rollToPosition(spherocoord_t x, spherocoord_t y, uint8_t initSpeed)
 	actualX = getX();
 	actualY = getY();
 
+	unsigned int sleeptime;
+
 	int angle;
 	while( (abs(actualX - x) > 1 || abs(actualY- y) > 1 || speed > 35) && !collision )
 	{
