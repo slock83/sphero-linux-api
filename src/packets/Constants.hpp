@@ -97,6 +97,12 @@ namespace CID
 	//end sphero commands
 }
 
+namespace locator_flags
+{
+	uint8_t const autoCorrection = 0x01;
+	uint8_t const noCorrection = 0x00;
+}
+
 namespace flags
 {
 	//for use with setDeviceMode

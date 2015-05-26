@@ -256,6 +256,16 @@ class Sphero
 		 */
 		bool isConnected();
 
+		void setX(spherocoord_t x);
+		void setY(spherocoord_t y);
+		void setSpeedX(int16_t speedx);
+		void setSpeedY(int16_t speedy);
+		
+		int16_t getX();
+		int16_t getY();
+		int16_t getSpeedX();
+		int16_t getSpeedY();
+
 		/**
 		 * @brief configureLocator : Configure sphero's internal location
 		 * 							 calculation unit offsets
@@ -558,6 +568,9 @@ class Sphero
 
 	private:
 		//-------------------------------------------------- Private attributes
+		
+		spherocoord_t _x, _y;
+		int16_t _speedX, _speedY;
 
 		static const size_t MAX_CONNECT_ATTEMPT = 5;
 		bool _connected;

@@ -143,17 +143,9 @@ static void testGetColor()
 	{
 		return;
 	}
-
-	ColorStruct* ptr = sm.getSphero()->getColor();
-	if(ptr != NULL)
-	{
-		fprintf(stdout, "SpheroColor (RVB) : %02x %02x %02x\n", ptr->red, ptr->green, ptr->blue);
-		delete ptr;
-	}
-	else
-	{
-		fprintf(stderr, "Received nullptr\n");
-	}
+	
+	int16_t x = sm.getSphero()->getX();
+	std::cout << "X : " << x << std::endl;
 }
 
 

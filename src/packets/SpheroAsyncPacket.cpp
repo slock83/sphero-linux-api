@@ -13,12 +13,12 @@
 //--------------------------------------------------------- Local includes
 #include "SpheroAsyncPacket.hpp"
 #include "async/SpheroCollisionPacket.hpp"
-#include "async/SpheroStreamingPacket.hpp"
+#include "async/SpheroSimpleStreamingPacket.hpp"
 
 //-------------------------------------------------------- Class variables
 extractorMap_t SpheroAsyncPacket::_extractorMap = {
 	{COLLISION_DETECTED, SpheroCollisionPacket::extractPacket},
-	{SENSOR_DATA_STREAMING, SpheroStreamingPacket::extractPacket}
+	{SENSOR_DATA_STREAMING, SpheroSimpleStreamingPacket::extractPacket}
 };
 
 //------------------------------------------------ Constructors/Destructor

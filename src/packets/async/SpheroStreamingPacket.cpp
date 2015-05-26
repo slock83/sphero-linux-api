@@ -59,11 +59,11 @@ bool SpheroStreamingPacket::extractPacket(int fd,  Sphero* sphero, SpheroPacket*
 
 	sphero->requestLock();
 
-	recv(fd, &data, sizeof(data), MSG_DONTWAIT); // garbage?
-	recv(fd, &data, sizeof(data), MSG_DONTWAIT); // len MSB
+	recv(fd, &data, sizeof(data), 0); // garbage?
+	recv(fd, &data, sizeof(data), 0); // len MSB
 		len = data << 8;
 
-	recv(fd, &data, sizeof(data), MSG_DONTWAIT); // len LSB
+	recv(fd, &data, sizeof(data), 0); // len LSB
 		len |= data;
 
 	if(!sphero->checkValid(len))
