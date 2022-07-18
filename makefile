@@ -12,11 +12,14 @@ LIB=bluetooth pthread rt
 # Répertoires de bibliothèques
 LIBDIR?=
 
+# Destination prefix for install
+DESTDIR?=/usr/
+
 # System libraries folder
-SYSLIB=/usr/lib/
+SYSLIB?=$(DESTDIR)/lib/
 
 # System include folder
-SYSINC=/usr/include/
+SYSINC?=$(DESTDIR)/include/
 
 # Commande écho
 ECHO=@echo
@@ -118,6 +121,7 @@ $(UNINSTALL):
 	$(ECHO) Désinstallation effectuée
 
 $(INSTALL): $(LIBNAME) 
+	@mkdir -p $(SYSLIB)
 	$(CP) $(LIBNAME) $(addprefix $(SYSLIB), $(LIBNAME))
 	@mkdir -p $(SYSINC)sphero
 	cd $(INCDIR) ; $(CP) --parent $(INC) $(SYSINC)sphero
